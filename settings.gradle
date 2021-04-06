@@ -1,12 +1,19 @@
 pluginManagement {
 	repositories {
+		maven { url "https://maven.aliyun.com/repository/central" }
+		maven { url "https://maven.aliyun.com/repository/public" }
+		maven { url "https://maven.aliyun.com/repository/google" }
+		maven { url "https://maven.aliyun.com/repository/grails-core" }
+		maven { url "https://maven.aliyun.com/repository/spring" }
+		maven { url "https://maven.aliyun.com/repository/spring-plugin" }
+		maven { url "https://maven.aliyun.com/repository/apache-snapshots" }
 		gradlePluginPortal()
 		maven { url 'https://repo.spring.io/plugins-release' }
 	}
 }
 
 plugins {
-	id "com.gradle.enterprise" version "3.5.1"
+	id "com.gradle.enterprise" version "3.4.1"
 	id "io.spring.ge.conventions" version "0.0.7"
 }
 
@@ -57,7 +64,7 @@ settings.gradle.projectsLoaded {
 			buildScanPublished { scan ->
 				if (buildDir.exists()) {
 					new File(buildDir, "build-scan-uri.txt").text = "${scan.buildScanUri}\n"
-				} 
+				}
 			}
 		}
 	}
