@@ -17,7 +17,6 @@ public class Main {
 			setBeanClass(BeanDefinitionRegistryPostProcessor1.class);
 		}});
 		context.refresh();
-
 		System.out.println(context.getBean("a"));
 	}
 }
