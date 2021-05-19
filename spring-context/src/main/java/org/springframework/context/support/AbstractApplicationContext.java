@@ -633,6 +633,15 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 				// Invoke factory processors registered as beans in the context.
 				//很重要，调用bean工厂中的所有BeanFactoryPostProcessor及其子类
+				/**
+				 * 比较重要的类:
+				 * ConfigurationClassPostProcessor 扫描配置类
+				 * AutowiredAnnotationBeanPostProcessor 处理@Autowired和@Value
+				 * CommonAnnotationBeanPostProcessor 处理@PreDestroy、@PostConstruct、@Resource、@WebServiceRef等注解
+				 * PersistenceAnnotationBeanPostProcessor 处理jpa
+				 * EventListenerMethodProcessor 处理@EventListener，注册成ApplicationListener
+				 * DefaultEventListenerFactory EventListenerFactory默认实现，用于处理@EventListener，注册成ApplicationListener
+				 */
 				invokeBeanFactoryPostProcessors(beanFactory);
 
 				// Register bean processors that intercept bean creation.

@@ -110,13 +110,16 @@ public class EventListenerMethodProcessor
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) {
 		this.beanFactory = beanFactory;
 
+		//获取EventListenerFactory
 		Map<String, EventListenerFactory> beans = beanFactory.getBeansOfType(EventListenerFactory.class, false, false);
 		List<EventListenerFactory> factories = new ArrayList<>(beans.values());
 		AnnotationAwareOrderComparator.sort(factories);
 		this.eventListenerFactories = factories;
 	}
 
-
+	/**
+	 * 在bean初始化之后执行
+	 */
 	@Override
 	public void afterSingletonsInstantiated() {
 		ConfigurableListableBeanFactory beanFactory = this.beanFactory;
