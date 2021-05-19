@@ -632,8 +632,9 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				StartupStep beanPostProcess = this.applicationStartup.start("spring.context.beans.post-process");
 
 				// Invoke factory processors registered as beans in the context.
-				//很重要，调用bean工厂中的所有BeanFactoryPostProcessor及其子类
 				/**
+				 * 很重要，调用bean工厂中的所有BeanFactoryPostProcessor及其子类（BeanDefinitionRegistryPostProcessor）的实现
+				 *
 				 * 比较重要的类:
 				 * ConfigurationClassPostProcessor 扫描配置类，基于ConfigurationClassBeanDefinitionReader
 				 * AutowiredAnnotationBeanPostProcessor 处理@Autowired和@Value
@@ -641,6 +642,17 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				 * PersistenceAnnotationBeanPostProcessor 处理jpa
 				 * EventListenerMethodProcessor 处理@EventListener，注册成ApplicationListener
 				 * DefaultEventListenerFactory EventListenerFactory默认实现，用于处理@EventListener，注册成ApplicationListener
+				 *
+				 * PropertyResourceConfigurer 属性配置基类
+				 * PropertyOverrideConfigurer 设置属性值，比如beanName.property=value
+				 * PlaceholderConfigurerSupport 处理占位符
+				 * PropertySourcesPlaceholderConfigurer 处理占位符
+				 * PropertyPlaceholderConfigurer 原有处理占位符方法，已过时
+				 * PreferencesPlaceholderConfigurer 原有处理占位符方法，已过时
+				 *
+				 * CustomAutowireConfigurer
+				 * DeprecatedBeanWarner
+				 * CustomEditorConfigurer
 				 */
 				invokeBeanFactoryPostProcessors(beanFactory);
 

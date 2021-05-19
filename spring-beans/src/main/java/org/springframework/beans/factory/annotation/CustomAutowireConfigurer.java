@@ -49,7 +49,8 @@ import org.springframework.util.ClassUtils;
  */
 public class CustomAutowireConfigurer implements BeanFactoryPostProcessor, BeanClassLoaderAware, Ordered {
 
-	private int order = Ordered.LOWEST_PRECEDENCE;  // default: same as non-Ordered
+	// default: same as non-Ordered
+	private int order = Ordered.LOWEST_PRECEDENCE;
 
 	@Nullable
 	private Set<?> customQualifierTypes;
