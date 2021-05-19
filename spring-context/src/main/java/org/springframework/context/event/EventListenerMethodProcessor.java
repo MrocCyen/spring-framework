@@ -126,6 +126,7 @@ public class EventListenerMethodProcessor
 		Assert.state(this.beanFactory != null, "No ConfigurableListableBeanFactory set");
 		String[] beanNames = beanFactory.getBeanNamesForType(Object.class);
 		for (String beanName : beanNames) {
+			//不是@Scope注解过的bean
 			if (!ScopedProxyUtils.isScopedTarget(beanName)) {
 				Class<?> type = null;
 				try {
