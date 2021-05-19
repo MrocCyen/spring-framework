@@ -650,7 +650,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				 * PropertyPlaceholderConfigurer 原有处理占位符方法，已过时
 				 * PreferencesPlaceholderConfigurer 原有处理占位符方法，已过时
 				 *
-				 * CustomAutowireConfigurer
+				 * CustomAutowireConfigurer 自定义Qualifier注解
 				 * DeprecatedBeanWarner 用于@Deprecated注解类的日志打印
 				 * CustomEditorConfigurer
 				 */
