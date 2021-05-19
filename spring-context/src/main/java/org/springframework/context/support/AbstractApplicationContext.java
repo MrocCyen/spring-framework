@@ -651,7 +651,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				 * PreferencesPlaceholderConfigurer 原有处理占位符方法，已过时
 				 *
 				 * CustomAutowireConfigurer
-				 * DeprecatedBeanWarner
+				 * DeprecatedBeanWarner 用于@Deprecated注解类的日志打印
 				 * CustomEditorConfigurer
 				 */
 				invokeBeanFactoryPostProcessors(beanFactory);

@@ -1,4 +1,4 @@
-package org.springframework.qingsp.bean;
+package org.springframework.qingsp.testBeanDefinitionRegistryPostProcessor;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -10,7 +10,7 @@ import org.springframework.core.PriorityOrdered;
  * @author qingsp
  * @date 2021/5/14 16:47
  */
-public class BeanDefinitionRegistryPostProcessor1 implements BeanDefinitionRegistryPostProcessor, PriorityOrdered {
+public class MyBeanDefinitionRegistryPostProcessor implements BeanDefinitionRegistryPostProcessor, PriorityOrdered {
 	@Override
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
 

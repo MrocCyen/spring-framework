@@ -1,9 +1,8 @@
-package org.springframework.qingsp;
+package org.springframework.qingsp.testBeanDefinitionRegistryPostProcessor;
 
 import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.qingsp.bean.BeanDefinitionRegistryPostProcessor1;
-import org.springframework.qingsp.bean.Scanner;
+import org.springframework.qingsp.Scanner;
 
 /**
  * @author qingsp
@@ -13,10 +12,9 @@ public class Main {
 	public static void main(String[] args) {
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
 		context.register(Scanner.class);
-		context.registerBeanDefinition("beanDefinitionRegistryPostProcessor1", new GenericBeanDefinition() {{
-			setBeanClass(BeanDefinitionRegistryPostProcessor1.class);
+		context.registerBeanDefinition("myBeanDefinitionRegistryPostProcessor", new GenericBeanDefinition() {{
+			setBeanClass(MyBeanDefinitionRegistryPostProcessor.class);
 		}});
 		context.refresh();
-		System.out.println(context.getBean("a"));
 	}
 }
