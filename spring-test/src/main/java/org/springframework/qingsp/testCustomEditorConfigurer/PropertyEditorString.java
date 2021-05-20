@@ -9,6 +9,16 @@ import java.beans.PropertyEditorSupport;
  */
 public class PropertyEditorString extends PropertyEditorSupport {
 	@Override
+	public void setValue(Object value) {
+		super.setValue(value + "2021");
+	}
+
+	@Override
+	public Object getValue() {
+		return super.getValue();
+	}
+
+	@Override
 	public String getAsText() {
 		return null;
 	}

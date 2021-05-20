@@ -652,7 +652,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				 *
 				 * CustomAutowireConfigurer 自定义Qualifier注解
 				 * DeprecatedBeanWarner 用于@Deprecated注解类的日志打印
-				 * CustomEditorConfigurer
+				 * CustomEditorConfigurer 自定义bean属性编辑器，可以自定义属性的值
 				 */
 				invokeBeanFactoryPostProcessors(beanFactory);
 
