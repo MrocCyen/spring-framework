@@ -658,6 +658,58 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 				// Register bean processors that intercept bean creation.
 				//往bean工厂中注册BeanPostProcessor
+				/**
+				 * BeanPostProcessor直接实现类：
+				 * ServletContextAwareProcessor
+				 * AdvisorAdapterRegistrationManager
+				 * AbstractAdvisingBeanPostProcessor
+				 *      AbstractBeanFactoryAwareAdvisingPostProcessor
+				 *          MethodValidationPostProcessor
+				 *          AsyncAnnotationBeanPostProcessor
+				 *          PersistenceExceptionTranslationPostProcessor
+				 * BootstrapContextAwareProcessor
+				 * BeanValidationPostProcessor
+				 * BeanPostProcessorChecker
+				 * LoadTimeWeaverAwareProcessor
+				 * ApplicationContextAwareProcessor
+				 *
+				 * BeanPostProcessor子接口：
+				 * ---- MergedBeanDefinitionPostProcessor 处理合并bd
+				 * JmsListenerAnnotationBeanPostProcessor
+				 * ScheduledAnnotationBeanPostProcessor
+				 * RequiredAnnotationBeanPostProcessor
+				 * InitDestroyAnnotationBeanPostProcessor
+				 *      CommonAnnotationBeanPostProcessor
+				 * AutowiredAnnotationBeanPostProcessor
+				 * ApplicationListenerDetector
+				 * PersistenceAnnotationBeanPostProcessor
+				 *
+				 * ----- InstantiationAwareBeanPostProcessor 实例化前后的处理，处理属性
+				 * ImportAwareBeanPostProcessor
+				 * CommonAnnotationBeanPostProcessor
+				 * PersistenceAnnotationBeanPostProcessor
+				 *
+				 * ----- SmartInstantiationAwareBeanPostProcessor 继承InstantiationAwareBeanPostProcessor，预测bean的类型，推断构造函数等
+				 * ScriptFactoryPostProcessor
+				 * RequiredAnnotationBeanPostProcessor
+				 * AutowiredAnnotationBeanPostProcessor
+				 * InstantiationAwareBeanPostProcessorAdapter
+				 * AbstractAutoProxyCreator
+				 *      BeanNameAutoProxyCreator
+				 *      AbstractAdvisorAutoProxyCreator
+				 *          DefaultAdvisorAutoProxyCreator
+				 *          AspectJAwareAdvisorAutoProxyCreator
+				 *              AnnotationAwareAspectJAutoProxyCreator
+				 *          InfrastructureAdvisorAutoProxyCreator
+				 *
+				 * ----- DestructionAwareBeanPostProcessor bean销毁前的处理
+				 * ScheduledAnnotationBeanPostProcessor
+				 * SimpleServletPostProcessor
+				 * InitDestroyAnnotationBeanPostProcessor
+				 * CommonAnnotationBeanPostProcessor
+				 * ApplicationListenerDetector 监听器检测
+				 * PersistenceAnnotationBeanPostProcessor
+				 */
 				registerBeanPostProcessors(beanFactory);
 				beanPostProcess.end();
 
