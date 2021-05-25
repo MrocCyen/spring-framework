@@ -3,7 +3,7 @@ package org.springframework.qingsp.testCustomEditorConfigurer;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.qingsp.Scanner;
+import org.springframework.qingsp.getMergedBeanDefinition.Scanner;
 
 /**
  * @author qingsp

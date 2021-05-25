@@ -2,7 +2,7 @@ package org.springframework.qingsp.testBeanDefinitionRegistryPostProcessor;
 
 import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.qingsp.Scanner;
+import org.springframework.qingsp.getMergedBeanDefinition.Scanner;
 
 /**
  * @author qingsp

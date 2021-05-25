@@ -1,7 +1,6 @@
-package org.springframework.qingsp.testCustomAutowireConfigurer;
+package org.springframework.qingsp.getMergedBeanDefinition;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.qingsp.getMergedBeanDefinition.Scanner;
 
 /**
  * @author qingsp
@@ -12,8 +11,5 @@ public class Main {
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
 		context.register(Scanner.class);
 		context.refresh();
-
-		((QualifierB) (context.getBean("qualifierB"))).print();
-		((QualifierB) (context.getBean("qualifierB"))).getQualifierA().print();
 	}
 }

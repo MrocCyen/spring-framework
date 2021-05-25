@@ -1338,9 +1338,12 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	protected RootBeanDefinition getMergedLocalBeanDefinition(String beanName) throws BeansException {
 		// Quick check on the concurrent map first, with minimal locking.
 		RootBeanDefinition mbd = this.mergedBeanDefinitions.get(beanName);
+		//mbd不为空，并且不需要重新进行合并，直接返回
 		if (mbd != null && !mbd.stale) {
 			return mbd;
 		}
+		//getBeanDefinition(beanName)：从bd的map中获取具体的bd
+		//获取合并的bd
 		return getMergedBeanDefinition(beanName, getBeanDefinition(beanName));
 	}
 
@@ -1377,12 +1380,22 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			RootBeanDefinition previous = null;
 
 			// Check with full lock now in order to enforce the same merged instance.
+			//containingBd为空，从mergedBeanDefinitions获取
 			if (containingBd == null) {
 				mbd = this.mergedBeanDefinitions.get(beanName);
 			}
 
+			//如果获取不到或者 todo bd需要重新合并
 			if (mbd == null || mbd.stale) {
+				/**
+				 * containingBd为空：
+				 *      mbd不为空：previous=x，mbd=x
+				 *      mbd为空：previous=null，mbd=null
+				 * containingBd不为空：
+				 *               previous=null，mbd=null
+				 */
 				previous = mbd;
+				//没有父级的bd
 				if (bd.getParentName() == null) {
 					// Use copy of given root bean definition.
 					if (bd instanceof RootBeanDefinition) {
@@ -1396,12 +1409,17 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					// Child bean definition: needs to be merged with parent.
 					BeanDefinition pbd;
 					try {
+						//父级bean name，处理过的name
 						String parentBeanName = transformedBeanName(bd.getParentName());
+						//这里可能会出现不一样的情况：
+						//1、FactoryBean
+						//2、别名
 						if (!beanName.equals(parentBeanName)) {
 							pbd = getMergedBeanDefinition(parentBeanName);
 						}
 						else {
 							BeanFactory parent = getParentBeanFactory();
+							//从父级获取
 							if (parent instanceof ConfigurableBeanFactory) {
 								pbd = ((ConfigurableBeanFactory) parent).getMergedBeanDefinition(parentBeanName);
 							}
@@ -1418,6 +1436,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					}
 					// Deep copy with overridden values.
 					mbd = new RootBeanDefinition(pbd);
+					//这里会覆盖掉父级bd的属性
 					mbd.overrideFrom(bd);
 				}
 
