@@ -111,6 +111,9 @@ public class RootBeanDefinition extends AbstractBeanDefinition {
 	boolean postProcessed = false;
 
 	/** Package-visible field that indicates a before-instantiation post-processor having kicked in. */
+	/**
+	 * 控制初始化之前可以进行bean的处理，返回代理对象
+	 */
 	@Nullable
 	volatile Boolean beforeInstantiationResolved;
 

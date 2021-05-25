@@ -184,11 +184,12 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 		// Quick check for existing instance without full singleton lock
 		//先从singletonObjects获取
 		Object singletonObject = this.singletonObjects.get(beanName);
-		//如果singletonObject中没有，并且当前bean正在创建
+		//如果singletonObject中没有，todo 并且当前bean正在创建
+		//todo 第一次进来的时候，是不会在正在创建的set中的
 		if (singletonObject == null && isSingletonCurrentlyInCreation(beanName)) {
 			//从earlySingletonObjects获取
 			singletonObject = this.earlySingletonObjects.get(beanName);
-			//如果earlySingletonObjects获取为空，并且允许创建早期的bean
+			//如果earlySingletonObjects获取为空，todo 并且允许创建早期的bean
 			if (singletonObject == null && allowEarlyReference) {
 				synchronized (this.singletonObjects) {
 					// Consistent creation of early reference within full singleton lock
@@ -224,6 +225,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	public Object getSingleton(String beanName, ObjectFactory<?> singletonFactory) {
 		Assert.notNull(beanName, "Bean name must not be null");
 		synchronized (this.singletonObjects) {
+			//先从singletonObjects获取
 			Object singletonObject = this.singletonObjects.get(beanName);
 			if (singletonObject == null) {
 				if (this.singletonsCurrentlyInDestruction) {
@@ -234,13 +236,17 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 				if (logger.isDebugEnabled()) {
 					logger.debug("Creating shared instance of singleton bean '" + beanName + "'");
 				}
+
+				//添加当前bean到正在创建的set集合中
 				beforeSingletonCreation(beanName);
+
 				boolean newSingleton = false;
 				boolean recordSuppressedExceptions = (this.suppressedExceptions == null);
 				if (recordSuppressedExceptions) {
 					this.suppressedExceptions = new LinkedHashSet<>();
 				}
 				try {
+					//这里创建bean，这里是调用 createBean 方法
 					singletonObject = singletonFactory.getObject();
 					newSingleton = true;
 				}
@@ -264,9 +270,12 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					if (recordSuppressedExceptions) {
 						this.suppressedExceptions = null;
 					}
+
+					//当前bean从正在创建的set集合中移除
 					afterSingletonCreation(beanName);
 				}
 				if (newSingleton) {
+					//添加bean到singletonObjects，并从singletonFactories和earlySingletonObjects中移除
 					addSingleton(beanName, singletonObject);
 				}
 			}
