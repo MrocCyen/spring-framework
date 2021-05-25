@@ -16,7 +16,7 @@ public class MyBeanFactoryPostProcessor implements BeanFactoryPostProcessor {
 	@Override
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
 		GenericBeanDefinition genericBeanDefinition = (GenericBeanDefinition) beanFactory.getBeanDefinition("a");
-		genericBeanDefinition.setDescription("this is a...");
 		genericBeanDefinition.setParentName("superA");
+		genericBeanDefinition.setDependsOn("b");
 	}
 }
