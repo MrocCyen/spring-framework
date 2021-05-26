@@ -689,7 +689,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				 *
 				 * ------------------- InstantiationAwareBeanPostProcessor ------------ 实例化前后的处理，处理属性
 				 * ImportAwareBeanPostProcessor                 处理ImportRegistry
-				 * AutowiredAnnotationBeanPostProcessor         处理@Autowired和@Value
+				 * AutowiredAnnotationBeanPostProcessor         处理@Autowired、@Value和@Inject
 				 * CommonAnnotationBeanPostProcessor            处理@PreDestroy、@PostConstruct、@Resource、@WebServiceRef等注解
 				 * PersistenceAnnotationBeanPostProcessor
 				 * RequiredAnnotationBeanPostProcessor

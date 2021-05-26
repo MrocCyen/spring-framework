@@ -35,6 +35,8 @@ import org.springframework.util.ReflectionUtils;
 /**
  * Internal class for managing injection metadata.
  * Not intended for direct use in applications.
+ * <p>
+ * 管理注入bean的元数据
  *
  * <p>Used by {@link AutowiredAnnotationBeanPostProcessor},
  * {@link org.springframework.context.annotation.CommonAnnotationBeanPostProcessor} and
@@ -65,14 +67,21 @@ public class InjectionMetadata {
 		}
 	};
 
-
+	/**
+	 * 目标类型
+	 */
 	private final Class<?> targetClass;
 
+	/**
+	 * 注入元素集合
+	 */
 	private final Collection<InjectedElement> injectedElements;
 
+	/**
+	 * 检查元素集合
+	 */
 	@Nullable
 	private volatile Set<InjectedElement> checkedElements;
-
 
 	/**
 	 * Create a new {@code InjectionMetadata instance}.

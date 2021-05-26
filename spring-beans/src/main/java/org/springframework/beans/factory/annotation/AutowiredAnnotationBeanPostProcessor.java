@@ -128,6 +128,7 @@ import org.springframework.util.StringUtils;
  * @see Autowired
  * @see Value
  */
+//todo 重要
 public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationAwareBeanPostProcessor,
 		MergedBeanDefinitionPostProcessor, PriorityOrdered, BeanFactoryAware {
 
@@ -444,6 +445,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 		String cacheKey = (StringUtils.hasLength(beanName) ? beanName : clazz.getName());
 		// Quick check on the concurrent map first, with minimal locking.
 		InjectionMetadata metadata = this.injectionMetadataCache.get(cacheKey);
+		//injectionMetadataCache缓存中没有，或者metadata.targetClass!=clazz
 		if (InjectionMetadata.needsRefresh(metadata, clazz)) {
 			synchronized (this.injectionMetadataCache) {
 				metadata = this.injectionMetadataCache.get(cacheKey);
@@ -451,6 +453,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 					if (metadata != null) {
 						metadata.clear(pvs);
 					}
+					//build
 					metadata = buildAutowiringMetadata(clazz);
 					this.injectionMetadataCache.put(cacheKey, metadata);
 				}
@@ -459,6 +462,9 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 		return metadata;
 	}
 
+	/**
+	 * todo 重要，处理@Autowired、@Value和@Inject注解
+	 */
 	private InjectionMetadata buildAutowiringMetadata(final Class<?> clazz) {
 		if (!AnnotationUtils.isCandidateClass(clazz, this.autowiredAnnotationTypes)) {
 			return InjectionMetadata.EMPTY;
@@ -470,6 +476,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 		do {
 			final List<InjectionMetadata.InjectedElement> currElements = new ArrayList<>();
 
+			//支持字段上的注解
 			ReflectionUtils.doWithLocalFields(targetClass, field -> {
 				MergedAnnotation<?> ann = findAutowiredAnnotation(field);
 				if (ann != null) {
@@ -480,10 +487,12 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 						return;
 					}
 					boolean required = determineRequiredStatus(ann);
+					//字段
 					currElements.add(new AutowiredFieldElement(field, required));
 				}
 			});
 
+			//支持方法上得注解
 			ReflectionUtils.doWithLocalMethods(targetClass, method -> {
 				Method bridgedMethod = BridgeMethodResolver.findBridgedMethod(method);
 				if (!BridgeMethodResolver.isVisibilityBridgeMethodPair(method, bridgedMethod)) {
@@ -505,6 +514,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 					}
 					boolean required = determineRequiredStatus(ann);
 					PropertyDescriptor pd = BeanUtils.findPropertyForMethod(bridgedMethod, clazz);
+					//方法
 					currElements.add(new AutowiredMethodElement(method, required, pd));
 				}
 			});
@@ -637,6 +647,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 				Assert.state(beanFactory != null, "No BeanFactory available");
 				TypeConverter typeConverter = beanFactory.getTypeConverter();
 				try {
+					//解决依赖
 					value = beanFactory.resolveDependency(desc, beanName, autowiredBeanNames, typeConverter);
 				}
 				catch (BeansException ex) {
@@ -647,6 +658,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 						Object cachedFieldValue = null;
 						if (value != null || this.required) {
 							cachedFieldValue = desc;
+							//注册bean
 							registerDependentBeans(beanName, autowiredBeanNames);
 							if (autowiredBeanNames.size() == 1) {
 								String autowiredBeanName = autowiredBeanNames.iterator().next();
@@ -711,6 +723,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 					currDesc.setContainingClass(bean.getClass());
 					descriptors[i] = currDesc;
 					try {
+						//解决依赖
 						Object arg = beanFactory.resolveDependency(currDesc, beanName, autowiredBeans, typeConverter);
 						if (arg == null && !this.required) {
 							arguments = null;
@@ -726,6 +739,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 					if (!this.cached) {
 						if (arguments != null) {
 							DependencyDescriptor[] cachedMethodArguments = Arrays.copyOf(descriptors, arguments.length);
+							//注入依赖的bean
 							registerDependentBeans(beanName, autowiredBeans);
 							if (autowiredBeans.size() == argumentCount) {
 								Iterator<String> it = autowiredBeans.iterator();

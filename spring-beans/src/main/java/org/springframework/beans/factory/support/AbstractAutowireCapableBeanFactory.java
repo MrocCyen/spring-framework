@@ -1443,6 +1443,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				pvs = mbd.getPropertyValues();
 			}
 			for (InstantiationAwareBeanPostProcessor bp : getBeanPostProcessorCache().instantiationAware) {
+				//处理bean中的属性
+				//这里一般会执行AutowiredAnnotationBeanPostProcessor.postProcessProperties方法
 				PropertyValues pvsToUse = bp.postProcessProperties(pvs, bw.getWrappedInstance(), beanName);
 				if (pvsToUse == null) {
 					if (filteredPds == null) {
@@ -1460,10 +1462,13 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			if (filteredPds == null) {
 				filteredPds = filterPropertyDescriptorsForDependencyCheck(bw, mbd.allowCaching);
 			}
+			//todo 检查依赖
 			checkDependencies(beanName, mbd, filteredPds, pvs);
 		}
 
+		//todo 后面需要好好看看
 		if (pvs != null) {
+			//应用属性
 			applyPropertyValues(beanName, mbd, bw, pvs);
 		}
 	}

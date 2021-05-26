@@ -11,8 +11,19 @@ import org.springframework.stereotype.Component;
 @Component
 public class A {
 
-	@Autowired
+//	@Autowired
+//	B b;
+//	public B getB() {
+//		return b;
+//	}
+
 	B b;
+	D d;
+	@Autowired
+	public void setB(B b,D d) {
+		this.b = b;
+		this.d = d;
+	}
 	public B getB() {
 		return b;
 	}
