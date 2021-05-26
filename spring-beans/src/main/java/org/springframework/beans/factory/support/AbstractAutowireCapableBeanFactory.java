@@ -1114,13 +1114,21 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	@Nullable
 	protected Object resolveBeforeInstantiation(String beanName, RootBeanDefinition mbd) {
 		Object bean = null;
+		//beforeInstantiationResolved是true时候会进入分支，默认是null
+		//第一次肯定会进这个判断分支，因为是null
 		if (!Boolean.FALSE.equals(mbd.beforeInstantiationResolved)) {
 			// Make sure bean class is actually resolved at this point.
+			//实现了postProcessBeforeInstantiation方法只有：
+			//1、AbstractAutoProxyCreator
+			//2、CommonAnnotationBeanPostProcessor（空实现）
+			//3、ScriptFactoryPostProcessor
 			if (!mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) {
 				Class<?> targetType = determineTargetType(beanName, mbd);
 				if (targetType != null) {
+					//回调InstantiationAwareBeanPostProcessor.postProcessBeforeInstantiation()方法
 					bean = applyBeanPostProcessorsBeforeInstantiation(targetType, beanName);
 					if (bean != null) {
+						//回调BeanPostProcessor.postProcessAfterInitialization()方法
 						bean = applyBeanPostProcessorsAfterInitialization(bean, beanName);
 					}
 				}
