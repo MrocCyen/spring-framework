@@ -531,6 +531,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		try {
+			//创建bean
 			Object beanInstance = doCreateBean(beanName, mbdToUse, args);
 			if (logger.isTraceEnabled()) {
 				logger.trace("Finished creating instance of bean '" + beanName + "'");
@@ -568,11 +569,15 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// Instantiate the bean.
 		BeanWrapper instanceWrapper = null;
 		if (mbd.isSingleton()) {
+			//从未完成的factoryBean缓存中获取bean
+			//todo 这里针对factoryBean
 			instanceWrapper = this.factoryBeanInstanceCache.remove(beanName);
 		}
 		if (instanceWrapper == null) {
+			//todo 创建bean实例，这里比较重要的是推断构造函数
 			instanceWrapper = createBeanInstance(beanName, mbd, args);
 		}
+		//这里是根据构造函数推断出来的bean，还不成熟
 		Object bean = instanceWrapper.getWrappedInstance();
 		Class<?> beanType = instanceWrapper.getWrappedClass();
 		if (beanType != NullBean.class) {
@@ -583,6 +588,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		synchronized (mbd.postProcessingLock) {
 			if (!mbd.postProcessed) {
 				try {
+					//todo 这里需要仔细看一下
+					//这里调用MergedBeanDefinitionPostProcessor.postProcessMergedBeanDefinition()方法，处理合并bd
+					//也可以使用合并bd的信息做一些事情
 					applyMergedBeanDefinitionPostProcessors(mbd, beanType, beanName);
 				}
 				catch (Throwable ex) {
@@ -595,6 +603,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		// Eagerly cache singletons to be able to resolve circular references
 		// even when triggered by lifecycle interfaces like BeanFactoryAware.
+		//暴露一个对象工厂，并添加到singletonFactories map中
+		//比如A，是单例的，也允许循环依赖，并且在beforeSingletonCreation方法中已经添加到正在创建的bean列表中
 		boolean earlySingletonExposure = (mbd.isSingleton() && this.allowCircularReferences &&
 				isSingletonCurrentlyInCreation(beanName));
 		if (earlySingletonExposure) {
@@ -602,6 +612,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				logger.trace("Eagerly caching bean '" + beanName +
 						"' to allow for resolving potential circular references");
 			}
+			//todo 这里需要仔细看一下
+			//这里添加的对象工厂会调用SmartInstantiationAwareBeanPostProcessor.getEarlyBeanReference()方法
+			//只有 AbstractAutoProxyCreator 实现
 			addSingletonFactory(beanName, () -> getEarlyBeanReference(beanName, mbd, bean));
 		}
 
@@ -1119,6 +1132,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		if (!Boolean.FALSE.equals(mbd.beforeInstantiationResolved)) {
 			// Make sure bean class is actually resolved at this point.
 			//实现了postProcessBeforeInstantiation方法只有：
+			//todo 这里需要仔细看一下
 			//1、AbstractAutoProxyCreator
 			//2、CommonAnnotationBeanPostProcessor（空实现）
 			//3、ScriptFactoryPostProcessor

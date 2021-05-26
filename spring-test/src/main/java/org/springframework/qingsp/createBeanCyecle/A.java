@@ -1,5 +1,6 @@
-package org.springframework.qingsp.createBean;
+package org.springframework.qingsp.createBeanCyecle;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -9,4 +10,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class A {
+	@Autowired
+	B b;
 }
