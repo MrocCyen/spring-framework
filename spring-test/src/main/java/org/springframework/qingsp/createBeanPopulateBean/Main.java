@@ -12,8 +12,15 @@ public class Main {
 		context.register(Scanner.class);
 		context.refresh();
 
+		System.out.println(((A) context.getBean("a")).getE());
+
 		System.out.println(((A) context.getBean("a")).getB());
+		System.out.println(((A) context.getBean("a")).getD());
+		System.out.println(((A) context.getBean("a")).getMyObjectFactory());
+		System.out.println(((A) context.getBean("a")).getMyObjectProvider());
+
 		System.out.println(((A) context.getBean("a")).getC());
+
 		System.out.println(((A) context.getBean("a")).getName());
 	}
 }

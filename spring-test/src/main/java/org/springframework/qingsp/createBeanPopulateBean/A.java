@@ -13,11 +13,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class A {
 
-//	@Autowired
-//	B b;
-//	public B getB() {
-//		return b;
-//	}
+	@Autowired
+	E e;
+	public E getE() {
+		return e;
+	}
 
 	B b;
 	D d;
@@ -37,7 +37,15 @@ public class A {
 	public B getB() {
 		return b;
 	}
-
+	public D getD() {
+		return d;
+	}
+	public ObjectFactory<MyObjectFactoryClass> getMyObjectFactory() {
+		return myObjectFactory;
+	}
+	public ObjectProvider<MyObjectProviderClass> getMyObjectProvider() {
+		return myObjectProvider;
+	}
 
 	C c;
 	public C getC() {
@@ -46,7 +54,6 @@ public class A {
 	public void setC(C c) {
 		this.c = c;
 	}
-
 
 	private String name;
 	public String getName() {
