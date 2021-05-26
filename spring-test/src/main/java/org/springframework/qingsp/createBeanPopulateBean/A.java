@@ -1,5 +1,7 @@
 package org.springframework.qingsp.createBeanPopulateBean;
 
+import org.springframework.beans.factory.ObjectFactory;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,10 +21,18 @@ public class A {
 
 	B b;
 	D d;
+	private ObjectFactory<MyObjectFactoryClass> myObjectFactory;
+	private ObjectProvider<MyObjectProviderClass> myObjectProvider;
+
 	@Autowired
-	public void setB(B b,D d) {
+	public void setAll(B b,
+	                   D d,
+	                   ObjectFactory<MyObjectFactoryClass> myObjectFactory,
+	                   ObjectProvider<MyObjectProviderClass> myObjectProvider) {
 		this.b = b;
 		this.d = d;
+		this.myObjectFactory = myObjectFactory;
+		this.myObjectProvider = myObjectProvider;
 	}
 	public B getB() {
 		return b;
