@@ -635,24 +635,27 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				/**
 				 * 很重要，调用bean工厂中的所有BeanFactoryPostProcessor及其子类（BeanDefinitionRegistryPostProcessor）的实现
 				 *
-				 * 比较重要的类:
+				 * --------------- 直接实现BeanDefinitionRegistryPostProcessor：
+				 *
 				 * ConfigurationClassPostProcessor 扫描配置类，基于ConfigurationClassBeanDefinitionReader
-				 * AutowiredAnnotationBeanPostProcessor 处理@Autowired和@Value
-				 * CommonAnnotationBeanPostProcessor 处理@PreDestroy、@PostConstruct、@Resource、@WebServiceRef等注解
-				 * PersistenceAnnotationBeanPostProcessor 处理jpa
+				 *
+				 * --------------- 直接实现BeanFactoryPostProcessor：
+				 *
 				 * EventListenerMethodProcessor 处理@EventListener，注册成ApplicationListener
 				 * DefaultEventListenerFactory EventListenerFactory默认实现，用于处理@EventListener，注册成ApplicationListener
 				 *
 				 * PropertyResourceConfigurer 属性配置基类
-				 * PropertyOverrideConfigurer 设置属性值，比如beanName.property=value
-				 * PlaceholderConfigurerSupport 处理占位符
-				 * PropertySourcesPlaceholderConfigurer 处理占位符
-				 * PropertyPlaceholderConfigurer 原有处理占位符方法，已过时
-				 * PreferencesPlaceholderConfigurer 原有处理占位符方法，已过时
+				 *      PropertyOverrideConfigurer 设置属性值，比如beanName.property=value
+				 *      PlaceholderConfigurerSupport 处理占位符
+				 *          PropertySourcesPlaceholderConfigurer 处理占位符
+				 *          PropertyPlaceholderConfigurer 原有处理占位符方法，已过时
+				 *              PreferencesPlaceholderConfigurer 原有处理占位符方法，已过时
 				 *
 				 * CustomAutowireConfigurer 自定义Qualifier注解
 				 * DeprecatedBeanWarner 用于@Deprecated注解类的日志打印
 				 * CustomEditorConfigurer 自定义bean属性编辑器，可以自定义属性的值
+				 * AspectJWeavingEnabler
+				 * CustomScopeConfigurer
 				 */
 				invokeBeanFactoryPostProcessors(beanFactory);
 
@@ -674,7 +677,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				 * ApplicationContextAwareProcessor
 				 *
 				 * BeanPostProcessor子接口：
-				 * ---- MergedBeanDefinitionPostProcessor 处理合并bd
+				 * ------------------- MergedBeanDefinitionPostProcessor ------------ 处理合并bd
 				 * JmsListenerAnnotationBeanPostProcessor
 				 * ScheduledAnnotationBeanPostProcessor
 				 * RequiredAnnotationBeanPostProcessor
@@ -684,15 +687,17 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				 * ApplicationListenerDetector
 				 * PersistenceAnnotationBeanPostProcessor
 				 *
-				 * ----- InstantiationAwareBeanPostProcessor 实例化前后的处理，处理属性
-				 * ImportAwareBeanPostProcessor
-				 * CommonAnnotationBeanPostProcessor
+				 * ------------------- InstantiationAwareBeanPostProcessor ------------ 实例化前后的处理，处理属性
+				 * ImportAwareBeanPostProcessor                 处理ImportRegistry
+				 * AutowiredAnnotationBeanPostProcessor         处理@Autowired和@Value
+				 * CommonAnnotationBeanPostProcessor            处理@PreDestroy、@PostConstruct、@Resource、@WebServiceRef等注解
 				 * PersistenceAnnotationBeanPostProcessor
-				 *
-				 * ----- SmartInstantiationAwareBeanPostProcessor 继承InstantiationAwareBeanPostProcessor，预测bean的类型，推断构造函数等
-				 * ScriptFactoryPostProcessor
 				 * RequiredAnnotationBeanPostProcessor
-				 * AutowiredAnnotationBeanPostProcessor
+				 *
+				 * ------------------- SmartInstantiationAwareBeanPostProcessor  ------------  继承InstantiationAwareBeanPostProcessor，预测bean的类型，推断构造函数等
+				 * ScriptFactoryPostProcessor
+				 * RequiredAnnotationBeanPostProcessor          处理@Required
+				 * AutowiredAnnotationBeanPostProcessor         推断构造函数
 				 * InstantiationAwareBeanPostProcessorAdapter
 				 * AbstractAutoProxyCreator
 				 *      BeanNameAutoProxyCreator
@@ -702,12 +707,12 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				 *              AnnotationAwareAspectJAutoProxyCreator
 				 *          InfrastructureAdvisorAutoProxyCreator
 				 *
-				 * ----- DestructionAwareBeanPostProcessor bean销毁前的处理
+				 * ------------------- DestructionAwareBeanPostProcessor ------------  bean销毁前的处理
 				 * ScheduledAnnotationBeanPostProcessor
 				 * SimpleServletPostProcessor
 				 * InitDestroyAnnotationBeanPostProcessor
 				 * CommonAnnotationBeanPostProcessor
-				 * ApplicationListenerDetector 监听器检测
+				 * ApplicationListenerDetector              监听器检测
 				 * PersistenceAnnotationBeanPostProcessor
 				 */
 				registerBeanPostProcessors(beanFactory);

@@ -615,13 +615,16 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			//todo 这里需要仔细看一下
 			//这里添加的对象工厂会调用SmartInstantiationAwareBeanPostProcessor.getEarlyBeanReference()方法
 			//只有 AbstractAutoProxyCreator 实现
+			//这里可以对初始化出来的bean进行处理
 			addSingletonFactory(beanName, () -> getEarlyBeanReference(beanName, mbd, bean));
 		}
 
 		// Initialize the bean instance.
 		Object exposedObject = bean;
 		try {
+			//填充属性
 			populateBean(beanName, mbd, instanceWrapper);
+			//实例化bean
 			exposedObject = initializeBean(beanName, exposedObject, mbd);
 		}
 		catch (Throwable ex) {
@@ -1404,6 +1407,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// Give any InstantiationAwareBeanPostProcessors the opportunity to modify the
 		// state of the bean before properties are set. This can be used, for example,
 		// to support styles of field injection.
+		//回调InstantiationAwareBeanPostProcessor.postProcessAfterInstantiation()方法
 		if (!mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) {
 			for (InstantiationAwareBeanPostProcessor bp : getBeanPostProcessorCache().instantiationAware) {
 				if (!bp.postProcessAfterInstantiation(bw.getWrappedInstance(), beanName)) {
@@ -1414,7 +1418,9 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		PropertyValues pvs = (mbd.hasPropertyValues() ? mbd.getPropertyValues() : null);
 
+		//bd的注入模型
 		int resolvedAutowireMode = mbd.getResolvedAutowireMode();
+		//byName和byType才能进入，todo 后面需要仔细看一下
 		if (resolvedAutowireMode == AUTOWIRE_BY_NAME || resolvedAutowireMode == AUTOWIRE_BY_TYPE) {
 			MutablePropertyValues newPvs = new MutablePropertyValues(pvs);
 			// Add property values based on autowire by name if applicable.

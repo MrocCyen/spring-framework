@@ -47,7 +47,3 @@ dependencies {
 	testFixturesImplementation("com.google.code.findbugs:jsr305")
 	testFixturesImplementation("org.assertj:assertj-core")
 }
-
-tasks.withType(JavaCompile) {
-	options.encoding = 'UTF-8'
-}

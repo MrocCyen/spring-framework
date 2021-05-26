@@ -103,12 +103,14 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * Constant that indicates no dependency check at all.
 	 * @see #setDependencyCheck
 	 */
+	//不需要进行依赖检测
 	public static final int DEPENDENCY_CHECK_NONE = 0;
 
 	/**
 	 * Constant that indicates dependency checking for object references.
 	 * @see #setDependencyCheck
 	 */
+	//需要进行对象引用属性检测
 	public static final int DEPENDENCY_CHECK_OBJECTS = 1;
 
 	/**
@@ -116,6 +118,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * @see #setDependencyCheck
 	 * @see org.springframework.beans.BeanUtils#isSimpleProperty
 	 */
+	//依赖检测简单类型属性
 	public static final int DEPENDENCY_CHECK_SIMPLE = 2;
 
 	/**
@@ -123,6 +126,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * (object references as well as "simple" properties).
 	 * @see #setDependencyCheck
 	 */
+	//对象和简单数据都要检测
 	public static final int DEPENDENCY_CHECK_ALL = 3;
 
 	/**
@@ -149,8 +153,14 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	@Nullable
 	private Boolean lazyInit;
 
+	/**
+	 * 默认注入模型，默认为NO
+	 */
 	private int autowireMode = AUTOWIRE_NO;
 
+	/**
+	 * 依赖检测模式，默认是NONE
+	 */
 	private int dependencyCheck = DEPENDENCY_CHECK_NONE;
 
 	@Nullable
@@ -614,9 +624,11 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 			Constructor<?>[] constructors = getBeanClass().getConstructors();
 			for (Constructor<?> constructor : constructors) {
 				if (constructor.getParameterCount() == 0) {
+					//存在默认构造函数，则BY_TYPE
 					return AUTOWIRE_BY_TYPE;
 				}
 			}
+			//没有默认构造函数，CONSTRUCTOR
 			return AUTOWIRE_CONSTRUCTOR;
 		}
 		else {

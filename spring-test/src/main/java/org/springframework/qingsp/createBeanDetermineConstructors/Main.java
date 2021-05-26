@@ -1,4 +1,4 @@
-package org.springframework.qingsp.createBeanCyecle;
+package org.springframework.qingsp.createBeanDetermineConstructors;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 

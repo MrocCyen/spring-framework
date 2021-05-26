@@ -1,4 +1,4 @@
-package org.springframework.qingsp.createBean;
+package org.springframework.qingsp.createBeanPopulateBean;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -11,5 +11,9 @@ public class Main {
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
 		context.register(Scanner.class);
 		context.refresh();
+
+		System.out.println(((A) context.getBean("a")).getB());
+		System.out.println(((A) context.getBean("a")).getC());
+		System.out.println(((A) context.getBean("a")).getName());
 	}
 }
