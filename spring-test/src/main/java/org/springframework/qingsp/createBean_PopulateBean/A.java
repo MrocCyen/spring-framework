@@ -11,10 +11,8 @@ import org.springframework.stereotype.Component;
  * @since 标果工厂-玫瑰香
  */
 @Component
-public class A {
+public class A extends Super1{
 
-	@Autowired
-	E e;
 	public E getE() {
 		return e;
 	}
@@ -47,7 +45,6 @@ public class A {
 		return myObjectProvider;
 	}
 
-	C c;
 	public C getC() {
 		return c;
 	}
