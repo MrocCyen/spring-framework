@@ -5,11 +5,11 @@ import org.springframework.stereotype.Component;
 
 /**
  * @author qingsp
- * @date 2021/5/26 10:49
- * @since 标果工厂-玫瑰香
+ * @date 2021/6/8 17:30
+ * @since 标果工厂-苹果蕉
  */
 @Component
-public class B {
+public class C {
 	@Autowired
-	C c;
+	A a;
 }

@@ -179,6 +179,32 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	 * @param allowEarlyReference whether early references should be created or not
 	 * @return the registered singleton object, or {@code null} if none found
 	 */
+	/**
+	 * 循环依赖场景：A->B   B->A
+	 * 1、从singletonObjects中获取A，这时是获取不到的
+	 * 2、判断是否A正在创建的集合中，这时是不在的
+	 * 3、接下来走A的实例化过程，先创建A的实例（createBeanInstance），然后将A实例添加到正在创建的bean的集合中，最后创建一个ObjectFactory，加进singletonFactories中
+	 * 4、ObjectFactory内部可以调用SmartInstantiationAwareBeanPostProcessor.getEarlyBeanReference对A的实例进行处理
+	 * 5、走到填充属性（populateBean）的时候，发现了B，接下来走B的创建过程
+	 *
+	 * 6、从singletonObjects中获取B，这时是获取不到的
+	 * 7、判断是否B正在创建的集合中，这时是不在的
+	 * 8、接下来走B的实例化过程，先创建B的实例（createBeanInstance），然后将B实例添加到正在创建的bean的集合中，最后创建一个ObjectFactory，加进singletonFactories中
+	 * 9、ObjectFactory内部可以调用SmartInstantiationAwareBeanPostProcessor.getEarlyBeanReference对B的实例进行处理
+	 * 10、走到填充属性（populateBean）的时候，发现了A，接下来走A的创建过程
+	 *
+	 * 11、从singletonObjects中获取A，这时是获取不到的
+	 * 12、判断是否A正在创建的集合中，这时是在的，接下来从earlySingletonObjects中获取，这时也获取不到
+	 * 13、然后从singletonFactories中获取刚才的创建的A的对象工厂，获取已经创建出来的A实例（可能被处理过），放在earlySingletonObjects中，并且从singletonFactories中移除创建的A的对象工厂
+	 * 14、这时获取到A实例，并将A实例填充给B
+	 * 15、继续走B的初始化过程（initializeBean），当B初始化完毕后，添加进singletonObjects中，并且从正在创建的bean的集合中移除，从earlySingletonObjects和singletonFactories中移除
+	 *
+	 * 16、这时获取到B实例，并将B实例填充给A
+	 * 17、继续走A的初始化过程（initializeBean），当A初始化完毕后，添加进singletonObjects中，并且从正在创建的bean的集合中移除，从earlySingletonObjects和singletonFactories中移除
+	 *
+	 * earlySingletonObjects有什么用？
+	 * singletonFactories有什么用？
+	 */
 	@Nullable
 	protected Object getSingleton(String beanName, boolean allowEarlyReference) {
 		// Quick check for existing instance without full singleton lock
