@@ -13,9 +13,15 @@ import org.springframework.stereotype.Component;
 public class MyInstantiationAwareBeanPostProcessor implements SmartInstantiationAwareBeanPostProcessor {
 	@Override
 	public Object getEarlyBeanReference(Object bean, String beanName) throws BeansException {
-		int i = 0;
-		int j = 0;
-		int k = 0;
+		if (beanName.equals("a")) {
+			System.out.println("-------------a-----------------");
+		}
+		if (beanName.equals("b")) {
+			System.out.println("-------------b-----------------");
+		}
+		if (beanName.equals("c")) {
+			System.out.println("-------------c-----------------");
+		}
 		return bean;
 	}
 }
