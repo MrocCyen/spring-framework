@@ -33,6 +33,9 @@ import org.springframework.lang.Nullable;
  * @author Rod Johnson
  * @author Juergen Hoeller
  */
+/**
+ * 获取aop的原始对象
+ */
 public interface TargetSource extends TargetClassAware {
 
 	/**

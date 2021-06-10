@@ -58,6 +58,10 @@ import org.springframework.util.CollectionUtils;
  * @author Juergen Hoeller
  * @see org.springframework.aop.framework.AopProxy
  */
+//todo Advised、Advisor和Advice的区别
+//	Advised  aop代理工厂的顶级接口，配置包括拦截器、通知和其他代理接口，也就是实现类是工厂类
+//  Advisor 包装advice，确定advice的适用性
+//	Advice  通知的顶级接口
 public class AdvisedSupport extends ProxyConfig implements Advised {
 
 	/** use serialVersionUID from Spring 2.0 for interoperability. */
@@ -72,26 +76,44 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 
 
 	/** Package-protected to allow direct access for efficiency. */
+	/**
+	 * 用于获取目标类
+	 */
 	TargetSource targetSource = EMPTY_TARGET_SOURCE;
 
 	/** Whether the Advisors are already filtered for the specific target class. */
+	/**
+	 * 是否Advisors已经过滤了具体的目标类
+	 */
 	private boolean preFiltered = false;
 
 	/** The AdvisorChainFactory to use. */
+	/**
+	 * todo 参考DefaultAdvisorChainFactory
+	 */
 	AdvisorChainFactory advisorChainFactory = new DefaultAdvisorChainFactory();
 
 	/** Cache with Method as key and advisor chain List as value. */
+	/**
+	 * 每个方法的advisor执行链，可以使用MethodCacheKey进行包装
+	 */
 	private transient Map<MethodCacheKey, List<Object>> methodCache;
 
 	/**
 	 * Interfaces to be implemented by the proxy. Held in List to keep the order
 	 * of registration, to create JDK proxy with specified order of interfaces.
 	 */
+	/**
+	 * jdk代理需要接口
+	 */
 	private List<Class<?>> interfaces = new ArrayList<>();
 
 	/**
 	 * List of Advisors. If an Advice is added, it will be wrapped
 	 * in an Advisor before being added to this List.
+	 */
+	/**
+	 * Advisor列表，一个Advice被添加后，它将被包装成一个Advisor，然后再添加进这个列表中
 	 */
 	private List<Advisor> advisors = new ArrayList<>();
 
@@ -120,6 +142,7 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 	 * @see org.springframework.aop.target.SingletonTargetSource
 	 */
 	public void setTarget(Object target) {
+		//默认：SingletonTargetSource
 		setTargetSource(new SingletonTargetSource(target));
 	}
 
@@ -466,9 +489,11 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 	public List<Object> getInterceptorsAndDynamicInterceptionAdvice(Method method, @Nullable Class<?> targetClass) {
 		MethodCacheKey cacheKey = new MethodCacheKey(method);
 		List<Object> cached = this.methodCache.get(cacheKey);
+		//没有找到方法的advisor执行链
 		if (cached == null) {
 			cached = this.advisorChainFactory.getInterceptorsAndDynamicInterceptionAdvice(
 					this, method, targetClass);
+			//缓存起来
 			this.methodCache.put(cacheKey, cached);
 		}
 		return cached;

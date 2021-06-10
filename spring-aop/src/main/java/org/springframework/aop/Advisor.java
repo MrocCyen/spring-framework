@@ -33,6 +33,9 @@ import org.aopalliance.aop.Advice;
  * @author Rod Johnson
  * @author Juergen Hoeller
  */
+/**
+ * 包装advice，确定advice的适用性
+ */
 public interface Advisor {
 
 	/**

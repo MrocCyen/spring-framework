@@ -28,6 +28,9 @@ import org.springframework.aop.Advisor;
  * @author Rod Johnson
  * @author Rob Harrop
  */
+/**
+ * 内部使用AdvisorAdapter来进行处理
+ */
 public interface AdvisorAdapterRegistry {
 
 	/**
@@ -43,6 +46,9 @@ public interface AdvisorAdapterRegistry {
 	 * @throws UnknownAdviceTypeException if no registered advisor adapter
 	 * can wrap the supposed advice
 	 */
+	/**
+	 * 包装advice为advisor
+	 */
 	Advisor wrap(Object advice) throws UnknownAdviceTypeException;
 
 	/**
@@ -54,6 +60,9 @@ public interface AdvisorAdapterRegistry {
 	 * @return an array of MethodInterceptors to expose this Advisor's behavior
 	 * @throws UnknownAdviceTypeException if the Advisor type is
 	 * not understood by any registered AdvisorAdapter
+	 */
+	/**
+	 * 获取advisor行为的MethodInterceptor列表
 	 */
 	MethodInterceptor[] getInterceptors(Advisor advisor) throws UnknownAdviceTypeException;
 
