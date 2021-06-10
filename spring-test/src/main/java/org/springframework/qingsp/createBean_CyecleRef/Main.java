@@ -8,8 +8,9 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
  */
 public class Main {
 	public static void main(String[] args) {
-		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
-		context.register(Scanner.class);
-		context.refresh();
+		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Scanner.class);
+
+		System.out.println(((A) context.getBean("a")).getDesc());
+		System.out.println(((B) context.getBean("b")).getDesc());
 	}
 }

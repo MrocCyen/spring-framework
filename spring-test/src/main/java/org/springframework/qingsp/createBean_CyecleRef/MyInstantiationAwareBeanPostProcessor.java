@@ -15,12 +15,11 @@ public class MyInstantiationAwareBeanPostProcessor implements SmartInstantiation
 	public Object getEarlyBeanReference(Object bean, String beanName) throws BeansException {
 		if (beanName.equals("a")) {
 			System.out.println("-------------a-----------------");
+			((A) bean).setDesc("a");
 		}
 		if (beanName.equals("b")) {
 			System.out.println("-------------b-----------------");
-		}
-		if (beanName.equals("c")) {
-			System.out.println("-------------c-----------------");
+			((B) bean).setDesc("b");
 		}
 		return bean;
 	}
