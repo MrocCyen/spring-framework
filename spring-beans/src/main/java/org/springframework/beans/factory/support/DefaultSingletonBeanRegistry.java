@@ -202,6 +202,8 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	 * 16、这时获取到B实例，并将B实例填充给A
 	 * 17、继续走A的初始化过程（initializeBean），当A初始化完毕后，添加进singletonObjects中，并且从正在创建的bean的集合中移除，从earlySingletonObjects和singletonFactories中移除
 	 *
+	 * Note：循环依赖场景，只有第一个进行getBean的才会执行ObjectFactory.getObject()，比如A->B，B->A，只会执行A的ObjectFactory.getObject()
+	 *
 	 * earlySingletonObjects有什么用？
 	 * singletonFactories有什么用？
 	 */
