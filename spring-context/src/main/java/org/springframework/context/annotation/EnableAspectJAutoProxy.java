@@ -119,12 +119,16 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
+//注入aop代理相关的组件
 @Import(AspectJAutoProxyRegistrar.class)
+//开启aop代理
 public @interface EnableAspectJAutoProxy {
 
 	/**
 	 * Indicate whether subclass-based (CGLIB) proxies are to be created as opposed
 	 * to standard Java interface-based proxies. The default is {@code false}.
+	 *
+	 * true：cjlib代理，false：jdk代理
 	 */
 	boolean proxyTargetClass() default false;
 

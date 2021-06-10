@@ -24,6 +24,30 @@ import org.springframework.util.Assert;
  * Convenience superclass for configuration used in creating proxies,
  * to ensure that all proxy creators have consistent properties.
  *
+ * 子类：
+ * ScopedProxyFactoryBean
+ * ProxyProcessorSupport
+ *      AbstractAdvisingBeanPostProcessor
+ *          AbstractBeanFactoryAwareAdvisingPostProcessor
+ *              MethodValidationPostProcessor
+ *              AsyncAnnotationBeanPostProcessor
+ *              PersistenceExceptionTranslationPostProcessor
+ *       AbstractAutoProxyCreator
+ *          BeanNameAutoProxyCreator
+ *          AbstractAdvisorAutoProxyCreator
+ *              DefaultAdvisorAutoProxyCreator
+ *              AspectJAwareAdvisorAutoProxyCreator
+ *                  AnnotationAwareAspectJAutoProxyCreator
+ *              InfrastructureAdvisorAutoProxyCreator
+ * AbstractSingletonProxyFactoryBean
+ *      TransactionProxyFactoryBean
+ *      CacheProxyFactoryBean
+ * AdvisedSupport
+ *      ProxyCreatorSupport
+ *          ProxyFactoryBean
+ *          ProxyFactory
+ *          AspectJProxyFactory
+ *
  * @author Rod Johnson
  * @author Juergen Hoeller
  * @see AdvisedSupport
@@ -33,15 +57,25 @@ public class ProxyConfig implements Serializable {
 	/** use serialVersionUID from Spring 1.2 for interoperability. */
 	private static final long serialVersionUID = -8409359707199703185L;
 
-
+	/**
+	 * 是否是cjlib代理
+	 */
 	private boolean proxyTargetClass = false;
-
+	/**
+	 * 是否优化
+	 */
 	private boolean optimize = false;
-
+	/**
+	 * 是否阻止将代理转换成Advised
+	 */
 	boolean opaque = false;
-
+	/**
+	 * 暴露代理对象
+	 */
 	boolean exposeProxy = false;
-
+	/**
+	 * 不适用任何通知
+	 */
 	private boolean frozen = false;
 
 

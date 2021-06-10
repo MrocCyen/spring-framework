@@ -63,7 +63,7 @@ public abstract class AopConfigUtils {
 		APC_PRIORITY_LIST.add(AnnotationAwareAspectJAutoProxyCreator.class);
 	}
 
-
+	//----------------------------------------------------------------------------------------------------
 	@Nullable
 	public static BeanDefinition registerAutoProxyCreatorIfNecessary(BeanDefinitionRegistry registry) {
 		return registerAutoProxyCreatorIfNecessary(registry, null);
@@ -75,7 +75,9 @@ public abstract class AopConfigUtils {
 
 		return registerOrEscalateApcAsRequired(InfrastructureAdvisorAutoProxyCreator.class, registry, source);
 	}
+	//----------------------------------------------------------------------------------------------------
 
+	//----------------------------------------------------------------------------------------------------
 	@Nullable
 	public static BeanDefinition registerAspectJAutoProxyCreatorIfNecessary(BeanDefinitionRegistry registry) {
 		return registerAspectJAutoProxyCreatorIfNecessary(registry, null);
@@ -87,7 +89,9 @@ public abstract class AopConfigUtils {
 
 		return registerOrEscalateApcAsRequired(AspectJAwareAdvisorAutoProxyCreator.class, registry, source);
 	}
+	//----------------------------------------------------------------------------------------------------
 
+	//----------------------------------------------------------------------------------------------------
 	@Nullable
 	public static BeanDefinition registerAspectJAnnotationAutoProxyCreatorIfNecessary(BeanDefinitionRegistry registry) {
 		return registerAspectJAnnotationAutoProxyCreatorIfNecessary(registry, null);
@@ -99,6 +103,7 @@ public abstract class AopConfigUtils {
 
 		return registerOrEscalateApcAsRequired(AnnotationAwareAspectJAutoProxyCreator.class, registry, source);
 	}
+	//----------------------------------------------------------------------------------------------------
 
 	public static void forceAutoProxyCreatorToUseClassProxying(BeanDefinitionRegistry registry) {
 		if (registry.containsBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME)) {
