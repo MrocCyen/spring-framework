@@ -30,6 +30,8 @@ import org.springframework.util.ClassUtils;
 /**
  * Convenient superclass for {@link FactoryBean} types that produce singleton-scoped
  * proxy objects.
+ * <p>
+ * 一个处理单例bean的、FactoryBean类型的基类，提供拦截器前后的管理功能
  *
  * <p>Manages pre- and post-interceptors (references, rather than
  * interceptor names, as in {@link ProxyFactoryBean}) and provides
@@ -42,6 +44,9 @@ import org.springframework.util.ClassUtils;
 public abstract class AbstractSingletonProxyFactoryBean extends ProxyConfig
 		implements FactoryBean<Object>, BeanClassLoaderAware, InitializingBean {
 
+	/**
+	 * 可以是目标类，也可以是TargetSource
+	 */
 	@Nullable
 	private Object target;
 
@@ -54,7 +59,9 @@ public abstract class AbstractSingletonProxyFactoryBean extends ProxyConfig
 	@Nullable
 	private Object[] postInterceptors;
 
-	/** Default is global AdvisorAdapterRegistry. */
+	/**
+	 * Default is global AdvisorAdapterRegistry.
+	 */
 	private AdvisorAdapterRegistry advisorAdapterRegistry = GlobalAdvisorAdapterRegistry.getInstance();
 
 	@Nullable
@@ -69,6 +76,7 @@ public abstract class AbstractSingletonProxyFactoryBean extends ProxyConfig
 	 * <p>The target may be any object, in which case a SingletonTargetSource will
 	 * be created. If it is a TargetSource, no wrapper TargetSource is created:
 	 * This enables the use of a pooling or prototype TargetSource etc.
+	 *
 	 * @see org.springframework.aop.TargetSource
 	 * @see org.springframework.aop.target.SingletonTargetSource
 	 * @see org.springframework.aop.target.LazyInitTargetSource
@@ -94,6 +102,7 @@ public abstract class AbstractSingletonProxyFactoryBean extends ProxyConfig
 	 * implicit transaction interceptor, e.g. a PerformanceMonitorInterceptor.
 	 * <p>You may specify any AOP Alliance MethodInterceptors or other
 	 * Spring AOP Advices, as well as Spring AOP Advisors.
+	 *
 	 * @see org.springframework.aop.interceptor.PerformanceMonitorInterceptor
 	 */
 	public void setPreInterceptors(Object[] preInterceptors) {
@@ -113,6 +122,7 @@ public abstract class AbstractSingletonProxyFactoryBean extends ProxyConfig
 	/**
 	 * Specify the AdvisorAdapterRegistry to use.
 	 * Default is the global AdvisorAdapterRegistry.
+	 *
 	 * @see org.springframework.aop.framework.adapter.GlobalAdvisorAdapterRegistry
 	 */
 	public void setAdvisorAdapterRegistry(AdvisorAdapterRegistry advisorAdapterRegistry) {
@@ -151,6 +161,7 @@ public abstract class AbstractSingletonProxyFactoryBean extends ProxyConfig
 
 		ProxyFactory proxyFactory = new ProxyFactory();
 
+		//添加前置拦截器
 		if (this.preInterceptors != null) {
 			for (Object interceptor : this.preInterceptors) {
 				proxyFactory.addAdvisor(this.advisorAdapterRegistry.wrap(interceptor));
@@ -158,8 +169,10 @@ public abstract class AbstractSingletonProxyFactoryBean extends ProxyConfig
 		}
 
 		// Add the main interceptor (typically an Advisor).
+		//添加主拦截器，从子类实现中获取
 		proxyFactory.addAdvisor(this.advisorAdapterRegistry.wrap(createMainInterceptor()));
 
+		//添加后置拦截器
 		if (this.postInterceptors != null) {
 			for (Object interceptor : this.postInterceptors) {
 				proxyFactory.addAdvisor(this.advisorAdapterRegistry.wrap(interceptor));
@@ -174,6 +187,7 @@ public abstract class AbstractSingletonProxyFactoryBean extends ProxyConfig
 		if (this.proxyInterfaces != null) {
 			proxyFactory.setInterfaces(this.proxyInterfaces);
 		}
+		//如果是cjlib代理
 		else if (!isProxyTargetClass()) {
 			// Rely on AOP infrastructure to tell us what interfaces to proxy.
 			Class<?> targetClass = targetSource.getTargetClass();
@@ -182,22 +196,24 @@ public abstract class AbstractSingletonProxyFactoryBean extends ProxyConfig
 			}
 		}
 
+		//给子类处理代理工厂
 		postProcessProxyFactory(proxyFactory);
 
+		//返回一个代理
 		this.proxy = proxyFactory.getProxy(this.proxyClassLoader);
 	}
 
 	/**
 	 * Determine a TargetSource for the given target (or TargetSource).
+	 *
 	 * @param target the target. If this is an implementation of TargetSource it is
-	 * used as our TargetSource; otherwise it is wrapped in a SingletonTargetSource.
+	 *               used as our TargetSource; otherwise it is wrapped in a SingletonTargetSource.
 	 * @return a TargetSource for this object
 	 */
 	protected TargetSource createTargetSource(Object target) {
 		if (target instanceof TargetSource) {
 			return (TargetSource) target;
-		}
-		else {
+		} else {
 			return new SingletonTargetSource(target);
 		}
 	}
@@ -205,6 +221,7 @@ public abstract class AbstractSingletonProxyFactoryBean extends ProxyConfig
 	/**
 	 * A hook for subclasses to post-process the {@link ProxyFactory}
 	 * before creating the proxy instance with it.
+	 *
 	 * @param proxyFactory the AOP ProxyFactory about to be used
 	 * @since 4.2
 	 */

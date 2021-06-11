@@ -24,16 +24,24 @@ import org.springframework.util.Assert;
 /**
  * Base class for proxy factories.
  * Provides convenient access to a configurable AopProxyFactory.
+ * <p>
+ * 代理工厂基类
  *
  * @author Juergen Hoeller
- * @since 2.0.3
  * @see #createAopProxy()
+ * @since 2.0.3
  */
 @SuppressWarnings("serial")
 public class ProxyCreatorSupport extends AdvisedSupport {
 
+	/**
+	 * aop代理工厂
+	 */
 	private AopProxyFactory aopProxyFactory;
 
+	/**
+	 * 监听器
+	 */
 	private final List<AdvisedSupportListener> listeners = new ArrayList<>();
 
 	/** Set to true when the first AOP proxy has been created. */
@@ -44,6 +52,7 @@ public class ProxyCreatorSupport extends AdvisedSupport {
 	 * Create a new ProxyCreatorSupport instance.
 	 */
 	public ProxyCreatorSupport() {
+		//默认aop代理工厂，DefaultAopProxyFactory
 		this.aopProxyFactory = new DefaultAopProxyFactory();
 	}
 

@@ -39,10 +39,10 @@ import org.springframework.util.Assert;
  *              AspectJAwareAdvisorAutoProxyCreator
  *                  AnnotationAwareAspectJAutoProxyCreator
  *              InfrastructureAdvisorAutoProxyCreator
- * AbstractSingletonProxyFactoryBean
+ * AbstractSingletonProxyFactoryBean 一个处理单例bean的、FactoryBean类型的基类，提供拦截器前后的管理功能
  *      TransactionProxyFactoryBean
  *      CacheProxyFactoryBean
- * AdvisedSupport
+ * AdvisedSupport 持有aop配置的代理工厂的基类，子类是拥有不同配置的代理工厂
  *      ProxyCreatorSupport
  *          ProxyFactoryBean
  *          ProxyFactory
