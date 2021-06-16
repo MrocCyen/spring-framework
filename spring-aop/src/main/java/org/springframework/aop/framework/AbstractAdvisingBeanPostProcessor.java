@@ -34,6 +34,9 @@ import org.springframework.lang.Nullable;
 @SuppressWarnings("serial")
 public abstract class AbstractAdvisingBeanPostProcessor extends ProxyProcessorSupport implements BeanPostProcessor {
 
+	/**
+	 * 子类进行赋值
+	 */
 	@Nullable
 	protected Advisor advisor;
 
@@ -68,22 +71,27 @@ public abstract class AbstractAdvisingBeanPostProcessor extends ProxyProcessorSu
 			return bean;
 		}
 
+		//bean实现了Advised接口
 		if (bean instanceof Advised) {
 			Advised advised = (Advised) bean;
+			//不是冻结的、并且有资格
+			//这里是判断bean的目标类，如果是cjlib代理对象，则获取基类
+			//todo 1、代理对象的基类，2、bean原来的类，3、实现了TargetClassAware，则是TargetClassAware.getTargetClass()
 			if (!advised.isFrozen() && isEligible(AopUtils.getTargetClass(bean))) {
 				// Add our local Advisor to the existing proxy's Advisor chain...
 				if (this.beforeExistingAdvisors) {
 					advised.addAdvisor(0, this.advisor);
-				}
-				else {
+				} else {
 					advised.addAdvisor(this.advisor);
 				}
 				return bean;
 			}
 		}
 
+		//这里是直接判断bean
 		if (isEligible(bean, beanName)) {
 			ProxyFactory proxyFactory = prepareProxyFactory(bean, beanName);
+			//没有设置cjlib代理为true，需要评估一下是否存在候选的接口
 			if (!proxyFactory.isProxyTargetClass()) {
 				evaluateProxyInterfaces(bean.getClass(), proxyFactory);
 			}
@@ -107,7 +115,8 @@ public abstract class AbstractAdvisingBeanPostProcessor extends ProxyProcessorSu
 	 * For the latter, {@link #isEligible(Class)} is being called directly,
 	 * with the actual target class behind the existing proxy (as determined
 	 * by {@link AopUtils#getTargetClass(Object)}).
-	 * @param bean the bean instance
+	 *
+	 * @param bean     the bean instance
 	 * @param beanName the name of the bean
 	 * @see #isEligible(Class)
 	 */
@@ -119,9 +128,11 @@ public abstract class AbstractAdvisingBeanPostProcessor extends ProxyProcessorSu
 	 * Check whether the given class is eligible for advising with this
 	 * post-processor's {@link Advisor}.
 	 * <p>Implements caching of {@code canApply} results per bean target class.
+	 *
 	 * @param targetClass the class to check against
 	 * @see AopUtils#canApply(Advisor, Class)
 	 */
+	//todo 没看懂
 	protected boolean isEligible(Class<?> targetClass) {
 		Boolean eligible = this.eligibleBeans.get(targetClass);
 		if (eligible != null) {
@@ -142,12 +153,13 @@ public abstract class AbstractAdvisingBeanPostProcessor extends ProxyProcessorSu
 	 * of interfaces for non-target-class proxies and the configured advisor
 	 * will be applied afterwards; {@link #customizeProxyFactory} allows for
 	 * late customizations of those parts right before proxy creation.
-	 * @param bean the bean instance to create a proxy for
+	 *
+	 * @param bean     the bean instance to create a proxy for
 	 * @param beanName the corresponding bean name
 	 * @return the ProxyFactory, initialized with this processor's
 	 * {@link ProxyConfig} settings and the specified bean
-	 * @since 4.2.3
 	 * @see #customizeProxyFactory
+	 * @since 4.2.3
 	 */
 	protected ProxyFactory prepareProxyFactory(Object bean, String beanName) {
 		ProxyFactory proxyFactory = new ProxyFactory();
@@ -160,11 +172,12 @@ public abstract class AbstractAdvisingBeanPostProcessor extends ProxyProcessorSu
 	 * Subclasses may choose to implement this: for example,
 	 * to change the interfaces exposed.
 	 * <p>The default implementation is empty.
+	 *
 	 * @param proxyFactory the ProxyFactory that is already configured with
-	 * target, advisor and interfaces and will be used to create the proxy
-	 * immediately after this method returns
-	 * @since 4.2.3
+	 *                     target, advisor and interfaces and will be used to create the proxy
+	 *                     immediately after this method returns
 	 * @see #prepareProxyFactory
+	 * @since 4.2.3
 	 */
 	protected void customizeProxyFactory(ProxyFactory proxyFactory) {
 	}
