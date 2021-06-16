@@ -30,13 +30,15 @@ import org.springframework.util.ObjectUtils;
 /**
  * Base class with common functionality for proxy processors, in particular
  * ClassLoader management and the {@link #evaluateProxyInterfaces} algorithm.
+ * <p>
+ * 代理对象处理器的支持类，类加载器管理和评估代理结果算法，参见 {@link #evaluateProxyInterfaces} 方法
  *
  * @author Juergen Hoeller
- * @since 4.1
  * @see AbstractAdvisingBeanPostProcessor
  * @see org.springframework.aop.framework.autoproxy.AbstractAutoProxyCreator
- *
+ * <p>
  * AopInfrastructureBean：标记是aop框架的bean
+ * @since 4.1
  */
 @SuppressWarnings("serial")
 public class ProxyProcessorSupport extends ProxyConfig implements Ordered, BeanClassLoaderAware, AopInfrastructureBean {
@@ -47,11 +49,16 @@ public class ProxyProcessorSupport extends ProxyConfig implements Ordered, BeanC
 	 */
 	private int order = Ordered.LOWEST_PRECEDENCE;
 
+	/**
+	 * 代理的类加载器
+	 */
 	@Nullable
 	private ClassLoader proxyClassLoader = ClassUtils.getDefaultClassLoader();
 
+	/**
+	 * 是否已经加载了类加载器的标记，true表示已经加载过了
+	 */
 	private boolean classLoaderConfigured = false;
-
 
 	/**
 	 * Set the ordering which will apply to this processor's implementation
@@ -104,15 +111,21 @@ public class ProxyProcessorSupport extends ProxyConfig implements Ordered, BeanC
 	 * @param proxyFactory the ProxyFactory for the bean
 	 */
 	protected void evaluateProxyInterfaces(Class<?> beanClass, ProxyFactory proxyFactory) {
+		//获取bean的实现的接口的class对象
 		Class<?>[] targetInterfaces = ClassUtils.getAllInterfacesForClass(beanClass, getProxyClassLoader());
+		//标记是否有合理的代理接口
 		boolean hasReasonableProxyInterface = false;
 		for (Class<?> ifc : targetInterfaces) {
+			//非InitializingBean、DisposableBean、Closeable、AutoCloseable、Aware
+			//非GroovyObject、Factory、MockAccess
+			//方法的个数大于0
 			if (!isConfigurationCallbackInterface(ifc) && !isInternalLanguageInterface(ifc) &&
 					ifc.getMethods().length > 0) {
 				hasReasonableProxyInterface = true;
 				break;
 			}
 		}
+		//有实现接口，走jdk动态代理
 		if (hasReasonableProxyInterface) {
 			// Must allow for introductions; can't just set interfaces to the target's interfaces only.
 			for (Class<?> ifc : targetInterfaces) {
@@ -120,6 +133,7 @@ public class ProxyProcessorSupport extends ProxyConfig implements Ordered, BeanC
 			}
 		}
 		else {
+			//如果没有实现接口，则默认使用cjlib代理
 			proxyFactory.setProxyTargetClass(true);
 		}
 	}

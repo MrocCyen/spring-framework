@@ -26,7 +26,7 @@ import org.springframework.util.Assert;
  *
  * todo 子类：
  * ScopedProxyFactoryBean
- * ProxyProcessorSupport
+ * ProxyProcessorSupport 代理对象处理器的支持类，类加载器管理和评估代理结果算法，参见 {@link #ProxyProcessorSupport.evaluateProxyInterfaces} 方法
  *      AbstractAdvisingBeanPostProcessor
  *          AbstractBeanFactoryAwareAdvisingPostProcessor
  *              MethodValidationPostProcessor

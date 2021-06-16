@@ -8,8 +8,10 @@ import org.springframework.stereotype.Component;
  * @since 标果工厂-苹果蕉
  */
 @Component
-public class A {
+public class A implements InterfaceA {
+
+	@Override
 	public void print() {
-		System.out.println("this is a...");
+		System.out.println("this is a for jdk...");
 	}
 }
