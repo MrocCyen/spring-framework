@@ -140,7 +140,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	private final Set<String> targetSourcedBeans = Collections.newSetFromMap(new ConcurrentHashMap<>(16));
 
 	/**
-	 * 早期代理引用，缓存已经生成的代理对象，value是生成的代理对象
+	 * 早期代理引用，缓存代理对象的早期原始对象
 	 */
 	private final Map<Object, Object> earlyProxyReferences = new ConcurrentHashMap<>(16);
 
@@ -245,25 +245,17 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	}
 
 	/**
-	 * 可以直接删除，没有起作用
-	 */
-	@Override
-	@Nullable
-	public Constructor<?>[] determineCandidateConstructors(Class<?> beanClass, String beanName) {
-		return null;
-	}
-
-	/**
 	 * 获取早期引用，实现SmartInstantiationAwareBeanPostProcessor.getEarlyBeanReference()
 	 * 整个spring中只有这个地方实现了
 	 *
-	 * todo 这个函数的返回值是bean的三级缓存的ObjectFactory使用
+	 * todo 这个函数的返回值会在bean的三级缓存ObjectFactory中使用
 	 *
 	 * 这里可能会产生代理对象
 	 */
 	@Override
 	public Object getEarlyBeanReference(Object bean, String beanName) {
 		Object cacheKey = getCacheKey(bean.getClass(), beanName);
+		//向earlyProxyReferences中put原始的bean
 		this.earlyProxyReferences.put(cacheKey, bean);
 		return wrapIfNecessary(bean, beanName, cacheKey);
 	}
@@ -319,12 +311,23 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	 * identified as one to proxy by the subclass.
 	 * @see #getAdvicesAndAdvisorsForBean
 	 *
-	 * 这里可能会产生代理对象
+	 * todo 这里可能会产生代理对象
 	 */
 	@Override
 	public Object postProcessAfterInitialization(@Nullable Object bean, String beanName) {
 		if (bean != null) {
 			Object cacheKey = getCacheKey(bean.getClass(), beanName);
+			//如果earlyProxyReferences中对应的cacheKey的bean不等于参数中的bean，进入条件
+			//这里有以下几种情况：
+			//1、earlyProxyReferences中不存在cacheKey，这时会进条件
+			//2、earlyProxyReferences中存在cacheKey，并且value与bean相等，这时不会进入条件，这种情况对应的是执行了getEarlyBeanReference()方法，也就是存在循环依赖的时候
+			/**
+			 * 这里详细的说明一下：
+			 * 场景1：只有A
+			 * 不存在循环依赖，
+			 * 场景2：A->B  B->A
+			 *
+			 */
 			if (this.earlyProxyReferences.remove(cacheKey) != bean) {
 				return wrapIfNecessary(bean, beanName, cacheKey);
 			}
@@ -382,8 +385,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		Object[] specificInterceptors = getAdvicesAndAdvisorsForBean(bean.getClass(), beanName, null);
 		if (specificInterceptors != DO_NOT_PROXY) {
 			this.advisedBeans.put(cacheKey, Boolean.TRUE);
-			Object proxy = createProxy(
-					bean.getClass(), beanName, specificInterceptors, new SingletonTargetSource(bean));
+			Object proxy = createProxy(bean.getClass(), beanName, specificInterceptors, new SingletonTargetSource(bean));
 			this.proxyTypes.put(cacheKey, proxy.getClass());
 			return proxy;
 		}

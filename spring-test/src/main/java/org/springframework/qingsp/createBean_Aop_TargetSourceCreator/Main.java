@@ -11,5 +11,7 @@ public class Main {
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
 		context.register(Scanner.class);
 		context.refresh();
+
+		System.out.println(((A) context.getBean("a")).getName());
 	}
 }

@@ -2,6 +2,7 @@ package org.springframework.qingsp.createBean_Aop_TargetSourceCreator;
 
 import org.springframework.aop.TargetSource;
 import org.springframework.aop.framework.autoproxy.TargetSourceCreator;
+import org.springframework.aop.target.SingletonTargetSource;
 
 /**
  * @author qingsp
@@ -11,6 +12,12 @@ import org.springframework.aop.framework.autoproxy.TargetSourceCreator;
 public class MyTargetSourceCreator implements TargetSourceCreator {
 	@Override
 	public TargetSource getTargetSource(Class<?> beanClass, String beanName) {
+		if (beanClass.equals(A.class)) {
+			A a = new A();
+			a.setName("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+
+			return new SingletonTargetSource(a);
+		}
 		return null;
 	}
 }
