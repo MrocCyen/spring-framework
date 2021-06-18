@@ -637,9 +637,15 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			}
 		}
 
+		//解决循环依赖的时候，第一个bean可能是代理类型，这时需要返回出去
 		if (earlySingletonExposure) {
+			//获取早期引用
 			Object earlySingletonReference = getSingleton(beanName, false);
 			if (earlySingletonReference != null) {
+				//如果exposedObject和bean相等，只有两种情况：
+				//1、两个都是代理对象，这时earlySingletonReference可能是代理对象
+				//2、两个都是源对象，这时earlySingletonReference可能是代理对象
+				//所以为了统一，这里直接赋值，
 				if (exposedObject == bean) {
 					exposedObject = earlySingletonReference;
 				}

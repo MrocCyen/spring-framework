@@ -120,6 +120,9 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	 */
 	private boolean freezeProxy = false;
 
+	/**
+	 * 拦截器名称
+	 */
 	/** Default is no common interceptors. */
 	private String[] interceptorNames = new String[0];
 
@@ -131,12 +134,24 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	@Nullable
 	private BeanFactory beanFactory;
 
+	/**
+	 * 目标源的名称集合
+	 */
 	private final Set<String> targetSourcedBeans = Collections.newSetFromMap(new ConcurrentHashMap<>(16));
 
+	/**
+	 * 早期代理引用，缓存已经生成的代理对象
+	 */
 	private final Map<Object, Object> earlyProxyReferences = new ConcurrentHashMap<>(16);
 
+	/**
+	 * 代理类的类型
+	 */
 	private final Map<Object, Class<?>> proxyTypes = new ConcurrentHashMap<>(16);
 
+	/**
+	 * 是否bean已经处理过了
+	 */
 	private final Map<Object, Boolean> advisedBeans = new ConcurrentHashMap<>(256);
 
 
@@ -216,7 +231,9 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		return this.beanFactory;
 	}
 
-
+	/**
+	 * 预测类型，实现SmartInstantiationAwareBeanPostProcessor.predictBeanType()
+	 */
 	@Override
 	@Nullable
 	public Class<?> predictBeanType(Class<?> beanClass, String beanName) {
@@ -227,12 +244,23 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		return this.proxyTypes.get(cacheKey);
 	}
 
+	/**
+	 * 可以直接删除，没有起作用
+	 */
 	@Override
 	@Nullable
 	public Constructor<?>[] determineCandidateConstructors(Class<?> beanClass, String beanName) {
 		return null;
 	}
 
+	/**
+	 * 获取早期引用，实现SmartInstantiationAwareBeanPostProcessor.getEarlyBeanReference()
+	 * 整个spring中只有这个地方实现了
+	 *
+	 * todo 这个函数的返回值是bean的三级缓存的ObjectFactory使用
+	 *
+	 * 这里可能会产生代理对象
+	 */
 	@Override
 	public Object getEarlyBeanReference(Object bean, String beanName) {
 		Object cacheKey = getCacheKey(bean.getClass(), beanName);
@@ -273,13 +301,16 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 
 	@Override
 	public PropertyValues postProcessProperties(PropertyValues pvs, Object bean, String beanName) {
-		return pvs;  // skip postProcessPropertyValues
+		// skip postProcessPropertyValues
+		return pvs;
 	}
 
 	/**
 	 * Create a proxy with the configured interceptors if the bean is
 	 * identified as one to proxy by the subclass.
 	 * @see #getAdvicesAndAdvisorsForBean
+	 *
+	 * 这里可能会产生代理对象
 	 */
 	@Override
 	public Object postProcessAfterInitialization(@Nullable Object bean, String beanName) {

@@ -5,16 +5,11 @@ import org.springframework.stereotype.Component;
 
 /**
  * @author qingsp
- * @date 2021/6/10 14:37
+ * @date 2021/6/18 10:51
  * @since 标果工厂-苹果蕉
  */
 @Component
-public class A {
-
-//	@Autowired
-//	AA AA;
-
-	public void print() {
-		System.out.println("this is a for jdk...");
-	}
+public class AA {
+	@Autowired
+	A a;
 }

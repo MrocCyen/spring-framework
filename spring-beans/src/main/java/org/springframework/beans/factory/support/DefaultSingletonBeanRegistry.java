@@ -202,10 +202,16 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	 * 16、这时获取到B实例，并将B实例填充给A
 	 * 17、继续走A的初始化过程（initializeBean），当A初始化完毕后，添加进singletonObjects中，并且从正在创建的bean的集合中移除，从earlySingletonObjects和singletonFactories中移除
 	 *
-	 * Note：循环依赖场景，只有第一个进行getBean的才会执行ObjectFactory.getObject()，比如A->B，B->A，只会执行A的ObjectFactory.getObject()
+	 * todo Note：循环依赖场景，只有第一个进行getBean的才会执行ObjectFactory.getObject()，比如A->B，B->A，只会执行A的ObjectFactory.getObject()，也就是只会执行可能会构建A的代理对象的getEarlyBeanReference()方法
 	 *
-	 * earlySingletonObjects有什么用？
-	 * singletonFactories有什么用？
+	 * 是否用singletonObjects和earlySingletonObjects就可以实现循环依赖？
+	 * 答：是可以的，在A创建实例的时候后，不是创建一个ObjectFactory，而是直接把实例放进earlySingletonObjects，在B中再一次创建A的时候，这时会直接从earlySingletonObjects中就可以获取到A的实例，然后进行赋值
+	 * 所以是可以解决循环依赖的，那为什么需要singletonFactories呢
+	 *
+	 * singletonFactories有什么用？为什么要使用singletonFactories呢？解决了什么问题？
+	 * 答：可以看出，ObjectFactory实际是通过SmartInstantiationAwareBeanPostProcessor.getEarlyBeanReference()方法对实例进行处理的，也就是可以对实例进行额外的处理，主要是生成代理对象
+	 * 以下这种情况，A是需要被代理的，也就是A需要生成代理对象，如果只有singletonObjects和earlySingletonObjects的话，在B注入A的时候，是直接从earlySingletonObjects中获取的A，这时A不是代理对象，就会造成B中的A和spring容器中
+	 * 的A不是同一个对象
 	 */
 	@Nullable
 	protected Object getSingleton(String beanName, boolean allowEarlyReference) {

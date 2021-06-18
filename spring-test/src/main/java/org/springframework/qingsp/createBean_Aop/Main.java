@@ -12,6 +12,6 @@ public class Main {
 		context.register(Scanner.class);
 		context.refresh();
 
-		((InterfaceA) context.getBean("a")).print();
+		((A) context.getBean("a")).print();
 	}
 }
