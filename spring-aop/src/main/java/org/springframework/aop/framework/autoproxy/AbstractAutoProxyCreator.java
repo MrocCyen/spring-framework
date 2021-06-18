@@ -140,7 +140,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	private final Set<String> targetSourcedBeans = Collections.newSetFromMap(new ConcurrentHashMap<>(16));
 
 	/**
-	 * 早期代理引用，缓存已经生成的代理对象
+	 * 早期代理引用，缓存已经生成的代理对象，value是生成的代理对象
 	 */
 	private final Map<Object, Object> earlyProxyReferences = new ConcurrentHashMap<>(16);
 
@@ -268,14 +268,22 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		return wrapIfNecessary(bean, beanName, cacheKey);
 	}
 
+	/**
+	 * 实例化之前调用，在AbstractAutowireCapableBeanFactory.resolveBeforeInstantiation()方法中调用
+	 *
+	 * todo 这里如果直接返回对象，就不用走doCreateBean了
+	 */
 	@Override
 	public Object postProcessBeforeInstantiation(Class<?> beanClass, String beanName) {
 		Object cacheKey = getCacheKey(beanClass, beanName);
 
+		//beanName没有值或者targetSourcedBeans没有缓存beanName，则进入条件
 		if (!StringUtils.hasLength(beanName) || !this.targetSourcedBeans.contains(beanName)) {
 			if (this.advisedBeans.containsKey(cacheKey)) {
 				return null;
 			}
+			//是否是这几个类型：Advice，Pointcut，Advisor，AopInfrastructureBean，返回null
+			//是否要忽略：比如A，beanName=a.ORIGINAL
 			if (isInfrastructureClass(beanClass) || shouldSkip(beanClass, beanName)) {
 				this.advisedBeans.put(cacheKey, Boolean.FALSE);
 				return null;
@@ -285,6 +293,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		// Create proxy here if we have a custom TargetSource.
 		// Suppresses unnecessary default instantiation of the target bean:
 		// The TargetSource will handle target instances in a custom fashion.
+		//todo 可以自定义TargetSourceCreator，然后创建TargetSource
 		TargetSource targetSource = getCustomTargetSource(beanClass, beanName);
 		if (targetSource != null) {
 			if (StringUtils.hasLength(beanName)) {
@@ -336,10 +345,15 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	 * @return the cache key for the given class and name
 	 */
 	protected Object getCacheKey(Class<?> beanClass, @Nullable String beanName) {
+		//有名字
+		//1、FactoryBean类型，&加上beanName
+		//2、直接beanName
 		if (StringUtils.hasLength(beanName)) {
 			return (FactoryBean.class.isAssignableFrom(beanClass) ?
 					BeanFactory.FACTORY_BEAN_PREFIX + beanName : beanName);
 		}
+		//没有名字
+		//直接beanClass
 		else {
 			return beanClass;
 		}
