@@ -33,20 +33,27 @@ import org.springframework.util.Assert;
 /**
  * Helper for retrieving standard Spring Advisors from a BeanFactory,
  * for use with auto-proxying.
+ * <p>
+ * Advisors检索助手
  *
  * @author Juergen Hoeller
- * @since 2.0.2
  * @see AbstractAdvisorAutoProxyCreator
+ * @since 2.0.2
  */
 public class BeanFactoryAdvisorRetrievalHelper {
 
 	private static final Log logger = LogFactory.getLog(BeanFactoryAdvisorRetrievalHelper.class);
 
+	/**
+	 * bean工厂
+	 */
 	private final ConfigurableListableBeanFactory beanFactory;
 
+	/**
+	 * 缓存advisor的名称列表
+	 */
 	@Nullable
 	private volatile String[] cachedAdvisorBeanNames;
-
 
 	/**
 	 * Create a new BeanFactoryAdvisorRetrievalHelper for the given BeanFactory.

@@ -34,10 +34,10 @@ import org.springframework.util.Assert;
  *              PersistenceExceptionTranslationPostProcessor
  *       AbstractAutoProxyCreator（todo 重点）
  *          BeanNameAutoProxyCreator
- *          AbstractAdvisorAutoProxyCreator
+ *          AbstractAdvisorAutoProxyCreator（todo 重点）
  *              DefaultAdvisorAutoProxyCreator
- *              AspectJAwareAdvisorAutoProxyCreator
- *                  AnnotationAwareAspectJAutoProxyCreator
+ *              AspectJAwareAdvisorAutoProxyCreator（todo 重点）
+ *                  AnnotationAwareAspectJAutoProxyCreator（todo 重点）
  *              InfrastructureAdvisorAutoProxyCreator
  * AbstractSingletonProxyFactoryBean 一个处理单例bean的、FactoryBean类型的基类，提供拦截器前后的管理功能
  *      TransactionProxyFactoryBean

@@ -33,7 +33,6 @@ public class InfrastructureAdvisorAutoProxyCreator extends AbstractAdvisorAutoPr
 	@Nullable
 	private ConfigurableListableBeanFactory beanFactory;
 
-
 	@Override
 	protected void initBeanFactory(ConfigurableListableBeanFactory beanFactory) {
 		super.initBeanFactory(beanFactory);
@@ -42,6 +41,7 @@ public class InfrastructureAdvisorAutoProxyCreator extends AbstractAdvisorAutoPr
 
 	@Override
 	protected boolean isEligibleAdvisorBean(String beanName) {
+		//bean的role是BeanDefinition.ROLE_INFRASTRUCTURE才是合法的advisor
 		return (this.beanFactory != null && this.beanFactory.containsBeanDefinition(beanName) &&
 				this.beanFactory.getBeanDefinition(beanName).getRole() == BeanDefinition.ROLE_INFRASTRUCTURE);
 	}

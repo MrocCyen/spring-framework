@@ -48,7 +48,6 @@ public class AspectJAwareAdvisorAutoProxyCreator extends AbstractAdvisorAutoProx
 
 	private static final Comparator<Advisor> DEFAULT_PRECEDENCE_COMPARATOR = new AspectJPrecedenceComparator();
 
-
 	/**
 	 * Sort the supplied {@link Advisor} instances according to AspectJ precedence.
 	 * <p>If two pieces of advice come from the same aspect, they will have the same

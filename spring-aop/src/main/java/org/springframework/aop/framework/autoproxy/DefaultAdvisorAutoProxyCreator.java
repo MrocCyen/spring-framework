@@ -41,12 +41,10 @@ public class DefaultAdvisorAutoProxyCreator extends AbstractAdvisorAutoProxyCrea
 	/** Separator between prefix and remainder of bean name. */
 	public static final String SEPARATOR = ".";
 
-
 	private boolean usePrefix = false;
 
 	@Nullable
 	private String advisorBeanNamePrefix;
-
 
 	/**
 	 * Set whether to only include advisors with a certain prefix in the bean name.
@@ -90,7 +88,6 @@ public class DefaultAdvisorAutoProxyCreator extends AbstractAdvisorAutoProxyCrea
 			this.advisorBeanNamePrefix = name + SEPARATOR;
 		}
 	}
-
 
 	/**
 	 * Consider {@code Advisor} beans with the specified prefix as eligible, if activated.
