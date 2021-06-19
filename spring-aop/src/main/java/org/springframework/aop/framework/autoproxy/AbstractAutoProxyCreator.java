@@ -317,16 +317,21 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	public Object postProcessAfterInitialization(@Nullable Object bean, String beanName) {
 		if (bean != null) {
 			Object cacheKey = getCacheKey(bean.getClass(), beanName);
-			//如果earlyProxyReferences中对应的cacheKey的bean不等于参数中的bean，进入条件
-			//这里有以下几种情况：
-			//1、earlyProxyReferences中不存在cacheKey，这时会进条件
-			//2、earlyProxyReferences中存在cacheKey，并且value与bean相等，这时不会进入条件，这种情况对应的是执行了getEarlyBeanReference()方法，也就是存在循环依赖的时候
 			/**
+			 * 如果earlyProxyReferences中对应的cacheKey的bean不等于参数中的bean，进入条件
+			 * 这里有以下几种情况：
+			 * 1、earlyProxyReferences中不存在cacheKey，这时会进条件
+			 * 2、earlyProxyReferences中存在cacheKey，并且value与bean相等，这时不会进入条件，这种情况对应的是执行了getEarlyBeanReference()方法，也就是存在循环依赖的时候
 			 * 这里详细的说明一下：
 			 * 场景1：只有A
-			 * 不存在循环依赖，
+			 * 不存在循环依赖，执行到这里的话，earlyProxyReferences中没有A对应的cacheKey，这里会进入条件
 			 * 场景2：A->B  B->A
-			 *
+			 * A填充属性的时候，发现了B，这时走B的创建过程，在B填充属性的时候，发现了A
+			 * 这时会直接通过A关联的getEarlyBeanReference()方法创建A的早期引用，如果A存在代理条件，则会对A进行代理，生成代理对象
+			 * 这时赋值给B的可能是一个A的代理对象，这时继续初始化B，走到这里的时候，B不在earlyProxyReferences中，这时会进入条件，对B进行判断是否需要进行代理
+			 * 如果需要代理的话，这里会返回代理后的B，否则返回B的原始对象
+			 * 这时继续走A的初始化过程，走到这里的时候，由于之前A已经执行了A关联的getEarlyBeanReference()方法，所以earlyProxyReferences存在A对应的cacheKey，并且value和bean是相等的，
+			 * 不会进入条件，这样就避免了如果在getEarlyBeanReference()方法中A被代理了，走到这里还会被代理一次，其实就是只要执行了getEarlyBeanReference()，这里就不会进行条件了
 			 */
 			if (this.earlyProxyReferences.remove(cacheKey) != bean) {
 				return wrapIfNecessary(bean, beanName, cacheKey);

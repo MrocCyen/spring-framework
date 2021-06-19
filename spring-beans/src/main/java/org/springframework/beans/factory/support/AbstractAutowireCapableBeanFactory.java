@@ -624,7 +624,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		try {
 			//填充属性
 			populateBean(beanName, mbd, instanceWrapper);
-			//实例化bean
+			//初始化bean
 			exposedObject = initializeBean(beanName, exposedObject, mbd);
 		}
 		catch (Throwable ex) {
@@ -637,9 +637,39 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			}
 		}
 
-		//解决循环依赖的时候，第一个bean可能是代理类型，这时需要返回出去
+		/**
+		 * todo 这里分情况说明一下：
+		 * 场景1：只有A
+		 * 这时是不会执行getEarlyBeanReference()方法的，即使A可以被代理
+		 * 假设A不能被代理，这时exposedObject=bean，earlySingletonReference是null，不会进入条件，返回的是实例化的原始A对象
+		 * 假设A能被代理，这时exposedObject!=bean，exposedObject是代理对象，earlySingletonReference是null，不会进入条件，返回的是实例化的原始A的代理对象
+		 * 场景2：A->B  B->A
+		 * 1：A和B都没有代理
+		 * B在获取A的时候，执行A的关联的getEarlyBeanReference()方法，返回A原始对象，填充给B
+		 * 这时走B的初始化过程（initializeBean），初始化过程返回B的原始对象，这时exposedObject=bean，earlySingletonReference是null，不会进入条件，返回的是实例化的原始B对象
+		 * 这时原始对象B已经保存到了singletonObjects中
+		 * 这时将原始B对象赋值给A
+		 * 接着走A的初始化过程（initializeBean），初始化过程返回A的原始对象，这时exposedObject=bean，earlySingletonReference是A的原始对象bean，进入条件，返回earlySingletonReference，即bean
+		 * 这时A原始对象已经保存到了singletonObjects中
+		 * 2、A有代理，B没有代理
+		 * B在获取A的时候，执行A的关联的getEarlyBeanReference()方法，返回A原始对象的代理对象，填充给B
+		 * 这时走B的初始化过程（initializeBean），初始化过程返回B的原始对象，这时exposedObject=bean，earlySingletonReference是null，不会进入条件，返回的是实例化的原始B对象
+		 * 这时B原始对象已经保存到了singletonObjects中
+		 * 这时将原始B对象赋值给A
+		 * 接着走A的初始化过程（initializeBean），初始化过程返回A的原始对象，因为缓存中已经标识了A已经被处理过了（可能被代理），这时exposedObject=bean，earlySingletonReference是A的代理对象，进入条件，返回earlySingletonReference，即A的代理对象
+		 * 这时A代理对象已经保存到了singletonObjects中
+		 * todo 这样就保证了getBean的A是代理对象，B中引用也是A的代理对象，后续在获取A和B的时候，直接从singletonObjects获取
+		 * 3、A没有代理，B有代理
+		 * B在获取A的时候，执行A的关联的getEarlyBeanReference()方法，返回A原始对象，填充给B
+		 * 这时走B的初始化过程（initializeBean），初始化过程返回B的原始对象的代理对象，这时exposedObject!=bean，earlySingletonReference是null，不会进入条件，返回的是exposedObject，是实例化的原始B对象的代理对象
+		 * 这时B代理对象已经保存到了singletonObjects中
+		 * 这时将B代理对象赋值给A
+		 * 接着走A的初始化过程（initializeBean），初始化过程返回A的原始对象，这时exposedObject=bean，earlySingletonReference是A原始对象，进入条件，返回earlySingletonReference，即A原始对象，bean
+		 * 这时A原始对象已经保存到了singletonObjects中
+		 * todo 这样就保证了getBean的A是原始对象，B中引用也是A的原始对象，后续在获取A和B的时候，直接从singletonObjects获取
+		 */
 		if (earlySingletonExposure) {
-			//获取早期引用
+			//获取早期引用，不存在循环依赖的时候，earlySingletonReference是null
 			Object earlySingletonReference = getSingleton(beanName, false);
 			if (earlySingletonReference != null) {
 				//如果exposedObject和bean相等，只有两种情况：
