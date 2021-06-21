@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
  * @date 2021/6/10 17:53
  * @since 标果工厂-苹果蕉
  */
-@Component
+//@Component
 public class Config {
 	@Bean
 	public AdvisorAdapterRegistrationManager advisorAdapterRegistrationManager() {

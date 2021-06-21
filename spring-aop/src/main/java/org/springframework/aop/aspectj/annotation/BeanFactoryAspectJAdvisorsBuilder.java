@@ -40,17 +40,32 @@ import org.springframework.util.Assert;
  */
 public class BeanFactoryAspectJAdvisorsBuilder {
 
+	/**
+	 * bean工厂
+	 */
 	private final ListableBeanFactory beanFactory;
 
+	/**
+	 * aspectjAdvisor工厂
+	 */
 	private final AspectJAdvisorFactory advisorFactory;
 
+	/**
+	 * dcl，单例模式双写检查
+	 * 保存bean工厂中所有的aspectj注解bean的名称
+	 */
 	@Nullable
 	private volatile List<String> aspectBeanNames;
 
+	/**
+	 * 针对单例bean，存储这个bean的advisor列表
+	 */
 	private final Map<String, List<Advisor>> advisorsCache = new ConcurrentHashMap<>();
 
+	/**
+	 * 非单例bean，存储这个bean的MetadataAwareAspectInstanceFactory，后续每次调用的时候通过这个MetadataAwareAspectInstanceFactory获取advisor
+	 */
 	private final Map<String, MetadataAwareAspectInstanceFactory> aspectFactoryCache = new ConcurrentHashMap<>();
-
 
 	/**
 	 * Create a new BeanFactoryAspectJAdvisorsBuilder for the given BeanFactory.
@@ -85,21 +100,24 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 	 */
 	public List<Advisor> buildAspectJAdvisors() {
 		List<String> aspectNames = this.aspectBeanNames;
-
+		//dcl，单例模式双写检查
 		if (aspectNames == null) {
 			synchronized (this) {
 				aspectNames = this.aspectBeanNames;
 				if (aspectNames == null) {
 					List<Advisor> advisors = new ArrayList<>();
 					aspectNames = new ArrayList<>();
+					//获取bean工厂中所有的bean name
 					String[] beanNames = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(
 							this.beanFactory, Object.class, true, false);
 					for (String beanName : beanNames) {
+						//先判断bean适用性
 						if (!isEligibleBean(beanName)) {
 							continue;
 						}
 						// We must be careful not to instantiate beans eagerly as in this case they
 						// would be cached by the Spring container but would not have been weaved.
+						//获取bean的类型
 						Class<?> beanType = this.beanFactory.getType(beanName, false);
 						if (beanType == null) {
 							continue;
@@ -108,12 +126,13 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 							aspectNames.add(beanName);
 							AspectMetadata amd = new AspectMetadata(beanType, beanName);
 							if (amd.getAjType().getPerClause().getKind() == PerClauseKind.SINGLETON) {
-								MetadataAwareAspectInstanceFactory factory =
-										new BeanFactoryAspectInstanceFactory(this.beanFactory, beanName);
+								MetadataAwareAspectInstanceFactory factory = new BeanFactoryAspectInstanceFactory(this.beanFactory, beanName);
 								List<Advisor> classAdvisors = this.advisorFactory.getAdvisors(factory);
+								//单例的存储在advisorsCache中
 								if (this.beanFactory.isSingleton(beanName)) {
 									this.advisorsCache.put(beanName, classAdvisors);
 								} else {
+									//非单例，存储MetadataAwareAspectInstanceFactory
 									this.aspectFactoryCache.put(beanName, factory);
 								}
 								advisors.addAll(classAdvisors);
@@ -123,8 +142,7 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 									throw new IllegalArgumentException("Bean with name '" + beanName +
 											"' is a singleton, but aspect instantiation model is not singleton");
 								}
-								MetadataAwareAspectInstanceFactory factory =
-										new PrototypeAspectInstanceFactory(this.beanFactory, beanName);
+								MetadataAwareAspectInstanceFactory factory = new PrototypeAspectInstanceFactory(this.beanFactory, beanName);
 								this.aspectFactoryCache.put(beanName, factory);
 								advisors.addAll(this.advisorFactory.getAdvisors(factory));
 							}
@@ -142,9 +160,11 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 		List<Advisor> advisors = new ArrayList<>();
 		for (String aspectName : aspectNames) {
 			List<Advisor> cachedAdvisors = this.advisorsCache.get(aspectName);
+			//单例bean，这里是可以拿到了
 			if (cachedAdvisors != null) {
 				advisors.addAll(cachedAdvisors);
 			} else {
+				//非单例的bean，这里实时的获取advisor
 				MetadataAwareAspectInstanceFactory factory = this.aspectFactoryCache.get(aspectName);
 				advisors.addAll(this.advisorFactory.getAdvisors(factory));
 			}
