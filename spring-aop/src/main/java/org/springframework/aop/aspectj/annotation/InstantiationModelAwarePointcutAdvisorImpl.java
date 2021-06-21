@@ -139,6 +139,7 @@ final class InstantiationModelAwarePointcutAdvisorImpl
 	 */
 	@Override
 	public synchronized Advice getAdvice() {
+		//todo 这里会不会出现线程安全问题。是否需要采用dcl？
 		if (this.instantiatedAdvice == null) {
 			this.instantiatedAdvice = instantiateAdvice(this.declaredPointcut);
 		}

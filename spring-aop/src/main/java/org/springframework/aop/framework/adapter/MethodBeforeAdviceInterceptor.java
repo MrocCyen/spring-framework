@@ -40,9 +40,9 @@ public class MethodBeforeAdviceInterceptor implements MethodInterceptor, BeforeA
 
 	private final MethodBeforeAdvice advice;
 
-
 	/**
 	 * Create a new MethodBeforeAdviceInterceptor for the given advice.
+	 *
 	 * @param advice the MethodBeforeAdvice to wrap
 	 */
 	public MethodBeforeAdviceInterceptor(MethodBeforeAdvice advice) {
