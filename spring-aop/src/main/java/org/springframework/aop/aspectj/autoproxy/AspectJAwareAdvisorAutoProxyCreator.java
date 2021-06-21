@@ -88,6 +88,8 @@ public class AspectJAwareAdvisorAutoProxyCreator extends AbstractAdvisorAutoProx
 	 * Add an {@link ExposeInvocationInterceptor} to the beginning of the advice chain.
 	 * <p>This additional advice is needed when using AspectJ pointcut expressions
 	 * and when using AspectJ-style advice.
+	 * <p>
+	 * todo 添加{@link ExposeInvocationInterceptor}到advice链的头部
 	 */
 	@Override
 	protected void extendAdvisors(List<Advisor> candidateAdvisors) {
@@ -97,8 +99,10 @@ public class AspectJAwareAdvisorAutoProxyCreator extends AbstractAdvisorAutoProx
 	@Override
 	protected boolean shouldSkip(Class<?> beanClass, String beanName) {
 		// TODO: Consider optimization by caching the list of the aspect names
+		// todo 我可以优化一下这里！！！
 		List<Advisor> candidateAdvisors = findCandidateAdvisors();
 		for (Advisor advisor : candidateAdvisors) {
+			//忽略条件
 			if (advisor instanceof AspectJPointcutAdvisor &&
 					((AspectJPointcutAdvisor) advisor).getAspectName().equals(beanName)) {
 				return true;

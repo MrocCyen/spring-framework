@@ -40,9 +40,12 @@ public abstract class AspectJProxyUtils {
 	 * <p>This will expose the current Spring AOP invocation (necessary for some AspectJ pointcut
 	 * matching) and make available the current AspectJ JoinPoint. The call will have no effect
 	 * if there are no AspectJ advisors in the advisor chain.
+	 *
 	 * @param advisors the advisors available
 	 * @return {@code true} if an {@link ExposeInvocationInterceptor} was added to the list,
 	 * otherwise {@code false}
+	 * <p>
+	 * todo 添加{@link ExposeInvocationInterceptor}到advice链的头部
 	 */
 	public static boolean makeAdvisorChainAspectJCapableIfNecessary(List<Advisor> advisors) {
 		// Don't add advisors to an empty list; may indicate that proxying is just not required
@@ -66,6 +69,7 @@ public abstract class AspectJProxyUtils {
 
 	/**
 	 * Determine whether the given Advisor contains an AspectJ advice.
+	 *
 	 * @param advisor the Advisor to check
 	 */
 	private static boolean isAspectJAdvice(Advisor advisor) {
