@@ -22,6 +22,8 @@ public class AspectForA {
 
 	@Before("pointCut()")
 	public void before(JoinPoint point) {
+		System.out.println(point.getThis());
+		System.out.println(point.getStaticPart());
 		System.out.println("this is a before...");
 	}
 }

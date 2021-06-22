@@ -50,7 +50,7 @@
         - DelegatingIntroductionInterceptor
         - DelegatePerTargetObjectIntroductionInterceptor
 - Interceptor
-    - MethodInterceptor（重点）
+    - MethodInterceptor（重点，实现链式调用的基础）
     - ConstructorInterceptor（spring尚未有实现）
 - BeforeAdvice 标记通知为前置通知，前置相关的通知都会实现
     - MethodBeforeAdvice 前置通知回调
@@ -68,6 +68,22 @@
         - AspectJAfterReturningAdvice（重点）
     - AfterReturningAdviceInterceptor 方法返回通知拦截器，通过AfterReturningAdviceAdapter.getInterceptor()
       方法获取，在DefaultAdvisorAdapterRegistry中注入到AdvisorAdapter列表中
+
+#### 具体说明
+
+- 5个通知，AspectJAfterReturningAdvice、AspectJAfterAdvice、AspectJAfterThrowingAdvice、
+  AspectJMethodBeforeAdvice、AspectJAroundAdvice
+- 其中AspectJMethodBeforeAdvice、AspectJAfterReturningAdvice分别有一个MethodInterceptor进行处理
+
+### 概念
+
+- PointCut：切点，表示具体要处理哪些方法，怎么切入
+- JoinPoint：连接点，这里具体表示一个执行的方法
+- Advice：通知，具体的处理逻辑，前置，后置等
+- Aspect：切面，表示一个切点定义了切入的连接点（方法），然后针对这些方法，要执行哪些通知（前置，后置等处理）
+- weave：织入，标识spring通过切面生成代理对象的过程
+
+### MethodInterceptor
 
 ### MethodInvocation及其子类
 
