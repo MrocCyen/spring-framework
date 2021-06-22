@@ -93,6 +93,10 @@
 
 #### AspectJAutoProxyRegistrar
 
+#### AdvisorAdapter
+
+#### DefaultAdvisorAdapterRegistry与GlobalAdvisorAdapterRegistry
+
 #### AbstractAutoProxyCreator与AnnotationAwareAspectJAutoProxyCreator
 
 ### 循环依赖与循环代理之间的关系
