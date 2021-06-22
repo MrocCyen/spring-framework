@@ -491,6 +491,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		ProxyFactory proxyFactory = new ProxyFactory();
 		proxyFactory.copyFrom(this);
 
+		//决定jdk或者cjlib代理
 		if (!proxyFactory.isProxyTargetClass()) {
 			if (shouldProxyTargetClass(beanClass, beanName)) {
 				proxyFactory.setProxyTargetClass(true);
@@ -542,11 +543,13 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	}
 
 	/**
+	 * todo
 	 * Determine the advisors for the given bean, including the specific interceptors
 	 * as well as the common interceptor, all adapted to the Advisor interface.
-	 * @param beanName the name of the bean
+	 *
+	 * @param beanName             the name of the bean
 	 * @param specificInterceptors the set of interceptors that is
-	 * specific to this bean (may be empty, but not null)
+	 *                             specific to this bean (may be empty, but not null)
 	 * @return the list of Advisors for the given bean
 	 */
 	protected Advisor[] buildAdvisors(@Nullable String beanName, @Nullable Object[] specificInterceptors) {
@@ -559,8 +562,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 			if (commonInterceptors.length > 0) {
 				if (this.applyCommonInterceptorsFirst) {
 					allInterceptors.addAll(0, Arrays.asList(commonInterceptors));
-				}
-				else {
+				} else {
 					allInterceptors.addAll(Arrays.asList(commonInterceptors));
 				}
 			}
