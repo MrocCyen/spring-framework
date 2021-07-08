@@ -71,7 +71,7 @@ final class InstantiationModelAwarePointcutAdvisorImpl
 	private final boolean lazy;
 
 	@Nullable
-	private Advice instantiatedAdvice;
+	private volatile Advice instantiatedAdvice;
 
 	@Nullable
 	private Boolean isBeforeAdvice;
@@ -138,9 +138,13 @@ final class InstantiationModelAwarePointcutAdvisorImpl
 	 * Lazily instantiate advice if necessary.
 	 */
 	@Override
-	public synchronized Advice getAdvice() {
+	public Advice getAdvice() {
 		if (this.instantiatedAdvice == null) {
-			this.instantiatedAdvice = instantiateAdvice(this.declaredPointcut);
+			synchronized (this) {
+				if (this.instantiatedAdvice == null) {
+					this.instantiatedAdvice = instantiateAdvice(this.declaredPointcut);
+				}
+			}
 		}
 		return this.instantiatedAdvice;
 	}
