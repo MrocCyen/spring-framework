@@ -68,12 +68,21 @@
         - AspectJAfterReturningAdvice（重点）
     - AfterReturningAdviceInterceptor 方法返回通知拦截器，通过AfterReturningAdviceAdapter.getInterceptor()
       方法获取，在DefaultAdvisorAdapterRegistry中注入到AdvisorAdapter列表中
+      
+#### 5个通知具体说明
+- AspectJAfterReturningAdvice
+  
+  继承AfterReturningAdvice，AfterReturningAdvice对应一个AfterReturningAdviceInterceptor和AfterReturningAdviceAdapter
 
-#### 具体说明
+- AspectJAfterAdvice
+  
+- AspectJAfterThrowingAdvice
+  
+- AspectJMethodBeforeAdvice
+  
+  继承MethodBeforeAdvice，MethodBeforeAdvice对应一个MethodBeforeAdviceInterceptor和MethodBeforeAdviceAdapter
 
-- 5个通知，AspectJAfterReturningAdvice、AspectJAfterAdvice、AspectJAfterThrowingAdvice、
-  AspectJMethodBeforeAdvice、AspectJAroundAdvice
-- 其中AspectJMethodBeforeAdvice、AspectJAfterReturningAdvice分别有一个MethodInterceptor进行处理
+- AspectJAroundAdvice
 
 ### 概念
 
@@ -95,16 +104,59 @@
 
 #### AdvisorAdapter
 
+### ExposeInvocationInterceptor
+
 #### DefaultAdvisorAdapterRegistry与GlobalAdvisorAdapterRegistry
 
 #### AbstractAutoProxyCreator与AnnotationAwareAspectJAutoProxyCreator
+AnnotationAwareAspectJAutoProxyCreator的findCandidateAdvisors()方法，内部调用BeanFactoryAspectJAdvisorsBuilder.buildAspectJAdvisors()方法
 
-### 循环依赖与循环代理之间的关系
+### BeanFactoryAspectJAdvisorsBuilder
+buildAspectJAdvisors()方法，根据@AspectJ注解构建advisor；根据AspectJAdvisorFactory.getAdvisors()方法获取advisor
 
 ### AspectJAdvisorFactory
+构建AspectJAdvisor的工厂类，子类实现ReflectiveAspectJAdvisorFactory
 
 ### AspectInstanceFactory
 
-### BeanFactoryAspectJAdvisorsBuilder
+AspectJ实例对象的工厂类
 
-### ExposeInvocationInterceptor
+#### 子类
+
+##### MetadataAwareAspectInstanceFactory
+
+增加了获取AspectMetadata的能力
+
+- SimpleMetadataAwareAspectInstanceFactory
+  
+具有SimpleAspectInstanceFactory的能力，构造函数内创建AspectMetadata对象
+
+- SingletonMetadataAwareAspectInstanceFactory
+
+具有SingletonAspectInstanceFactory的能力，构造函数内创建AspectMetadata对象
+  
+- BeanFactoryAspectInstanceFactory
+
+每一个getAspectInstance调用都从bean工厂中获取
+
+- PrototypeAspectInstanceFactory-继承自BeanFactoryAspectInstanceFactory
+  
+原型bean的AspectJ对象，也是从从bean工厂中获取
+    
+- LazySingletonAspectInstanceFactoryDecorator
+
+
+
+##### SingletonAspectInstanceFactory
+
+AspectJ实例对象通过构造函数传入，每一个getAspectInstance调用都是一样的
+
+- SingletonMetadataAwareAspectInstanceFactory
+
+##### SimpleBeanFactoryAwareAspectInstanceFactory
+
+##### SimpleAspectInstanceFactory
+
+为每一个getAspectInstance调用创建一个新的对象
+
+- SimpleMetadataAwareAspectInstanceFactory
