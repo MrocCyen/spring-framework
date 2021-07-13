@@ -76,6 +76,9 @@ public class DefaultAdvisorAdapterRegistry implements AdvisorAdapterRegistry, Se
 		throw new UnknownAdviceTypeException(advice);
 	}
 
+	/**
+	 * 这里为每个advisor创建一个方法拦截器，即MethodInterceptor列表
+	 */
 	@Override
 	public MethodInterceptor[] getInterceptors(Advisor advisor) throws UnknownAdviceTypeException {
 		List<MethodInterceptor> interceptors = new ArrayList<>(3);
@@ -83,6 +86,10 @@ public class DefaultAdvisorAdapterRegistry implements AdvisorAdapterRegistry, Se
 		if (advice instanceof MethodInterceptor) {
 			interceptors.add((MethodInterceptor) advice);
 		}
+		//spring内部默认的AdvisorAdapter有：
+		//MethodBeforeAdviceAdapter
+		//AfterReturningAdviceAdapter
+		//ThrowsAdviceAdapter
 		for (AdvisorAdapter adapter : this.adapters) {
 			if (adapter.supportsAdvice(advice)) {
 				interceptors.add(adapter.getInterceptor(advisor));

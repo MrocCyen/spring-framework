@@ -70,19 +70,19 @@
       方法获取，在DefaultAdvisorAdapterRegistry中注入到AdvisorAdapter列表中
       
 #### 5个通知具体说明
-- AspectJAfterReturningAdvice
+- AspectJAfterReturningAdvice（@AfterReturning）
   
   继承AfterReturningAdvice，AfterReturningAdvice对应一个AfterReturningAdviceInterceptor和AfterReturningAdviceAdapter
 
-- AspectJAfterAdvice
+- AspectJAfterAdvice（@After）
   
-- AspectJAfterThrowingAdvice
+- AspectJAfterThrowingAdvice（@AfterThrowing）
   
-- AspectJMethodBeforeAdvice
+- AspectJMethodBeforeAdvice（@Before）
   
   继承MethodBeforeAdvice，MethodBeforeAdvice对应一个MethodBeforeAdviceInterceptor和MethodBeforeAdviceAdapter
 
-- AspectJAroundAdvice
+- AspectJAroundAdvice（@Around）
 
 ### 概念
 
@@ -115,7 +115,9 @@ AnnotationAwareAspectJAutoProxyCreator的findCandidateAdvisors()方法，内部�
 buildAspectJAdvisors()方法，根据@AspectJ注解构建advisor；根据AspectJAdvisorFactory.getAdvisors()方法获取advisor
 
 ### AspectJAdvisorFactory
-构建AspectJAdvisor的工厂类，子类实现ReflectiveAspectJAdvisorFactory
+构建Advisor的工厂类，子类实现ReflectiveAspectJAdvisorFactory，根据通知的类型创建不同的通知，类型根据注解@Around，@Before，@After，@AfterReturning，@AfterThrowing
+
+### InstantiationModelAwarePointcutAdvisorImpl
 
 ### AspectInstanceFactory
 
@@ -145,7 +147,7 @@ AspectJ实例对象的工厂类
     
 - LazySingletonAspectInstanceFactoryDecorator
 
-
+内部代理一个MetadataAwareAspectInstanceFactory对象
 
 ##### SingletonAspectInstanceFactory
 
