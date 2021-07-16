@@ -22,6 +22,8 @@ package org.springframework.aop;
  * <p>A pointcut is composed of a {@link ClassFilter} and a {@link MethodMatcher}.
  * Both these basic terms and a Pointcut itself can be combined to build up combinations
  * (e.g. through {@link org.springframework.aop.support.ComposablePointcut}).
+ * <p>
+ * 一个切点包含一个类过滤器和方法匹配器
  *
  * @author Rod Johnson
  * @see ClassFilter
@@ -34,12 +36,14 @@ public interface Pointcut {
 
 	/**
 	 * Return the ClassFilter for this pointcut.
+	 *
 	 * @return the ClassFilter (never {@code null})
 	 */
 	ClassFilter getClassFilter();
 
 	/**
 	 * Return the MethodMatcher for this pointcut.
+	 *
 	 * @return the MethodMatcher (never {@code null})
 	 */
 	MethodMatcher getMethodMatcher();

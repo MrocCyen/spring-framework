@@ -103,11 +103,14 @@ public class AspectJExpressionPointcut extends AbstractExpressionPointcut
 
 	private static final Log logger = LogFactory.getLog(AspectJExpressionPointcut.class);
 
+	//切点所在的类
 	@Nullable
 	private Class<?> pointcutDeclarationScope;
 
+	//切点参数名称
 	private String[] pointcutParameterNames = new String[0];
 
+	//切点参数类型
 	private Class<?>[] pointcutParameterTypes = new Class<?>[0];
 
 	@Nullable
@@ -116,6 +119,7 @@ public class AspectJExpressionPointcut extends AbstractExpressionPointcut
 	@Nullable
 	private transient ClassLoader pointcutClassLoader;
 
+	//todo aspectj切点表达式
 	@Nullable
 	private transient PointcutExpression pointcutExpression;
 
@@ -193,6 +197,7 @@ public class AspectJExpressionPointcut extends AbstractExpressionPointcut
 		if (getExpression() == null) {
 			throw new IllegalStateException("Must set property 'expression' before attempting to match");
 		}
+		//第一次为null，则创建
 		if (this.pointcutExpression == null) {
 			this.pointcutClassLoader = determinePointcutClassLoader();
 			this.pointcutExpression = buildPointcutExpression(this.pointcutClassLoader);
@@ -229,6 +234,7 @@ public class AspectJExpressionPointcut extends AbstractExpressionPointcut
 	}
 
 	private String resolveExpression() {
+		//获取基类保存的切点表达式
 		String expression = getExpression();
 		Assert.state(expression != null, "No expression set");
 		return expression;

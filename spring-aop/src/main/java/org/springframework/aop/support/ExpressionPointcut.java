@@ -21,6 +21,8 @@ import org.springframework.lang.Nullable;
 
 /**
  * Interface to be implemented by pointcuts that use String expressions.
+ * <p>
+ * 包含可以获取切点表达式的方法
  *
  * @author Rob Harrop
  * @since 2.0

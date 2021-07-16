@@ -145,8 +145,10 @@ public abstract class AbstractAspectJAdvisorFactory implements AspectJAdvisorFac
 
 	@Nullable
 	private static <A extends Annotation> AspectJAnnotation<A> findAnnotation(Method method, Class<A> toLookFor) {
+		//首先找到通知注解
 		A result = AnnotationUtils.findAnnotation(method, toLookFor);
 		if (result != null) {
+			//不为null的时候，包装为AspectJAnnotation类型
 			return new AspectJAnnotation<>(result);
 		}
 		else {
@@ -177,6 +179,7 @@ public abstract class AbstractAspectJAdvisorFactory implements AspectJAdvisorFac
 		private static Map<Class<?>, AspectJAnnotationType> annotationTypeMap = new HashMap<>(8);
 
 		static {
+			//每个通知注解对应一个枚举值
 			annotationTypeMap.put(Pointcut.class, AspectJAnnotationType.AtPointcut);
 			annotationTypeMap.put(Around.class, AspectJAnnotationType.AtAround);
 			annotationTypeMap.put(Before.class, AspectJAnnotationType.AtBefore);
@@ -185,15 +188,20 @@ public abstract class AbstractAspectJAdvisorFactory implements AspectJAdvisorFac
 			annotationTypeMap.put(AfterThrowing.class, AspectJAnnotationType.AtAfterThrowing);
 		}
 
+		//原始注解
 		private final A annotation;
 
+		//原始注解对应的枚举值，后续使用这个枚举值进行操作
 		private final AspectJAnnotationType annotationType;
 
+		//切点表达式，后续可以解析
 		private final String pointcutExpression;
 
+		//原始注解argNames参数值
 		private final String argumentNames;
 
 		public AspectJAnnotation(A annotation) {
+			//原始注解
 			this.annotation = annotation;
 			this.annotationType = determineAnnotationType(annotation);
 			try {
@@ -215,6 +223,8 @@ public abstract class AbstractAspectJAdvisorFactory implements AspectJAdvisorFac
 		}
 
 		private String resolveExpression(A annotation) {
+			//获取原始注解中pointcut，value的值
+			//设置了pointcut的值，会忽略掉value的值
 			for (String attributeName : EXPRESSION_ATTRIBUTES) {
 				Object val = AnnotationUtils.getValue(annotation, attributeName);
 				if (val instanceof String) {

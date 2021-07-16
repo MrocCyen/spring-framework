@@ -38,6 +38,7 @@ import org.springframework.util.Assert;
  */
 public class InstanceComparator<T> implements Comparator<T> {
 
+	//按照这个顺序进行排序
 	private final Class<?>[] instanceOrder;
 
 
