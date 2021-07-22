@@ -107,6 +107,8 @@ class CglibAopProxy implements AopProxy, Serializable {
 
 	/**
 	 * The configuration used to configure this proxy.
+	 * <p>
+	 * 存储aop的配置
 	 */
 	protected final AdvisedSupport advised;
 
@@ -173,6 +175,7 @@ class CglibAopProxy implements AopProxy, Serializable {
 		}
 
 		try {
+			//获取原始的bean类型，原始bean包装在TargetSource中
 			Class<?> rootClass = this.advised.getTargetClass();
 			Assert.state(rootClass != null, "Target class must be available for creating a CGLIB proxy");
 

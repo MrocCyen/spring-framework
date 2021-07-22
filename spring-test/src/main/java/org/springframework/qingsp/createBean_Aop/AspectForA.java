@@ -1,9 +1,8 @@
 package org.springframework.qingsp.createBean_Aop;
 
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.*;
 import org.springframework.stereotype.Component;
 
 /**
@@ -20,8 +19,24 @@ public class AspectForA {
 
 	}
 
+	@AfterReturning("pointCut()")
+	public void afterReturning(JoinPoint point) {
+		System.out.println("this is a afterReturning...");
+	}
+
 	@Before("pointCut()")
 	public void before(JoinPoint point) {
 		System.out.println("this is a before...");
+	}
+
+	@After("pointCut()")
+	public void after(JoinPoint point) {
+		System.out.println("this is a after...");
+	}
+
+	@Around("pointCut()")
+	public Object around(ProceedingJoinPoint point) throws Throwable {
+		System.out.println("this is a around...");
+		return point.proceed();
 	}
 }

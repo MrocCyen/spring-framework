@@ -97,12 +97,16 @@ public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyC
 	 * @see #extendAdvisors
 	 */
 	protected List<Advisor> findEligibleAdvisors(Class<?> beanClass, String beanName) {
-		//todo 获取候选的Advisor，从bean工厂中获取，开发者可以开发自己的advisor
+		//todo
+		// 首先从bean工厂中获取advisor实现，开发者可以开发自己的advisor
+		// 然后找到注解了@Aspect的bean，然后解析方法，每个通知方法直接对应一个 @link {InstantiationModelAwarePointcutAdvisorImpl}
 		List<Advisor> candidateAdvisors = findCandidateAdvisors();
-		//todo 获取可以应用的advisor，排除一些不需要的advisor
+		//todo
+		// 获取可以应用的advisor，排除一些不需要的advisor
 		List<Advisor> eligibleAdvisors = findAdvisorsThatCanApply(candidateAdvisors, beanClass, beanName);
-		//todo 这个方法允许子类可以扩展advisor
-		//todo 在AnnotationAwareAspectJAutoProxyCreator中，添加ExposeInvocationInterceptor到advice链的头部
+		//todo
+		// 这个方法允许子类可以扩展advisor
+		// 在AnnotationAwareAspectJAutoProxyCreator这个子类的实现中，添加了ExposeInvocationInterceptor到advice链的头部
 		extendAdvisors(eligibleAdvisors);
 		if (!eligibleAdvisors.isEmpty()) {
 			//todo 排序

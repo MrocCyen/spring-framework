@@ -45,31 +45,53 @@ import org.springframework.lang.Nullable;
 final class InstantiationModelAwarePointcutAdvisorImpl
 		implements InstantiationModelAwarePointcutAdvisor, AspectJPrecedenceInformation, Serializable {
 
-	private static final Advice EMPTY_ADVICE = new Advice() {};
+	private static final Advice EMPTY_ADVICE = new Advice() {
+	};
 
-
+	/**
+	 * 表达式切点
+	 */
 	private final AspectJExpressionPointcut declaredPointcut;
-
+	/**
+	 * 通知方法所在的类
+	 */
 	private final Class<?> declaringClass;
-
+	/**
+	 * 通知方法的方法名
+	 */
 	private final String methodName;
-
+	/**
+	 * 通知方法的参数类型
+	 */
 	private final Class<?>[] parameterTypes;
-
+	/**
+	 * 通知方法
+	 */
 	private transient Method aspectJAdviceMethod;
-
+	/**
+	 * advisor工厂
+	 */
 	private final AspectJAdvisorFactory aspectJAdvisorFactory;
-
+	/**
+	 * aspect实例工厂
+	 */
 	private final MetadataAwareAspectInstanceFactory aspectInstanceFactory;
-
+	/**
+	 * 定义顺序
+	 */
 	private final int declarationOrder;
-
+	/**
+	 * aspectName
+	 */
 	private final String aspectName;
 
 	private final Pointcut pointcut;
 
 	private final boolean lazy;
 
+	/**
+	 * 具体的通知
+	 */
 	@Nullable
 	private Advice instantiatedAdvice;
 
@@ -81,8 +103,11 @@ final class InstantiationModelAwarePointcutAdvisorImpl
 
 
 	public InstantiationModelAwarePointcutAdvisorImpl(AspectJExpressionPointcut declaredPointcut,
-			Method aspectJAdviceMethod, AspectJAdvisorFactory aspectJAdvisorFactory,
-			MetadataAwareAspectInstanceFactory aspectInstanceFactory, int declarationOrder, String aspectName) {
+	                                                  Method aspectJAdviceMethod,
+	                                                  AspectJAdvisorFactory aspectJAdvisorFactory,
+	                                                  MetadataAwareAspectInstanceFactory aspectInstanceFactory,
+	                                                  int declarationOrder,
+	                                                  String aspectName) {
 
 		this.declaredPointcut = declaredPointcut;
 		this.declaringClass = aspectJAdviceMethod.getDeclaringClass();
@@ -105,8 +130,7 @@ final class InstantiationModelAwarePointcutAdvisorImpl
 			this.pointcut = new PerTargetInstantiationModelPointcut(
 					this.declaredPointcut, preInstantiationPointcut, aspectInstanceFactory);
 			this.lazy = true;
-		}
-		else {
+		} else {
 			// A singleton aspect.
 			this.pointcut = this.declaredPointcut;
 			this.lazy = false;
@@ -147,6 +171,7 @@ final class InstantiationModelAwarePointcutAdvisorImpl
 	}
 
 	private Advice instantiateAdvice(AspectJExpressionPointcut pointcut) {
+		//这里会根据具体的通知类型创建不同的通知
 		Advice advice = this.aspectJAdvisorFactory.getAdvice(this.aspectJAdviceMethod, pointcut,
 				this.aspectInstanceFactory, this.declarationOrder, this.aspectName);
 		return (advice != null ? advice : EMPTY_ADVICE);
@@ -218,8 +243,7 @@ final class InstantiationModelAwarePointcutAdvisorImpl
 		if (aspectJAnnotation == null) {
 			this.isBeforeAdvice = false;
 			this.isAfterAdvice = false;
-		}
-		else {
+		} else {
 			switch (aspectJAnnotation.getAnnotationType()) {
 				case AtPointcut:
 				case AtAround:
@@ -245,8 +269,7 @@ final class InstantiationModelAwarePointcutAdvisorImpl
 		inputStream.defaultReadObject();
 		try {
 			this.aspectJAdviceMethod = this.declaringClass.getMethod(this.methodName, this.parameterTypes);
-		}
-		catch (NoSuchMethodException ex) {
+		} catch (NoSuchMethodException ex) {
 			throw new IllegalStateException("Failed to find advice method on deserialization", ex);
 		}
 	}
@@ -274,7 +297,7 @@ final class InstantiationModelAwarePointcutAdvisorImpl
 		private LazySingletonAspectInstanceFactoryDecorator aspectInstanceFactory;
 
 		public PerTargetInstantiationModelPointcut(AspectJExpressionPointcut declaredPointcut,
-				Pointcut preInstantiationPointcut, MetadataAwareAspectInstanceFactory aspectInstanceFactory) {
+		                                           Pointcut preInstantiationPointcut, MetadataAwareAspectInstanceFactory aspectInstanceFactory) {
 
 			this.declaredPointcut = declaredPointcut;
 			this.preInstantiationPointcut = preInstantiationPointcut;
