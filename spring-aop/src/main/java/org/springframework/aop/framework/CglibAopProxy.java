@@ -925,11 +925,14 @@ class CglibAopProxy implements AopProxy, Serializable {
 			}
 			Class<?> targetClass = this.advised.getTargetClass();
 			// Proxy is not yet available, but that shouldn't matter.
+			//todo 重要
 			List<?> chain = this.advised.getInterceptorsAndDynamicInterceptionAdvice(method, targetClass);
+			//目前至少都有一个值
 			boolean haveAdvice = !chain.isEmpty();
 			boolean exposeProxy = this.advised.isExposeProxy();
 			boolean isStatic = this.advised.getTargetSource().isStatic();
 			boolean isFrozen = this.advised.isFrozen();
+			//haveAdvice一直都是true，一直进这个分支
 			if (haveAdvice || !isFrozen) {
 				// If exposing the proxy, then AOP_PROXY must be used.
 				if (exposeProxy) {
