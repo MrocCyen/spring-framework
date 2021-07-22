@@ -8,6 +8,6 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
  * @date 2021/5/14 16:32
  */
 @ComponentScan("org.springframework.qingsp.createBean_Aop")
-@EnableAspectJAutoProxy
+@EnableAspectJAutoProxy(exposeProxy = true)
 public class Scanner {
 }

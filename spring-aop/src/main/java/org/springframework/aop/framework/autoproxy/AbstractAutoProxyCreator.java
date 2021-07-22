@@ -500,6 +500,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 				proxyFactory.setProxyTargetClass(true);
 			}
 			else {
+				//todo 重要
 				evaluateProxyInterfaces(beanClass, proxyFactory);
 			}
 		}

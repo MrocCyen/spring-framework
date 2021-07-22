@@ -20,6 +20,7 @@ task cglibRepackJar(type: ShadowJar) {
 	archiveBaseName = 'spring-cglib-repack'
 	archiveVersion = cglibVersion
 	configurations = [project.configurations.cglib]
+	// 将cjlib合并到org.springframework.cglib中
 	relocate 'net.sf.cglib', 'org.springframework.cglib'
 	relocate 'org.objectweb.asm', 'org.springframework.asm'
 }

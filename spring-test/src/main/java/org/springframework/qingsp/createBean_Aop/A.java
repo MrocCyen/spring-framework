@@ -1,6 +1,6 @@
 package org.springframework.qingsp.createBean_Aop;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Component;
 
 /**
@@ -11,10 +11,23 @@ import org.springframework.stereotype.Component;
 @Component
 public class A {
 
-//	@Autowired
-//	AA AA;
+	public A print() {
+		System.out.println("this is a for print...");
+		return this;
+	}
 
-	public void print() {
-		System.out.println("this is a for jdk...");
+	public A print1() {
+		System.out.println("this is a for print1...");
+		return this;
+	}
+
+	/**
+	 * todo 外部在调用print2函数的时候，已经通过将代理对象写入了ThreadLocal中
+	 * todo 这时通过AopContext.currentProxy()可以获取当前线程在ThreadLocal中代理对象，再通过代理对象调用print1函数，即可调用到切面方法
+	 */
+	public A print2() {
+		((A) AopContext.currentProxy()).print1();
+		System.out.println("this is a for print2...");
+		return this;
 	}
 }

@@ -112,9 +112,15 @@ class CglibAopProxy implements AopProxy, Serializable {
 	 */
 	protected final AdvisedSupport advised;
 
+	/**
+	 * 构造函数参数
+	 */
 	@Nullable
 	protected Object[] constructorArgs;
 
+	/**
+	 * 构造函数参数类型
+	 */
 	@Nullable
 	protected Class<?>[] constructorArgTypes;
 
@@ -180,8 +186,10 @@ class CglibAopProxy implements AopProxy, Serializable {
 			Assert.state(rootClass != null, "Target class must be available for creating a CGLIB proxy");
 
 			Class<?> proxySuperClass = rootClass;
+			//原始类已经被代理了
 			if (rootClass.getName().contains(ClassUtils.CGLIB_CLASS_SEPARATOR)) {
 				proxySuperClass = rootClass.getSuperclass();
+				//获取原始类的接口列表
 				Class<?>[] additionalInterfaces = rootClass.getInterfaces();
 				for (Class<?> additionalInterface : additionalInterfaces) {
 					this.advised.addInterface(additionalInterface);
@@ -192,6 +200,7 @@ class CglibAopProxy implements AopProxy, Serializable {
 			validateClassIfNecessary(proxySuperClass, classLoader);
 
 			// Configure CGLIB Enhancer...
+			//创建Enhancer对象
 			Enhancer enhancer = createEnhancer();
 			if (classLoader != null) {
 				enhancer.setClassLoader(classLoader);
@@ -319,11 +328,19 @@ class CglibAopProxy implements AopProxy, Serializable {
 				new StaticDispatcher(this.advised.getTargetSource().getTarget()) : new SerializableNoOp());
 
 		Callback[] mainCallbacks = new Callback[]{
+				//顺序：0
 				aopInterceptor,  // for normal advice
+				//顺序：1
 				targetInterceptor,  // invoke target without considering advice, if optimized
+				//顺序：2
 				new SerializableNoOp(),  // no override for methods mapped to this
-				targetDispatcher, this.advisedDispatcher,
+				//顺序：3
+				targetDispatcher,
+				//顺序：4
+				this.advisedDispatcher,
+				//顺序：5
 				new EqualsInterceptor(this.advised),
+				//顺序：6
 				new HashCodeInterceptor(this.advised)
 		};
 
@@ -386,12 +403,15 @@ class CglibAopProxy implements AopProxy, Serializable {
 	/**
 	 * Process a return value. Wraps a return of {@code this} if necessary to be the
 	 * {@code proxy} and also verifies that {@code null} is not returned as a primitive.
+	 * <p>
+	 * 处理返回值
 	 */
 	@Nullable
 	private static Object processReturnType(
 			Object proxy, @Nullable Object target, Method method, @Nullable Object returnValue) {
 
 		// Massage return value if necessary
+		//todo 返回值等于原始对象，这里需要将代理对象替换成返回值
 		if (returnValue != null && returnValue == target &&
 				!RawTargetAccess.class.isAssignableFrom(method.getDeclaringClass())) {
 			// Special case: it returned "this". Note that we can't help
@@ -399,6 +419,7 @@ class CglibAopProxy implements AopProxy, Serializable {
 			returnValue = proxy;
 		}
 		Class<?> returnType = method.getReturnType();
+		//todo 如果通知方法的返回值是基本类型，则抛异常
 		if (returnValue == null && returnType != Void.TYPE && returnType.isPrimitive()) {
 			throw new AopInvocationException(
 					"Null return value from advice does not match primitive return type for: " + method);
@@ -410,6 +431,8 @@ class CglibAopProxy implements AopProxy, Serializable {
 	/**
 	 * Serializable replacement for CGLIB's NoOp interface.
 	 * Public to allow use elsewhere in the framework.
+	 * <p>
+	 * 不做任何处理的回调
 	 */
 	public static class SerializableNoOp implements NoOp, Serializable {
 	}
@@ -423,6 +446,9 @@ class CglibAopProxy implements AopProxy, Serializable {
 	 */
 	private static class StaticUnadvisedInterceptor implements MethodInterceptor, Serializable {
 
+		/**
+		 * 原始对象
+		 */
 		@Nullable
 		private final Object target;
 
@@ -430,10 +456,16 @@ class CglibAopProxy implements AopProxy, Serializable {
 			this.target = target;
 		}
 
+		/**
+		 * @param proxy 代理对象
+		 */
 		@Override
 		@Nullable
 		public Object intercept(Object proxy, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
+			//调用原始方法
+			//todo methodProxy.invoke第一个参数必须是原始对象，methodProxy.invokeSuper第一个参数必须是代理后的对象，也就是proxy
 			Object retVal = methodProxy.invoke(this.target, args);
+			//处理返回类型
 			return processReturnType(proxy, this.target, method, retVal);
 		}
 	}
@@ -457,7 +489,9 @@ class CglibAopProxy implements AopProxy, Serializable {
 		public Object intercept(Object proxy, Method method, Object[] args, MethodProxy methodProxy) throws Throwable {
 			Object oldProxy = null;
 			try {
+				//调用方法之前设置代理对象到ThreadLocal中
 				oldProxy = AopContext.setCurrentProxy(proxy);
+				//然后再执行原始方法
 				Object retVal = methodProxy.invoke(this.target, args);
 				return processReturnType(proxy, this.target, method, retVal);
 			} finally {
@@ -559,6 +593,11 @@ class CglibAopProxy implements AopProxy, Serializable {
 			this.advised = advised;
 		}
 
+		/**
+		 * 代理的是AdvisedSupport对象
+		 *
+		 * @return AdvisedSupport对象
+		 */
 		@Override
 		public Object loadObject() {
 			return this.advised;
