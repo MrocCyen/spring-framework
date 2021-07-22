@@ -1,4 +1,4 @@
-package org.springframework.qingsp.createBean_Aop_Advisor;
+package org.springframework.qingsp.aop_Advisor;
 
 import org.springframework.aop.framework.adapter.AdvisorAdapterRegistrationManager;
 import org.springframework.context.annotation.Bean;

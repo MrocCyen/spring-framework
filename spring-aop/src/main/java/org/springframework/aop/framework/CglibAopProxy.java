@@ -129,8 +129,14 @@ class CglibAopProxy implements AopProxy, Serializable {
 	 */
 	private final transient AdvisedDispatcher advisedDispatcher;
 
+	/**
+	 * 每个方法一个序号
+	 */
 	private transient Map<Method, Integer> fixedInterceptorMap = Collections.emptyMap();
 
+	/**
+	 * 冻结后，fixedInterceptor在新的数组中的开始位置
+	 */
 	private transient int fixedInterceptorOffset;
 
 
@@ -211,9 +217,11 @@ class CglibAopProxy implements AopProxy, Serializable {
 			}
 			enhancer.setSuperclass(proxySuperClass);
 			enhancer.setInterfaces(AopProxyUtils.completeProxiedInterfaces(this.advised));
+			//名字以BySpringCGLIB结尾
 			enhancer.setNamingPolicy(SpringNamingPolicy.INSTANCE);
 			enhancer.setStrategy(new ClassLoaderAwareGeneratorStrategy(classLoader));
 
+			//获取callback
 			Callback[] callbacks = getCallbacks(rootClass);
 			Class<?>[] types = new Class<?>[callbacks.length];
 			for (int x = 0; x < types.length; x++) {
@@ -302,8 +310,11 @@ class CglibAopProxy implements AopProxy, Serializable {
 
 	private Callback[] getCallbacks(Class<?> rootClass) throws Exception {
 		// Parameters used for optimization choices...
+		//是否暴露代理对象
 		boolean exposeProxy = this.advised.isExposeProxy();
+		//是否冻结
 		boolean isFrozen = this.advised.isFrozen();
+		//是否是永恒不变的
 		boolean isStatic = this.advised.getTargetSource().isStatic();
 
 		// Choose an "aop" interceptor (used for AOP calls).
@@ -349,8 +360,11 @@ class CglibAopProxy implements AopProxy, Serializable {
 		// If the target is a static one and the advice chain is frozen,
 		// then we can make some optimizations by sending the AOP calls
 		// direct to the target using the fixed chain for that method.
+		//原始目标对象不会改变，并且被冻结
 		if (isStatic && isFrozen) {
+			//所有方法
 			Method[] methods = rootClass.getMethods();
+			//callback
 			Callback[] fixedCallbacks = new Callback[methods.length];
 			this.fixedInterceptorMap = CollectionUtils.newHashMap(methods.length);
 
@@ -823,7 +837,7 @@ class CglibAopProxy implements AopProxy, Serializable {
 
 
 	/**
-	 * CallbackFilter to assign Callbacks to methods.
+	 * todo CallbackFilter to assign Callbacks to methods.
 	 */
 	private static class ProxyCallbackFilter implements CallbackFilter {
 
@@ -879,10 +893,13 @@ class CglibAopProxy implements AopProxy, Serializable {
 		 */
 		@Override
 		public int accept(Method method) {
+			//todo finalize方法不做任何处理
 			if (AopUtils.isFinalizeMethod(method)) {
 				logger.trace("Found finalize() method - using NO_OVERRIDE");
 				return NO_OVERRIDE;
 			}
+			//默认不阻止将代理对象传唤成Advised
+			//todo 这个条件成功的话，需要代理原始对象实现了Advised
 			if (!this.advised.isOpaque() && method.getDeclaringClass().isInterface() &&
 					method.getDeclaringClass().isAssignableFrom(Advised.class)) {
 				if (logger.isTraceEnabled()) {
@@ -891,6 +908,7 @@ class CglibAopProxy implements AopProxy, Serializable {
 				return DISPATCH_ADVISED;
 			}
 			// We must always proxy equals, to direct calls to this.
+			//todo equals方法
 			if (AopUtils.isEqualsMethod(method)) {
 				if (logger.isTraceEnabled()) {
 					logger.trace("Found 'equals' method: " + method);
@@ -898,6 +916,7 @@ class CglibAopProxy implements AopProxy, Serializable {
 				return INVOKE_EQUALS;
 			}
 			// We must always calculate hashCode based on the proxy.
+			//todo hashCode方法
 			if (AopUtils.isHashCodeMethod(method)) {
 				if (logger.isTraceEnabled()) {
 					logger.trace("Found 'hashCode' method: " + method);

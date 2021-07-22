@@ -1,4 +1,4 @@
-package org.springframework.qingsp.createBean_Aop_Advisor;
+package org.springframework.qingsp.aop_AdvisorAdapter;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Aspect
 public class AspectForA {
 
-	@Pointcut("execution(* org.springframework.qingsp.createBean_Aop_Advisor.A.*()))")
+	@Pointcut("execution(* org.springframework.qingsp.aop_AdvisorAdapter.A.*()))")
 	public void pointCut() {
 
 	}

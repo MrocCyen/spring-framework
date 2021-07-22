@@ -1,4 +1,4 @@
-package org.springframework.qingsp.createBean_Aop_TargetSourceCreator;
+package org.springframework.qingsp.aop_TargetSourceCreator;
 
 import org.springframework.aop.TargetSource;
 import org.springframework.aop.framework.autoproxy.TargetSourceCreator;

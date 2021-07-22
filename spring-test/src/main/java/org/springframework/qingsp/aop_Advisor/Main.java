@@ -1,4 +1,4 @@
-package org.springframework.qingsp.createBean_Aop;
+package org.springframework.qingsp.aop_Advisor;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -12,6 +12,6 @@ public class Main {
 		context.register(Scanner.class);
 		context.refresh();
 
-		((A) context.getBean("a")).print2();
+		((A) context.getBean("a")).print();
 	}
 }

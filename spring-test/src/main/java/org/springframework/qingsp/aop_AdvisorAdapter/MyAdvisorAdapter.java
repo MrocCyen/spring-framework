@@ -1,4 +1,4 @@
-package org.springframework.qingsp.createBean_Aop_AdvisorAdapter;
+package org.springframework.qingsp.aop_AdvisorAdapter;
 
 import org.aopalliance.aop.Advice;
 import org.aopalliance.intercept.MethodInterceptor;

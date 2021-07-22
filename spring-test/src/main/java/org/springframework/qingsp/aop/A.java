@@ -1,4 +1,4 @@
-package org.springframework.qingsp.createBean_Aop;
+package org.springframework.qingsp.aop;
 
 import org.springframework.aop.framework.AopContext;
 import org.springframework.stereotype.Component;

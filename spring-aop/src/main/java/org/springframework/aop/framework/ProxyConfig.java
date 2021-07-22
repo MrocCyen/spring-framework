@@ -74,7 +74,7 @@ public class ProxyConfig implements Serializable {
 	 */
 	boolean exposeProxy = false;
 	/**
-	 * 不适用任何通知
+	 * 是否冻结
 	 */
 	private boolean frozen = false;
 

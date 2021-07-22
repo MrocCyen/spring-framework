@@ -1,4 +1,4 @@
-package org.springframework.qingsp.createBean_Aop;
+package org.springframework.qingsp.aop;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -14,8 +14,8 @@ import org.springframework.stereotype.Component;
 @Aspect
 public class AspectForA {
 
-	@Pointcut("execution(* org.springframework.qingsp.createBean_Aop.A.print())" +
-			"|| execution(* org.springframework.qingsp.createBean_Aop.A.print1())")
+	@Pointcut("execution(* org.springframework.qingsp.aop.A.print())" +
+			"|| execution(* org.springframework.qingsp.aop.A.print1())")
 	public void pointCut() {
 
 	}

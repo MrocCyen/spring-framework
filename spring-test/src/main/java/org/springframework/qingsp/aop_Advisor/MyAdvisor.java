@@ -1,4 +1,4 @@
-package org.springframework.qingsp.createBean_Aop_Advisor;
+package org.springframework.qingsp.aop_Advisor;
 
 import org.aopalliance.aop.Advice;
 import org.springframework.aop.Advisor;
