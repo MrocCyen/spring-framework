@@ -20,6 +20,11 @@ public class AspectForA {
 
 	}
 
+	@Pointcut("execution(* org.springframework.qingsp.aop.A.print3(String))")
+	public void pointCut1() {
+
+	}
+
 	@AfterReturning("pointCut()")
 	public void afterReturning(JoinPoint point) {
 		System.out.println("this is a afterReturning...");
@@ -38,6 +43,13 @@ public class AspectForA {
 	@Around("pointCut()")
 	public Object around(ProceedingJoinPoint point) throws Throwable {
 		System.out.println("this is a around...");
+		return point.proceed();
+	}
+
+	@Around("pointCut1() && args(name)")
+	public Object around1(ProceedingJoinPoint point, String name) throws Throwable {
+		System.out.println("this is a around...");
+		System.out.println("this is a around, " + name);
 		return point.proceed();
 	}
 }

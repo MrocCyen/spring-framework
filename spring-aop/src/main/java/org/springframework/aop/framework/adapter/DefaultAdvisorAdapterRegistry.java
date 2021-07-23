@@ -102,9 +102,9 @@ public class DefaultAdvisorAdapterRegistry implements AdvisorAdapterRegistry, Se
 		 */
 		/**
 		 * todo
-		 *  AspectJAfterReturningAdvice
-		 *  AspectJMethodBeforeAdvice
-		 *  这两个没有继承MethodInterceptor，这里通过MethodBeforeAdviceAdapter和AfterReturningAdviceAdapter筛选出来
+		 *  AspectJAfterReturningAdvice->AfterReturningAdviceInterceptor
+		 *  AspectJMethodBeforeAdvice->MethodBeforeAdviceInterceptor
+		 *  这两个没有继承MethodInterceptor
 		 */
 		for (AdvisorAdapter adapter : this.adapters) {
 			if (adapter.supportsAdvice(advice)) {

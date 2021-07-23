@@ -31,8 +31,9 @@ public class A {
 		return this;
 	}
 
-	public A print3() {
+	public A print3(String name) {
 		System.out.println("this is a for print3...");
+		System.out.println("this is a for print3, " + name);
 		return this;
 	}
 }
