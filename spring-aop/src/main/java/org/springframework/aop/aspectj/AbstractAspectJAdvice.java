@@ -437,6 +437,7 @@ public abstract class AbstractAspectJAdvice implements Advice, AspectJPrecedence
 
 	private void bindArgumentsByName(int numArgumentsExpectingToBind) {
 		if (this.argumentNames == null) {
+			//找到参数名
 			this.argumentNames = createParameterNameDiscoverer().getParameterNames(this.aspectJAdviceMethod);
 		}
 		if (this.argumentNames != null) {
@@ -472,7 +473,9 @@ public abstract class AbstractAspectJAdvice implements Advice, AspectJPrecedence
 		Assert.state(this.argumentNames != null, "No argument names available");
 		this.argumentBindings = new HashMap<>();
 
+		//获取到原始方法的参数个数
 		int numExpectedArgumentNames = this.aspectJAdviceMethod.getParameterCount();
+		//原始方法参数个数一定要和argumentNames长度相等
 		if (this.argumentNames.length != numExpectedArgumentNames) {
 			throw new IllegalStateException("Expecting to find " + numExpectedArgumentNames +
 					" arguments to bind by name in advice, but actually found " +
@@ -482,11 +485,13 @@ public abstract class AbstractAspectJAdvice implements Advice, AspectJPrecedence
 		// So we match in number...
 		int argumentIndexOffset = this.parameterTypes.length - numArgumentsLeftToBind;
 		for (int i = argumentIndexOffset; i < this.argumentNames.length; i++) {
+			//存储除去第一个参数之外的的参数的名称和所属位置
 			this.argumentBindings.put(this.argumentNames[i], i);
 		}
 
 		// Check that returning and throwing were in the argument names list if
 		// specified, and find the discovered argument types.
+		//返回值参数名不为null
 		if (this.returningName != null) {
 			if (!this.argumentBindings.containsKey(this.returningName)) {
 				throw new IllegalStateException("Returning argument name '" + this.returningName +

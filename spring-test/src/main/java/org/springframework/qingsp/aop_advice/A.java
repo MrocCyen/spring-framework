@@ -11,6 +11,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class A {
 
+	public String name;
+
+	public Integer age;
+
 	public A print() {
 		System.out.println("this is a for print...");
 		return this;
@@ -33,7 +37,11 @@ public class A {
 
 	public A print3(String name) {
 		System.out.println("this is a for print3...");
-		System.out.println("this is a for print3, " + name);
+		return this;
+	}
+
+	public A print4(String name, Integer age) {
+		System.out.println("this is a for print4...");
 		return this;
 	}
 }
