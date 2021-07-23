@@ -1,4 +1,4 @@
-package org.springframework.qingsp.aop;
+package org.springframework.qingsp.aop_advice;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -14,13 +14,13 @@ import org.springframework.stereotype.Component;
 @Aspect
 public class AspectForA {
 
-	@Pointcut("execution(* org.springframework.qingsp.aop.A.print())" +
-			"|| execution(* org.springframework.qingsp.aop.A.print1())")
+	@Pointcut("execution(* org.springframework.qingsp.aop_advice.A.print())" +
+			"|| execution(* org.springframework.qingsp.aop_advice.A.print1())")
 	public void pointCut() {
 
 	}
 
-	@Pointcut("execution(* org.springframework.qingsp.aop.A.print3(String))")
+	@Pointcut("execution(* org.springframework.qingsp.aop_advice.A.print3(String))")
 	public void pointCut1() {
 
 	}
