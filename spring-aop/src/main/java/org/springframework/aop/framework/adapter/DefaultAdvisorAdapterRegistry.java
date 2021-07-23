@@ -83,13 +83,29 @@ public class DefaultAdvisorAdapterRegistry implements AdvisorAdapterRegistry, Se
 	public MethodInterceptor[] getInterceptors(Advisor advisor) throws UnknownAdviceTypeException {
 		List<MethodInterceptor> interceptors = new ArrayList<>(3);
 		Advice advice = advisor.getAdvice();
+		/**
+		 * todo
+		 *  ExposeInvocationInterceptor
+		 *  AspectJAfterAdvice
+		 *  AspectJAfterThrowingAdvice
+		 *  AspectJAroundAdvice
+		 *  以上三个直接通知直接继承了MethodInterceptor，这里直接添加进interceptors
+		 */
 		if (advice instanceof MethodInterceptor) {
 			interceptors.add((MethodInterceptor) advice);
 		}
-		//spring内部默认的AdvisorAdapter有：
-		//MethodBeforeAdviceAdapter
-		//AfterReturningAdviceAdapter
-		//ThrowsAdviceAdapter
+		/**
+		 * todo spring内部默认的AdvisorAdapter有：
+		 *  MethodBeforeAdviceAdapter
+		 *  AfterReturningAdviceAdapter
+		 *  ThrowsAdviceAdapter
+		 */
+		/**
+		 * todo
+		 *  AspectJAfterReturningAdvice
+		 *  AspectJMethodBeforeAdvice
+		 *  这两个没有继承MethodInterceptor，这里通过MethodBeforeAdviceAdapter和AfterReturningAdviceAdapter筛选出来
+		 */
 		for (AdvisorAdapter adapter : this.adapters) {
 			if (adapter.supportsAdvice(advice)) {
 				interceptors.add(adapter.getInterceptor(advisor));

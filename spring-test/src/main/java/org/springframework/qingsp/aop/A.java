@@ -30,4 +30,9 @@ public class A {
 		System.out.println("this is a for print2...");
 		return this;
 	}
+
+	public A print3() {
+		System.out.println("this is a for print3...");
+		return this;
+	}
 }
