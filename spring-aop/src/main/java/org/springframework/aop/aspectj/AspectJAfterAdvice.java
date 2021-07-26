@@ -46,9 +46,11 @@ public class AspectJAfterAdvice extends AbstractAspectJAdvice
 	@Nullable
 	public Object invoke(MethodInvocation mi) throws Throwable {
 		try {
+			//这里直接执行下一个通知
 			return mi.proceed();
 		}
 		finally {
+			//再执行当前的after通知方法
 			invokeAdviceMethod(getJoinPointMatch(), null, null);
 		}
 	}

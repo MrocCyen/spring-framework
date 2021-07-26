@@ -78,6 +78,7 @@ public abstract class AbstractAspectJAdvice implements Advice, AspectJPrecedence
 	 * Spring AOP invocation.
 	 */
 	public static JoinPoint currentJoinPoint() {
+		//获取当前线程返回内的MethodInvocation
 		MethodInvocation mi = ExposeInvocationInterceptor.currentInvocation();
 		if (!(mi instanceof ProxyMethodInvocation)) {
 			throw new IllegalStateException("MethodInvocation is not a Spring ProxyMethodInvocation: " + mi);
@@ -85,7 +86,9 @@ public abstract class AbstractAspectJAdvice implements Advice, AspectJPrecedence
 		ProxyMethodInvocation pmi = (ProxyMethodInvocation) mi;
 		JoinPoint jp = (JoinPoint) pmi.getUserAttribute(JOIN_POINT_KEY);
 		if (jp == null) {
+			//第一次为null，则新建
 			jp = new MethodInvocationProceedingJoinPoint(pmi);
+			//设置起来
 			pmi.setUserAttribute(JOIN_POINT_KEY, jp);
 		}
 		return jp;
@@ -571,6 +574,7 @@ public abstract class AbstractAspectJAdvice implements Advice, AspectJPrecedence
 		Object[] adviceInvocationArgs = new Object[this.parameterTypes.length];
 		int numBound = 0;
 
+		//JoinPoint参数位置
 		if (this.joinPointArgumentIndex != -1) {
 			adviceInvocationArgs[this.joinPointArgumentIndex] = jp;
 			numBound++;
@@ -579,6 +583,7 @@ public abstract class AbstractAspectJAdvice implements Advice, AspectJPrecedence
 			numBound++;
 		}
 
+		//绑定的参数
 		if (!CollectionUtils.isEmpty(this.argumentBindings)) {
 			// binding from pointcut match
 			if (jpMatch != null) {
@@ -610,6 +615,7 @@ public abstract class AbstractAspectJAdvice implements Advice, AspectJPrecedence
 					(jpMatch == null ? "was NOT" : "WAS") + " bound in invocation)");
 		}
 
+		//所有的参数
 		return adviceInvocationArgs;
 	}
 
@@ -669,6 +675,7 @@ public abstract class AbstractAspectJAdvice implements Advice, AspectJPrecedence
 	 */
 	@Nullable
 	protected JoinPointMatch getJoinPointMatch() {
+		//获取当前线程返回内的MethodInvocation
 		MethodInvocation mi = ExposeInvocationInterceptor.currentInvocation();
 		if (!(mi instanceof ProxyMethodInvocation)) {
 			throw new IllegalStateException("MethodInvocation is not a Spring ProxyMethodInvocation: " + mi);
