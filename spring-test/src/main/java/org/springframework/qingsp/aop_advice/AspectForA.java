@@ -67,7 +67,7 @@ public class AspectForA {
 	}
 
 	@AfterReturning(value = "pointCut4() && args(name,age)", argNames = "point,name,age,returnValue", returning = "returnValue")
-	public void around1(JoinPoint point, String name, Integer age, Object returnValue) throws Throwable {
+	public void afterReturning4(JoinPoint point, String name, Integer age, Object returnValue) throws Throwable {
 		System.out.println("this is a afterReturning...");
 		System.out.println("this is a afterReturning, " + name);
 		System.out.println("this is a afterReturning, " + age);

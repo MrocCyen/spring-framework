@@ -623,16 +623,18 @@ public abstract class AbstractAspectJAdvice implements Advice, AspectJPrecedence
 	 * @return the invocation result
 	 * @throws Throwable in case of invocation failure
 	 */
-	protected Object invokeAdviceMethod(
-			@Nullable JoinPointMatch jpMatch, @Nullable Object returnValue, @Nullable Throwable ex)
-			throws Throwable {
+	protected Object invokeAdviceMethod(@Nullable JoinPointMatch jpMatch,
+	                                    @Nullable Object returnValue,
+	                                    @Nullable Throwable ex) throws Throwable {
 
 		return invokeAdviceMethodWithGivenArgs(argBinding(getJoinPoint(), jpMatch, returnValue, ex));
 	}
 
 	// As above, but in this case we are given the join point.
-	protected Object invokeAdviceMethod(JoinPoint jp, @Nullable JoinPointMatch jpMatch,
-	                                    @Nullable Object returnValue, @Nullable Throwable t) throws Throwable {
+	protected Object invokeAdviceMethod(JoinPoint jp,
+	                                    @Nullable JoinPointMatch jpMatch,
+	                                    @Nullable Object returnValue,
+	                                    @Nullable Throwable t) throws Throwable {
 
 		return invokeAdviceMethodWithGivenArgs(argBinding(jp, jpMatch, returnValue, t));
 	}
