@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.qingsp.test_CustomAutowireConfigurer;
+package org.springframework.qingsp.refresh_CustomAutowireConfigurer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 

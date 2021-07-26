@@ -1,4 +1,4 @@
-package org.springframework.qingsp.test_isSynthetic;
+package org.springframework.qingsp.jdk_isSynthetic;
 
 import java.lang.reflect.Method;
 

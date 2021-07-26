@@ -1,4 +1,4 @@
-package org.springframework.qingsp.test_getMergedBeanDefinition;
+package org.springframework.qingsp.refresh_getMergedBeanDefinition;
 
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.stereotype.Component;

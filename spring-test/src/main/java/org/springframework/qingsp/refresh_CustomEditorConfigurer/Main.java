@@ -1,9 +1,9 @@
-package org.springframework.qingsp.test_CustomEditorConfigurer;
+package org.springframework.qingsp.refresh_CustomEditorConfigurer;
 
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.factory.support.RootBeanDefinition;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.qingsp.test_getMergedBeanDefinition.Scanner;
+import org.springframework.qingsp.refresh_getMergedBeanDefinition.Scanner;
 
 /**
  * @author qingsp

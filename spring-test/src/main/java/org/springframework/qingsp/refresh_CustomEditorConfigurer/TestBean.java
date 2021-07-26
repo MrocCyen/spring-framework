@@ -1,4 +1,4 @@
-package org.springframework.qingsp.test_CustomEditorConfigurer;
+package org.springframework.qingsp.refresh_CustomEditorConfigurer;
 
 /**
  * @author qingsp

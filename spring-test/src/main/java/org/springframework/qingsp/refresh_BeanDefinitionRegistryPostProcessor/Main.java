@@ -1,8 +1,8 @@
-package org.springframework.qingsp.test_BeanDefinitionRegistryPostProcessor;
+package org.springframework.qingsp.refresh_BeanDefinitionRegistryPostProcessor;
 
 import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.qingsp.test_getMergedBeanDefinition.Scanner;
+import org.springframework.qingsp.refresh_getMergedBeanDefinition.Scanner;
 
 /**
  * @author qingsp

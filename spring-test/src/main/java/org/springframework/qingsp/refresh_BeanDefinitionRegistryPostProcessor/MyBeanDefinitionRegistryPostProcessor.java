@@ -1,4 +1,4 @@
-package org.springframework.qingsp.test_BeanDefinitionRegistryPostProcessor;
+package org.springframework.qingsp.refresh_BeanDefinitionRegistryPostProcessor;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;

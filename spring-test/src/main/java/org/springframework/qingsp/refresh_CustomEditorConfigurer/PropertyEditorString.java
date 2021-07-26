@@ -1,4 +1,4 @@
-package org.springframework.qingsp.test_CustomEditorConfigurer;
+package org.springframework.qingsp.refresh_CustomEditorConfigurer;
 
 import java.beans.PropertyEditorSupport;
 
@@ -7,10 +7,10 @@ import java.beans.PropertyEditorSupport;
  * @version 0.0.1
  * @date 2021-05-19
  */
-public class PropertyEditorDate extends PropertyEditorSupport {
+public class PropertyEditorString extends PropertyEditorSupport {
 	@Override
 	public void setValue(Object value) {
-		super.setValue(value);
+		super.setValue(value + "2021");
 	}
 
 	@Override
