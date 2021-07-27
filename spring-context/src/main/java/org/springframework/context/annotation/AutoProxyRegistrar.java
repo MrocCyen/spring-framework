@@ -32,9 +32,9 @@ import org.springframework.core.type.AnnotationMetadata;
  * {@code proxyTargetClass} attributes set to the correct values.
  *
  * @author Chris Beams
- * @since 3.1
  * @see org.springframework.cache.annotation.EnableCaching
  * @see org.springframework.transaction.annotation.EnableTransactionManagement
+ * @since 3.1
  */
 public class AutoProxyRegistrar implements ImportBeanDefinitionRegistrar {
 
@@ -64,14 +64,20 @@ public class AutoProxyRegistrar implements ImportBeanDefinitionRegistrar {
 			if (candidate == null) {
 				continue;
 			}
+			//mode属性
+			//proxyTargetClass属性
 			Object mode = candidate.get("mode");
 			Object proxyTargetClass = candidate.get("proxyTargetClass");
-			if (mode != null && proxyTargetClass != null && AdviceMode.class == mode.getClass() &&
-					Boolean.class == proxyTargetClass.getClass()) {
+			if (mode != null
+					&& proxyTargetClass != null
+					&& AdviceMode.class == mode.getClass()
+					&& Boolean.class == proxyTargetClass.getClass()) {
 				candidateFound = true;
+				//jdk代理的通知
 				if (mode == AdviceMode.PROXY) {
 					AopConfigUtils.registerAutoProxyCreatorIfNecessary(registry);
 					if ((Boolean) proxyTargetClass) {
+						//添加属性
 						AopConfigUtils.forceAutoProxyCreatorToUseClassProxying(registry);
 						return;
 					}

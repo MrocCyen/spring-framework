@@ -40,8 +40,8 @@ import org.springframework.util.Assert;
  * @author Rob Harrop
  * @author Juergen Hoeller
  * @author Mark Fisher
- * @since 2.5
  * @see AopNamespaceUtils
+ * @since 2.5
  */
 public abstract class AopConfigUtils {
 
@@ -58,6 +58,7 @@ public abstract class AopConfigUtils {
 
 	static {
 		// Set up the escalation list...
+		//优先级一次升高
 		APC_PRIORITY_LIST.add(InfrastructureAdvisorAutoProxyCreator.class);
 		APC_PRIORITY_LIST.add(AspectJAwareAdvisorAutoProxyCreator.class);
 		APC_PRIORITY_LIST.add(AnnotationAwareAspectJAutoProxyCreator.class);
@@ -119,6 +120,12 @@ public abstract class AopConfigUtils {
 		}
 	}
 
+	/**
+	 * todo
+	 *
+	 * @EnableTransactionManagement注解会注入InfrastructureAdvisorAutoProxyCreator
+	 * @EnableAspectJAutoProxy注解会注入AnnotationAwareAspectJAutoProxyCreator
+	 */
 	@Nullable
 	private static BeanDefinition registerOrEscalateApcAsRequired(
 			Class<?> cls, BeanDefinitionRegistry registry, @Nullable Object source) {
@@ -128,8 +135,11 @@ public abstract class AopConfigUtils {
 		if (registry.containsBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME)) {
 			BeanDefinition apcDefinition = registry.getBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME);
 			if (!cls.getName().equals(apcDefinition.getBeanClassName())) {
+				//当前容器中的bd的优先级
 				int currentPriority = findPriorityForClass(apcDefinition.getBeanClassName());
+				//需要重新注入的bd的优先级
 				int requiredPriority = findPriorityForClass(cls);
+				//当前优先级更低，则重新替换bd的class的值
 				if (currentPriority < requiredPriority) {
 					apcDefinition.setBeanClassName(cls.getName());
 				}
