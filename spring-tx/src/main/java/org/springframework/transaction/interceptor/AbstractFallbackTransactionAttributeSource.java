@@ -74,6 +74,9 @@ public abstract class AbstractFallbackTransactionAttributeSource
 	 */
 	protected final Log logger = LogFactory.getLog(getClass());
 
+	/**
+	 * 解析内嵌值
+	 */
 	@Nullable
 	private transient StringValueResolver embeddedValueResolver;
 
@@ -84,7 +87,6 @@ public abstract class AbstractFallbackTransactionAttributeSource
 	 */
 	private final Map<Object, TransactionAttribute> attributeCache = new ConcurrentHashMap<>(1024);
 
-
 	@Override
 	public void setEmbeddedValueResolver(StringValueResolver resolver) {
 		this.embeddedValueResolver = resolver;
@@ -94,7 +96,8 @@ public abstract class AbstractFallbackTransactionAttributeSource
 	/**
 	 * Determine the transaction attribute for this method invocation.
 	 * <p>Defaults to the class's transaction attribute if no method attribute is found.
-	 * @param method the method for the current invocation (never {@code null})
+	 *
+	 * @param method      the method for the current invocation (never {@code null})
 	 * @param targetClass the target class for this invocation (may be {@code null})
 	 * @return a TransactionAttribute for this method, or {@code null} if the method
 	 * is not transactional
@@ -109,24 +112,22 @@ public abstract class AbstractFallbackTransactionAttributeSource
 		// First, see if we have a cached value.
 		Object cacheKey = getCacheKey(method, targetClass);
 		TransactionAttribute cached = this.attributeCache.get(cacheKey);
+		//缓存了值
 		if (cached != null) {
 			// Value will either be canonical value indicating there is no transaction attribute,
 			// or an actual transaction attribute.
 			if (cached == NULL_TRANSACTION_ATTRIBUTE) {
 				return null;
-			}
-			else {
+			} else {
 				return cached;
 			}
-		}
-		else {
+		} else {//第一次进这个分支
 			// We need to work it out.
 			TransactionAttribute txAttr = computeTransactionAttribute(method, targetClass);
 			// Put it in the cache.
 			if (txAttr == null) {
 				this.attributeCache.put(cacheKey, NULL_TRANSACTION_ATTRIBUTE);
-			}
-			else {
+			} else {
 				String methodIdentification = ClassUtils.getQualifiedMethodName(method, targetClass);
 				if (txAttr instanceof DefaultTransactionAttribute) {
 					DefaultTransactionAttribute dta = (DefaultTransactionAttribute) txAttr;
@@ -146,7 +147,8 @@ public abstract class AbstractFallbackTransactionAttributeSource
 	 * Determine a cache key for the given method and target class.
 	 * <p>Must not produce same key for overloaded methods.
 	 * Must produce same key for different instances of the same method.
-	 * @param method the method (never {@code null})
+	 *
+	 * @param method      the method (never {@code null})
 	 * @param targetClass the target class (may be {@code null})
 	 * @return the cache key (never {@code null})
 	 */
@@ -158,12 +160,15 @@ public abstract class AbstractFallbackTransactionAttributeSource
 	 * Same signature as {@link #getTransactionAttribute}, but doesn't cache the result.
 	 * {@link #getTransactionAttribute} is effectively a caching decorator for this method.
 	 * <p>As of 4.1.8, this method can be overridden.
-	 * @since 4.1.8
+	 *
 	 * @see #getTransactionAttribute
+	 * @since 4.1.8
 	 */
 	@Nullable
 	protected TransactionAttribute computeTransactionAttribute(Method method, @Nullable Class<?> targetClass) {
 		// Don't allow no-public methods as required.
+		//1、是否只允许公共方法（当前类是false）
+		//2、当前方法不是公共方法
 		if (allowPublicMethodsOnly() && !Modifier.isPublic(method.getModifiers())) {
 			return null;
 		}
@@ -204,6 +209,7 @@ public abstract class AbstractFallbackTransactionAttributeSource
 	/**
 	 * Subclasses need to implement this to return the transaction attribute for the
 	 * given class, if any.
+	 *
 	 * @param clazz the class to retrieve the attribute for
 	 * @return all transaction attribute associated with this class, or {@code null} if none
 	 */
@@ -213,6 +219,7 @@ public abstract class AbstractFallbackTransactionAttributeSource
 	/**
 	 * Subclasses need to implement this to return the transaction attribute for the
 	 * given method, if any.
+	 *
 	 * @param method the method to retrieve the attribute for
 	 * @return all transaction attribute associated with this method, or {@code null} if none
 	 */

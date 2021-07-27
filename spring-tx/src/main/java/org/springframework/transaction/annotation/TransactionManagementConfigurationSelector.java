@@ -48,8 +48,8 @@ public class TransactionManagementConfigurationSelector extends AdviceModeImport
 		switch (adviceMode) {
 			//jdk代理的通知，这个是默认的值
 			case PROXY:
-				//AutoProxyRegistrar
-				//ProxyTransactionManagementConfiguration
+				//AutoProxyRegistrar：注入处理代理对象的bd
+				//ProxyTransactionManagementConfiguration：
 				return new String[]{AutoProxyRegistrar.class.getName(), ProxyTransactionManagementConfiguration.class.getName()};
 			//基于aspectj的通知
 			case ASPECTJ:

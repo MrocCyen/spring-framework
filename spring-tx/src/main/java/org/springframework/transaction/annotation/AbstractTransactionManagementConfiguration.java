@@ -38,12 +38,15 @@ import org.springframework.util.CollectionUtils;
  *
  * @author Chris Beams
  * @author Stephane Nicoll
- * @since 3.1
  * @see EnableTransactionManagement
+ * @since 3.1
  */
 @Configuration
 public abstract class AbstractTransactionManagementConfiguration implements ImportAware {
 
+	/**
+	 * 存储@EnableTransactionManagement注解的所有属性
+	 */
 	@Nullable
 	protected AnnotationAttributes enableTx;
 
@@ -56,6 +59,7 @@ public abstract class AbstractTransactionManagementConfiguration implements Impo
 
 	@Override
 	public void setImportMetadata(AnnotationMetadata importMetadata) {
+		//获取@EnableTransactionManagement注解的所有属性
 		this.enableTx = AnnotationAttributes.fromMap(
 				importMetadata.getAnnotationAttributes(EnableTransactionManagement.class.getName(), false));
 		if (this.enableTx == null) {
@@ -64,6 +68,11 @@ public abstract class AbstractTransactionManagementConfiguration implements Impo
 		}
 	}
 
+	/**
+	 * todo  可以注入TransactionManagementConfigurer
+	 * 1、注入TransactionManagementConfigurer，只能有一个
+	 * 2、通过TransactionManagementConfigurer获取TransactionManager
+	 */
 	@Autowired(required = false)
 	void setConfigurers(Collection<TransactionManagementConfigurer> configurers) {
 		if (CollectionUtils.isEmpty(configurers)) {
