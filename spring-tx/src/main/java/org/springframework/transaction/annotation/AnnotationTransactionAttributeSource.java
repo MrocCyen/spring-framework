@@ -68,6 +68,7 @@ public class AnnotationTransactionAttributeSource extends AbstractFallbackTransa
 
 	private final boolean publicMethodsOnly;
 
+	//事务注解解析器
 	private final Set<TransactionAnnotationParser> annotationParsers;
 
 
@@ -77,6 +78,7 @@ public class AnnotationTransactionAttributeSource extends AbstractFallbackTransa
 	 * or the EJB3 {@link javax.ejb.TransactionAttribute} annotation.
 	 */
 	public AnnotationTransactionAttributeSource() {
+		//只处理作用域是公共的方法
 		this(true);
 	}
 
@@ -90,18 +92,23 @@ public class AnnotationTransactionAttributeSource extends AbstractFallbackTransa
 	 *                          with proxy-based AOP), or protected/private methods as well
 	 *                          (typically used with AspectJ class weaving)
 	 */
+	//todo
 	public AnnotationTransactionAttributeSource(boolean publicMethodsOnly) {
 		this.publicMethodsOnly = publicMethodsOnly;
 		if (jta12Present || ejb3Present) {
 			this.annotationParsers = new LinkedHashSet<>(4);
+			//解析org.springframework.transaction.annotation.Transactional注解
 			this.annotationParsers.add(new SpringTransactionAnnotationParser());
 			if (jta12Present) {
+				//解析javax.transaction.Transactional注解
 				this.annotationParsers.add(new JtaTransactionAnnotationParser());
 			}
 			if (ejb3Present) {
+				//解析javax.ejb.TransactionAttribute注解
 				this.annotationParsers.add(new Ejb3TransactionAnnotationParser());
 			}
 		} else {
+			//解析org.springframework.transaction.annotation.Transactional注解
 			this.annotationParsers = Collections.singleton(new SpringTransactionAnnotationParser());
 		}
 	}
