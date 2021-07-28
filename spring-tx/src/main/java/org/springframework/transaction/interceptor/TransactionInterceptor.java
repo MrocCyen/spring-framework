@@ -43,6 +43,8 @@ import org.springframework.transaction.TransactionManager;
  * such as {@link #invokeWithinTransaction} in the correct order.
  *
  * <p>TransactionInterceptors are thread-safe.
+ * <p>
+ * aop的MethodInterceptor
  *
  * @author Rod Johnson
  * @author Juergen Hoeller
@@ -57,6 +59,7 @@ public class TransactionInterceptor extends TransactionAspectSupport implements 
 	/**
 	 * Create a new TransactionInterceptor.
 	 * <p>Transaction manager and transaction attributes still need to be set.
+	 *
 	 * @see #setTransactionManager
 	 * @see #setTransactionAttributes(java.util.Properties)
 	 * @see #setTransactionAttributeSource(TransactionAttributeSource)
@@ -66,11 +69,12 @@ public class TransactionInterceptor extends TransactionAspectSupport implements 
 
 	/**
 	 * Create a new TransactionInterceptor.
+	 *
 	 * @param ptm the default transaction manager to perform the actual transaction management
 	 * @param tas the attribute source to be used to find transaction attributes
-	 * @since 5.2.5
 	 * @see #setTransactionManager
 	 * @see #setTransactionAttributeSource
+	 * @since 5.2.5
 	 */
 	public TransactionInterceptor(TransactionManager ptm, TransactionAttributeSource tas) {
 		setTransactionManager(ptm);
@@ -79,6 +83,7 @@ public class TransactionInterceptor extends TransactionAspectSupport implements 
 
 	/**
 	 * Create a new TransactionInterceptor.
+	 *
 	 * @param ptm the default transaction manager to perform the actual transaction management
 	 * @param tas the attribute source to be used to find transaction attributes
 	 * @see #setTransactionManager
@@ -94,7 +99,8 @@ public class TransactionInterceptor extends TransactionAspectSupport implements 
 
 	/**
 	 * Create a new TransactionInterceptor.
-	 * @param ptm the default transaction manager to perform the actual transaction management
+	 *
+	 * @param ptm        the default transaction manager to perform the actual transaction management
 	 * @param attributes the transaction attributes in properties format
 	 * @see #setTransactionManager
 	 * @see #setTransactionAttributes(java.util.Properties)
@@ -122,10 +128,12 @@ public class TransactionInterceptor extends TransactionAspectSupport implements 
 			public Object proceedWithInvocation() throws Throwable {
 				return invocation.proceed();
 			}
+
 			@Override
 			public Object getTarget() {
 				return invocation.getThis();
 			}
+
 			@Override
 			public Object[] getArguments() {
 				return invocation.getArguments();

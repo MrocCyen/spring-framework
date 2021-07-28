@@ -36,22 +36,34 @@ import org.springframework.util.Assert;
  * in order to not initialize the advice object until the pointcut actually matches.
  *
  * @author Juergen Hoeller
- * @since 2.0.2
  * @see #setAdviceBeanName
  * @see DefaultBeanFactoryPointcutAdvisor
+ * @since 2.0.2
  */
 @SuppressWarnings("serial")
 public abstract class AbstractBeanFactoryPointcutAdvisor extends AbstractPointcutAdvisor implements BeanFactoryAware {
 
+	/**
+	 * 通知bean名称
+	 */
 	@Nullable
 	private String adviceBeanName;
 
+	/**
+	 * bean工厂
+	 */
 	@Nullable
 	private BeanFactory beanFactory;
 
+	/**
+	 * 通知
+	 */
 	@Nullable
 	private transient volatile Advice advice;
 
+	/**
+	 * 锁
+	 */
 	private transient volatile Object adviceMonitor = new Object();
 
 
@@ -61,6 +73,7 @@ public abstract class AbstractBeanFactoryPointcutAdvisor extends AbstractPointcu
 	 * of this advisor's advice. This advisor will only ever obtain at most one
 	 * single instance of the advice bean, caching the instance for the lifetime
 	 * of the advisor.
+	 *
 	 * @see #getAdvice()
 	 */
 	public void setAdviceBeanName(@Nullable String adviceBeanName) {
@@ -84,8 +97,7 @@ public abstract class AbstractBeanFactoryPointcutAdvisor extends AbstractPointcu
 	private void resetAdviceMonitor() {
 		if (this.beanFactory instanceof ConfigurableBeanFactory) {
 			this.adviceMonitor = ((ConfigurableBeanFactory) this.beanFactory).getSingletonMutex();
-		}
-		else {
+		} else {
 			this.adviceMonitor = new Object();
 		}
 	}
@@ -93,6 +105,7 @@ public abstract class AbstractBeanFactoryPointcutAdvisor extends AbstractPointcu
 	/**
 	 * Specify a particular instance of the target advice directly,
 	 * avoiding lazy resolution in {@link #getAdvice()}.
+	 *
 	 * @since 3.1
 	 */
 	public void setAdvice(Advice advice) {
@@ -111,13 +124,13 @@ public abstract class AbstractBeanFactoryPointcutAdvisor extends AbstractPointcu
 		Assert.state(this.adviceBeanName != null, "'adviceBeanName' must be specified");
 		Assert.state(this.beanFactory != null, "BeanFactory must be set to resolve 'adviceBeanName'");
 
+		//单例的advice
 		if (this.beanFactory.isSingleton(this.adviceBeanName)) {
 			// Rely on singleton semantics provided by the factory.
 			advice = this.beanFactory.getBean(this.adviceBeanName, Advice.class);
 			this.advice = advice;
 			return advice;
-		}
-		else {
+		} else {
 			// No singleton guarantees from the factory -> let's lock locally but
 			// reuse the factory's singleton lock, just in case a lazy dependency
 			// of our advice bean happens to trigger the singleton lock implicitly...
@@ -138,8 +151,7 @@ public abstract class AbstractBeanFactoryPointcutAdvisor extends AbstractPointcu
 		sb.append(": advice ");
 		if (this.adviceBeanName != null) {
 			sb.append("bean '").append(this.adviceBeanName).append("'");
-		}
-		else {
+		} else {
 			sb.append(this.advice);
 		}
 		return sb.toString();

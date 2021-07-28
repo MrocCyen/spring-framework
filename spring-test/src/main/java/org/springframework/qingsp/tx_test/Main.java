@@ -11,5 +11,7 @@ public class Main {
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
 		context.register(Scanner.class);
 		context.refresh();
+
+		((A) context.getBean("a")).print();
 	}
 }
