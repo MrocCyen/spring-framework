@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Aspect
 public class AspectForA {
 
-	@Pointcut("execution(* org.springframework.qingsp.tx_test.A.print())")
+	@Pointcut("execution(* org.springframework.qingsp.tx_test.A.print1())")
 	public void pointCut012() {
 
 	}

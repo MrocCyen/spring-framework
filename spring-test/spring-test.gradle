@@ -41,6 +41,7 @@ dependencies {
 	optional("io.projectreactor:reactor-test")
 	optional("org.jetbrains.kotlinx:kotlinx-coroutines-core")
 	optional("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
+	optional "mysql:mysql-connector-java"
 	testCompile(project(":spring-context-support"))
 	testCompile(project(":spring-oxm"))
 	testCompile(testFixtures(project(":spring-beans")))

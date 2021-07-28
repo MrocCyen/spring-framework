@@ -7,11 +7,14 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
  * @date 2021/5/14 16:30
  */
 public class Main {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
 		context.register(Scanner.class);
 		context.refresh();
 
-		((A) context.getBean("a")).print();
+		A a = (A) context.getBean("a");
+		a.print1();
+		//a.print2();
+		//a.print3();
 	}
 }
