@@ -17,6 +17,7 @@
 package org.springframework.transaction.interceptor;
 
 import java.lang.reflect.Method;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentMap;
 
@@ -27,6 +28,7 @@ import kotlinx.coroutines.reactive.ReactiveFlowKt;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.reactivestreams.Publisher;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -419,7 +421,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 
 			//todo 4、提交事务
 			commitTransactionAfterReturning(txInfo);
-			
+
 			return retVal;
 		} else {
 			Object result;
@@ -608,7 +610,11 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 				}
 			}
 		}
-		return prepareTransactionInfo(tm, txAttr, joinpointIdentification, status);
+		TransactionInfo transactionInfo = prepareTransactionInfo(tm, txAttr, joinpointIdentification, status);
+
+		Map<Object, Object> resourceMap = TransactionSynchronizationManager.getResourceMap();
+
+		return transactionInfo;
 	}
 
 	/**

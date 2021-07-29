@@ -16,4 +16,20 @@ public class B {
 	public void print1() throws Exception {
 		System.out.println("this is b tx print1...");
 	}
+
+	@Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
+	public void print2() throws Exception {
+		System.out.println("this is b tx print2...");
+	}
+
+	@Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
+	public void print3() throws Exception {
+		System.out.println("this is b tx print3...");
+	}
+
+	@Transactional(rollbackFor = Exception.class, propagation = Propagation.MANDATORY, isolation = Isolation.REPEATABLE_READ)
+	public void print4() throws Exception {
+		System.out.println("this is b tx print4...");
+		throw new Exception();
+	}
 }

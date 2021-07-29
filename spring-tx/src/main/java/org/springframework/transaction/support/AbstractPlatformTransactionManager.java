@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -388,7 +389,11 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 				logger.debug("Creating new transaction with name [" + def.getName() + "]: " + def);
 			}
 			try {
-				return startTransaction(def, transaction, debugEnabled, suspendedResources);
+				TransactionStatus transactionStatus = startTransaction(def, transaction, debugEnabled, suspendedResources);
+
+				Map<Object, Object> resourceMap = TransactionSynchronizationManager.getResourceMap();
+
+				return transactionStatus;
 			} catch (RuntimeException | Error ex) {
 				resume(null, suspendedResources);
 				throw ex;
@@ -400,7 +405,11 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 						"isolation level will effectively be ignored: " + def);
 			}
 			boolean newSynchronization = (getTransactionSynchronization() == SYNCHRONIZATION_ALWAYS);
-			return prepareTransactionStatus(def, null, true, newSynchronization, debugEnabled, null);
+			DefaultTransactionStatus transactionStatus = prepareTransactionStatus(def, null, true, newSynchronization, debugEnabled, null);
+
+			Map<Object, Object> resourceMap = TransactionSynchronizationManager.getResourceMap();
+
+			return transactionStatus;
 		}
 	}
 

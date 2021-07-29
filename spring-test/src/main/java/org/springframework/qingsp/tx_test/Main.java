@@ -14,7 +14,5 @@ public class Main {
 
 		A a = (A) context.getBean("a");
 		a.print1();
-		//a.print2();
-		//a.print3();
 	}
 }
