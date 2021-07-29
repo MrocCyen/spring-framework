@@ -359,10 +359,12 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 		// Use defaults if no transaction definition given.
 		TransactionDefinition def = (definition != null ? definition : TransactionDefinition.withDefaults());
 
+		//todo （模板方法，子类实现）获取事务对象
 		Object transaction = doGetTransaction();
 		boolean debugEnabled = logger.isDebugEnabled();
 
 		//todo -------------------1、当前存在事务------------------------------
+		//todo （模板方法，子类实现）是否存在当前事务
 		if (isExistingTransaction(transaction)) {
 			// Existing transaction found -> check propagation behavior to find out how to behave.
 			return handleExistingTransaction(def, transaction, debugEnabled);
@@ -711,11 +713,13 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	 */
 	@Override
 	public final void commit(TransactionStatus status) throws TransactionException {
+		//如果事务已经提交，抛异常
 		if (status.isCompleted()) {
 			throw new IllegalTransactionStateException(
 					"Transaction is already completed - do not call commit or rollback more than once per transaction");
 		}
 
+		//todo 这里回滚的逻辑需要仔细看下
 		DefaultTransactionStatus defStatus = (DefaultTransactionStatus) status;
 		if (defStatus.isLocalRollbackOnly()) {
 			if (defStatus.isDebug()) {
@@ -745,13 +749,21 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	 */
 	private void processCommit(DefaultTransactionStatus status) throws TransactionException {
 		try {
+			//标记在完成前调用一些方法
 			boolean beforeCompletionInvoked = false;
 
 			try {
+				//意外回滚标记
 				boolean unexpectedRollback = false;
+
+				//准备提交
 				prepareForCommit(status);
+				//提交前触发
 				triggerBeforeCommit(status);
+				//完成前触发
 				triggerBeforeCompletion(status);
+
+				//标记在完成前调用一些方法
 				beforeCompletionInvoked = true;
 
 				if (status.hasSavepoint()) {
@@ -1048,6 +1060,8 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	 * Consequently, a {@code doGetTransaction} implementation will usually
 	 * look for an existing transaction and store corresponding state in the
 	 * returned transaction object.
+	 * <p>
+	 * todo （模板方法，子类实现）获取事务对象
 	 *
 	 * @return the current transaction object
 	 * @throws org.springframework.transaction.CannotCreateTransactionException if transaction support is not available
@@ -1069,6 +1083,8 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	 * <p>The default implementation returns {@code false}, assuming that
 	 * participating in existing transactions is generally not supported.
 	 * Subclasses are of course encouraged to provide such support.
+	 * <p>
+	 * todo （模板方法，子类实现）是否存在事务
 	 *
 	 * @param transaction the transaction object returned by doGetTransaction
 	 * @return if there is an existing transaction
@@ -1090,6 +1106,8 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	 * call to {@code doBegin} - within the context of an already existing transaction.
 	 * The {@code doBegin} implementation needs to handle this accordingly in such
 	 * a scenario. This is appropriate for JTA, for example.
+	 * <p>
+	 * todo （模板方法，子类实现）内嵌事务使用保存点
 	 *
 	 * @see DefaultTransactionStatus#createAndHoldSavepoint
 	 * @see DefaultTransactionStatus#rollbackToHeldSavepoint
@@ -1112,6 +1130,8 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	 * will be called to start a nested transaction when necessary. In such a context,
 	 * there will be an active transaction: The implementation of this method has
 	 * to detect this and start an appropriate nested transaction.
+	 * <p>
+	 * todo （模板方法，子类实现）开始一个新的事务
 	 *
 	 * @param transaction the transaction object returned by {@code doGetTransaction}
 	 * @param definition  a TransactionDefinition instance, describing propagation
@@ -1127,6 +1147,8 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	 * Transaction synchronization will already have been suspended.
 	 * <p>The default implementation throws a TransactionSuspensionNotSupportedException,
 	 * assuming that transaction suspension is generally not supported.
+	 * <p>
+	 * todo （模板方法，子类实现）挂起一个事务
 	 *
 	 * @param transaction the transaction object returned by {@code doGetTransaction}
 	 * @return an object that holds suspended resources
@@ -1145,6 +1167,8 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	 * Transaction synchronization will be resumed afterwards.
 	 * <p>The default implementation throws a TransactionSuspensionNotSupportedException,
 	 * assuming that transaction suspension is generally not supported.
+	 * <p>
+	 * todo （模板方法，子类实现）恢复一个事务
 	 *
 	 * @param transaction        the transaction object returned by {@code doGetTransaction}
 	 * @param suspendedResources the object that holds suspended resources,
@@ -1179,6 +1203,8 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	 * itself. This should not be the typical case; it is mainly checked to cover misbehaving
 	 * JTA providers that silently roll back even when the rollback has not been requested
 	 * by the calling code.
+	 * <p>
+	 * todo （模板方法，子类实现）只提交标记了全局回滚的事务
 	 *
 	 * @see #doCommit
 	 * @see DefaultTransactionStatus#isGlobalRollbackOnly()
@@ -1197,6 +1223,8 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	 * {@code beforeCommit} synchronization callbacks occur.
 	 * <p>Note that exceptions will get propagated to the commit caller
 	 * and cause a rollback of the transaction.
+	 * <p>
+	 * todo （模板方法，子类实现）准备提交，为提交做准备工作
 	 *
 	 * @param status the status representation of the transaction
 	 * @throws RuntimeException in case of errors; will be <b>propagated to the caller</b>
@@ -1211,6 +1239,8 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	 * or the rollback-only flag; this will already have been handled before.
 	 * Usually, a straight commit will be performed on the transaction object
 	 * contained in the passed-in status.
+	 * <p>
+	 * todo （模板方法，子类实现）提交事务
 	 *
 	 * @param status the status representation of the transaction
 	 * @throws TransactionException in case of commit or system errors
@@ -1223,6 +1253,8 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	 * <p>An implementation does not need to check the "new transaction" flag;
 	 * this will already have been handled before. Usually, a straight rollback
 	 * will be performed on the transaction object contained in the passed-in status.
+	 * <p>
+	 * todo （模板方法，子类实现）回滚事务
 	 *
 	 * @param status the status representation of the transaction
 	 * @throws TransactionException in case of system errors
@@ -1236,6 +1268,8 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	 * <p>The default implementation throws an IllegalTransactionStateException,
 	 * assuming that participating in existing transactions is generally not
 	 * supported. Subclasses are of course encouraged to provide such support.
+	 * <p>
+	 * todo （模板方法，子类实现）回滚事务，只有指定的事务才能回滚
 	 *
 	 * @param status the status representation of the transaction
 	 * @throws TransactionException in case of system errors
@@ -1254,6 +1288,8 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	 * <p>The default implementation simply invokes the {@code afterCompletion} methods
 	 * immediately, passing in "STATUS_UNKNOWN". This is the best we can do if there's no
 	 * chance to determine the actual outcome of the outer transaction.
+	 * <p>
+	 * todo （模板方法，子类实现）将指定的同步列表同步到现有事务
 	 *
 	 * @param transaction      the transaction object returned by {@code doGetTransaction}
 	 * @param synchronizations a List of TransactionSynchronization objects
@@ -1275,6 +1311,8 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	 * <p>Called after {@code doCommit} and {@code doRollback} execution,
 	 * on any outcome. The default implementation does nothing.
 	 * <p>Should not throw any exceptions but just issue warnings on errors.
+	 * <p>
+	 * todo （模板方法，子类实现）事务完成后清理资源
 	 *
 	 * @param transaction the transaction object returned by {@code doGetTransaction}
 	 */
