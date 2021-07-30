@@ -26,16 +26,21 @@ import java.io.Flushable;
  * <p>Autodetected by DefaultTransactionStatus, to always return a
  * current rollbackOnly flag even if not resulting from the current
  * TransactionStatus.
+ * <p>
+ * 智能事务对象
  *
  * @author Juergen Hoeller
- * @since 1.1
  * @see DefaultTransactionStatus#isRollbackOnly
+ * @since 1.1
  */
 public interface SmartTransactionObject extends Flushable {
 
 	/**
 	 * Return whether the transaction is internally marked as rollback-only.
 	 * Can, for example, check the JTA UserTransaction.
+	 * <p>
+	 * 是否事务回滚标志
+	 *
 	 * @see javax.transaction.UserTransaction#getStatus
 	 * @see javax.transaction.Status#STATUS_MARKED_ROLLBACK
 	 */
@@ -44,6 +49,8 @@ public interface SmartTransactionObject extends Flushable {
 	/**
 	 * Flush the underlying sessions to the datastore, if applicable:
 	 * for example, all affected Hibernate/JPA sessions.
+	 * <p>
+	 * 刷数据到磁盘
 	 */
 	@Override
 	void flush();

@@ -391,11 +391,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 				logger.debug("Creating new transaction with name [" + def.getName() + "]: " + def);
 			}
 			try {
-				TransactionStatus transactionStatus = startTransaction(def, transaction, debugEnabled, suspendedResources);
-
-				Map<Object, Object> resourceMap = TransactionSynchronizationManager.getResourceMap();
-
-				return transactionStatus;
+				return startTransaction(def, transaction, debugEnabled, suspendedResources);
 			} catch (RuntimeException | Error ex) {
 				resume(null, suspendedResources);
 				throw ex;
@@ -407,11 +403,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 						"isolation level will effectively be ignored: " + def);
 			}
 			boolean newSynchronization = (getTransactionSynchronization() == SYNCHRONIZATION_ALWAYS);
-			DefaultTransactionStatus transactionStatus = prepareTransactionStatus(def, null, true, newSynchronization, debugEnabled, null);
-
-			Map<Object, Object> resourceMap = TransactionSynchronizationManager.getResourceMap();
-
-			return transactionStatus;
+			return prepareTransactionStatus(def, null, true, newSynchronization, debugEnabled, null);
 		}
 	}
 
@@ -553,9 +545,9 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	protected void prepareSynchronization(DefaultTransactionStatus status, TransactionDefinition definition) {
 		if (status.isNewSynchronization()) {
 			TransactionSynchronizationManager.setActualTransactionActive(status.hasTransaction());
-			TransactionSynchronizationManager.setCurrentTransactionIsolationLevel(
-					definition.getIsolationLevel() != TransactionDefinition.ISOLATION_DEFAULT ?
-							definition.getIsolationLevel() : null);
+			TransactionSynchronizationManager.setCurrentTransactionIsolationLevel(definition.getIsolationLevel() != TransactionDefinition.ISOLATION_DEFAULT
+					? definition.getIsolationLevel()
+					: null);
 			TransactionSynchronizationManager.setCurrentTransactionReadOnly(definition.isReadOnly());
 			TransactionSynchronizationManager.setCurrentTransactionName(definition.getName());
 			TransactionSynchronizationManager.initSynchronization();
@@ -677,8 +669,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	 * @return the List of suspended TransactionSynchronization objects
 	 */
 	private List<TransactionSynchronization> doSuspendSynchronization() {
-		List<TransactionSynchronization> suspendedSynchronizations =
-				TransactionSynchronizationManager.getSynchronizations();
+		List<TransactionSynchronization> suspendedSynchronizations = TransactionSynchronizationManager.getSynchronizations();
 		for (TransactionSynchronization synchronization : suspendedSynchronizations) {
 			synchronization.suspend();
 		}
@@ -719,8 +710,8 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 					"Transaction is already completed - do not call commit or rollback more than once per transaction");
 		}
 
-		//todo 这里回滚的逻辑需要仔细看下
 		DefaultTransactionStatus defStatus = (DefaultTransactionStatus) status;
+		//当前事务是否出现异常，这里回滚标志被置为了true，需要回滚事务
 		if (defStatus.isLocalRollbackOnly()) {
 			if (defStatus.isDebug()) {
 				logger.debug("Transactional code has requested rollback");
@@ -729,6 +720,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 			return;
 		}
 
+		//全局事务回滚被标记时不提交事务，并且全局事务回滚被标记
 		if (!shouldCommitOnGlobalRollbackOnly() && defStatus.isGlobalRollbackOnly()) {
 			if (defStatus.isDebug()) {
 				logger.debug("Global transaction is marked as rollback-only but transactional code requested commit");
@@ -737,6 +729,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 			return;
 		}
 
+		//进行事务提交
 		processCommit(defStatus);
 	}
 
@@ -758,12 +751,14 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 
 				//准备提交
 				prepareForCommit(status);
-				//提交前触发
+				//todo
+				//提交前触发，调用TransactionSynchronization.beforeCommit方法
 				triggerBeforeCommit(status);
-				//完成前触发
+				//todo
+				//完成前触发，调用TransactionSynchronization.beforeCompletion方法
 				triggerBeforeCompletion(status);
 
-				//标记在完成前调用一些方法
+				//标记在完成前调用一些方法（已经完成）
 				beforeCompletionInvoked = true;
 
 				if (status.hasSavepoint()) {

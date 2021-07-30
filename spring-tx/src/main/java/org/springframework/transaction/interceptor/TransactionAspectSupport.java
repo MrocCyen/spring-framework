@@ -349,7 +349,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 		TransactionAttributeSource tas = getTransactionAttributeSource();
 		//获取TransactionAttribute
 		final TransactionAttribute txAttr = (tas != null ? tas.getTransactionAttribute(method, targetClass) : null);
-		//获取TransactionManager
+		//todo 获取TransactionManager，获取不到会抛出异常信息
 		final TransactionManager tm = determineTransactionManager(txAttr);
 
 		//没有响应式的，不会进入这个分支
@@ -488,6 +488,12 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 
 	/**
 	 * Determine the specific transaction manager to use for the given transaction.
+	 * <p>
+	 * todo
+	 * 这里需要注意一下，事务管理器获取的顺序：
+	 * 1、首先从transactionManager变量获取，这个变量可以根据TransactionManagementConfigurer进行注入
+	 * 2、然后从transactionManagerCache缓存中获取
+	 * 3、从bean工厂中获取，如果获取不到则会抛出异常
 	 */
 	@Nullable
 	protected TransactionManager determineTransactionManager(@Nullable TransactionAttribute txAttr) {
@@ -590,6 +596,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 	                                                       final String joinpointIdentification) {
 
 		// If no name specified, apply method identification as transaction name.
+		//没有名字的话，给事务定义信息添加名字
 		if (txAttr != null && txAttr.getName() == null) {
 			txAttr = new DelegatingTransactionAttribute(txAttr) {
 				@Override
@@ -602,19 +609,21 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 		TransactionStatus status = null;
 		if (txAttr != null) {
 			if (tm != null) {
+				//todo 事务属性和事务管理器都不为null时进入；获取事务状态信息
 				status = tm.getTransaction(txAttr);
 			} else {
+				//事务管理器为null
 				if (logger.isDebugEnabled()) {
 					logger.debug("Skipping transactional joinpoint [" + joinpointIdentification +
 							"] because no transaction manager has been configured");
 				}
 			}
 		}
-		TransactionInfo transactionInfo = prepareTransactionInfo(tm, txAttr, joinpointIdentification, status);
 
-		Map<Object, Object> resourceMap = TransactionSynchronizationManager.getResourceMap();
-
-		return transactionInfo;
+		//准备事务信息，status可能是null，这时事务管理器是null
+		//也就是txAttr!=null，tm=null，status=null，或者txAttr=null，tm=null，status=null
+		//todo 但是事务管理器不会为null
+		return prepareTransactionInfo(tm, txAttr, joinpointIdentification, status);
 	}
 
 	/**
@@ -627,7 +636,8 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 	 * @return the prepared TransactionInfo object
 	 */
 	protected TransactionInfo prepareTransactionInfo(@Nullable PlatformTransactionManager tm,
-	                                                 @Nullable TransactionAttribute txAttr, String joinpointIdentification,
+	                                                 @Nullable TransactionAttribute txAttr,
+	                                                 String joinpointIdentification,
 	                                                 @Nullable TransactionStatus status) {
 
 		TransactionInfo txInfo = new TransactionInfo(tm, txAttr, joinpointIdentification);
@@ -637,6 +647,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 				logger.trace("Getting transaction for [" + txInfo.getJoinpointIdentification() + "]");
 			}
 			// The transaction manager will flag an error if an incompatible tx already exists.
+			//设置事务状态
 			txInfo.newTransactionStatus(status);
 		} else {
 			// The TransactionInfo.hasTransaction() method will return false. We created it only
@@ -650,7 +661,9 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 		// We always bind the TransactionInfo to the thread, even if we didn't create
 		// a new transaction here. This guarantees that the TransactionInfo stack
 		// will be managed correctly even if no transaction was created by this aspect.
+		//todo 当前线程可以获取到事务信息，包括事务管理器、事务属性，事务状态、旧的事务信息
 		txInfo.bindToThread();
+
 		return txInfo;
 	}
 
@@ -731,22 +744,38 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 	 */
 	protected static final class TransactionInfo {
 
+		/**
+		 * 事务管理器
+		 */
 		@Nullable
 		private final PlatformTransactionManager transactionManager;
 
+		/**
+		 * 事务属性
+		 */
 		@Nullable
 		private final TransactionAttribute transactionAttribute;
 
+		/**
+		 * 连接点标识，也就是事务属性的名称
+		 */
 		private final String joinpointIdentification;
 
+		/**
+		 * 事务的状态
+		 */
 		@Nullable
 		private TransactionStatus transactionStatus;
 
+		/**
+		 * 旧的事务信息
+		 */
 		@Nullable
 		private TransactionInfo oldTransactionInfo;
 
 		public TransactionInfo(@Nullable PlatformTransactionManager transactionManager,
-		                       @Nullable TransactionAttribute transactionAttribute, String joinpointIdentification) {
+		                       @Nullable TransactionAttribute transactionAttribute,
+		                       String joinpointIdentification) {
 
 			this.transactionManager = transactionManager;
 			this.transactionAttribute = transactionAttribute;
@@ -791,13 +820,16 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 		private void bindToThread() {
 			// Expose current TransactionStatus, preserving any existing TransactionStatus
 			// for restoration after this transaction is complete.
+			//获取前一个事务信息
 			this.oldTransactionInfo = transactionInfoHolder.get();
+			//设置当前事务信息到线程中
 			transactionInfoHolder.set(this);
 		}
 
 		private void restoreThreadLocalStatus() {
 			// Use stack to restore old transaction TransactionInfo.
 			// Will be null if none was set.
+			//恢复旧事务信息到线程中
 			transactionInfoHolder.set(this.oldTransactionInfo);
 		}
 

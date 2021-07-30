@@ -443,15 +443,25 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 	 */
 	private static class DataSourceTransactionObject extends JdbcTransactionObjectSupport {
 
+		/**
+		 * 是否设置了新的连接信息
+		 */
 		private boolean newConnectionHolder;
 
+		/**
+		 * 必须恢复自动提交
+		 */
 		private boolean mustRestoreAutoCommit;
 
-		public void setConnectionHolder(@Nullable ConnectionHolder connectionHolder, boolean newConnectionHolder) {
+		public void setConnectionHolder(@Nullable ConnectionHolder connectionHolder,
+		                                boolean newConnectionHolder) {
 			super.setConnectionHolder(connectionHolder);
 			this.newConnectionHolder = newConnectionHolder;
 		}
 
+		/**
+		 * 是否是新的连接信息
+		 */
 		public boolean isNewConnectionHolder() {
 			return this.newConnectionHolder;
 		}
@@ -475,6 +485,7 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 
 		@Override
 		public void flush() {
+			//如果有同步器，则执行flush操作
 			if (TransactionSynchronizationManager.isSynchronizationActive()) {
 				TransactionSynchronizationUtils.triggerFlush();
 			}

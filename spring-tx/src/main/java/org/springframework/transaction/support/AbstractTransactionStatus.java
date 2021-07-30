@@ -47,7 +47,7 @@ import org.springframework.transaction.TransactionUsageException;
 public abstract class AbstractTransactionStatus implements TransactionStatus {
 
 	/**
-	 * 只回滚
+	 * 触发异常后事务会回滚
 	 */
 	private boolean rollbackOnly = false;
 
