@@ -397,6 +397,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 				logger.debug("Creating new transaction with name [" + def.getName() + "]: " + def);
 			}
 			try {
+				//todo 开启事务
 				return startTransaction(def, transaction, debugEnabled, suspendedResources);
 			} catch (RuntimeException | Error ex) {
 				resume(null, suspendedResources);
@@ -408,6 +409,8 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 				logger.warn("Custom isolation level specified but no actual transaction initiated; " +
 						"isolation level will effectively be ignored: " + def);
 			}
+			//todo 2.3、当前不存在事务，SUPPORTS、NOT_SUPPORTED、NEVER
+			//同步状态只有是SYNCHRONIZATION_ALWAYS时，激活事务同步
 			boolean newSynchronization = (getTransactionSynchronization() == SYNCHRONIZATION_ALWAYS);
 			return prepareTransactionStatus(def, null, true, newSynchronization, debugEnabled, null);
 		}
@@ -416,9 +419,11 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	/**
 	 * Start a new transaction.
 	 */
-	private TransactionStatus startTransaction(TransactionDefinition definition, Object transaction,
-	                                           boolean debugEnabled, @Nullable SuspendedResourcesHolder suspendedResources) {
-
+	private TransactionStatus startTransaction(TransactionDefinition definition,
+	                                           Object transaction,
+	                                           boolean debugEnabled,
+	                                           @Nullable SuspendedResourcesHolder suspendedResources) {
+		//同步状态是SYNCHRONIZATION_ALWAYS和SYNCHRONIZATION_ON_ACTUAL_TRANSACTION时，激活事务同步
 		boolean newSynchronization = (getTransactionSynchronization() != SYNCHRONIZATION_NEVER);
 		DefaultTransactionStatus status = newTransactionStatus(definition, transaction, true, newSynchronization, debugEnabled, suspendedResources);
 		doBegin(transaction, definition);
@@ -521,12 +526,15 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	 * @see #newTransactionStatus
 	 * @see #prepareTransactionStatus
 	 */
-	protected final DefaultTransactionStatus prepareTransactionStatus(
-			TransactionDefinition definition, @Nullable Object transaction, boolean newTransaction,
-			boolean newSynchronization, boolean debug, @Nullable Object suspendedResources) {
+	protected final DefaultTransactionStatus prepareTransactionStatus(TransactionDefinition definition,
+	                                                                  @Nullable Object transaction,
+	                                                                  boolean newTransaction,
+	                                                                  boolean newSynchronization,
+	                                                                  boolean debug,
+	                                                                  @Nullable Object suspendedResources) {
 
-		DefaultTransactionStatus status = newTransactionStatus(
-				definition, transaction, newTransaction, newSynchronization, debug, suspendedResources);
+		DefaultTransactionStatus status = newTransactionStatus(definition, transaction,
+				newTransaction, newSynchronization, debug, suspendedResources);
 		prepareSynchronization(status, definition);
 		return status;
 	}
@@ -547,15 +555,23 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 
 	/**
 	 * Initialize transaction synchronization as appropriate.
+	 * <p>
+	 * todo 准备事务同步信息
 	 */
 	protected void prepareSynchronization(DefaultTransactionStatus status, TransactionDefinition definition) {
+		//新的事务同步
 		if (status.isNewSynchronization()) {
+			//设置是否有事务
 			TransactionSynchronizationManager.setActualTransactionActive(status.hasTransaction());
+			//设置当前事务隔离级别
 			TransactionSynchronizationManager.setCurrentTransactionIsolationLevel(definition.getIsolationLevel() != TransactionDefinition.ISOLATION_DEFAULT
 					? definition.getIsolationLevel()
 					: null);
+			//设置是否是只读
 			TransactionSynchronizationManager.setCurrentTransactionReadOnly(definition.isReadOnly());
+			//设置事务定义信息的名称
 			TransactionSynchronizationManager.setCurrentTransactionName(definition.getName());
+			//置空TransactionSynchronization集合
 			TransactionSynchronizationManager.initSynchronization();
 		}
 	}

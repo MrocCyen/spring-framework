@@ -23,6 +23,7 @@ public class A {
 		b.print1();
 		b.print2();
 		b.print3();
-		//b.print4();
+		b.print4();
+		b.print5();
 	}
 }
