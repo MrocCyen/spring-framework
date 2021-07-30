@@ -206,6 +206,8 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 
 	/**
 	 * Return whether nested transactions are allowed.
+	 * <p>
+	 * 是否支持嵌套事务
 	 */
 	public final boolean isNestedTransactionAllowed() {
 		return this.nestedTransactionAllowed;
@@ -360,6 +362,10 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 		TransactionDefinition def = (definition != null ? definition : TransactionDefinition.withDefaults());
 
 		//todo （模板方法，子类实现）获取事务对象
+		//DataSourceTransactionManager实现类这里做以下几件事情：
+		//1、设置允许嵌套事务
+		//2、设置不是新的事务
+		//3、从ThreadLocal中获取当前线程的数据库连接信息，可能是null
 		Object transaction = doGetTransaction();
 		boolean debugEnabled = logger.isDebugEnabled();
 

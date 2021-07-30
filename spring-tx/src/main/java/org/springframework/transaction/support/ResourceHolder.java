@@ -22,25 +22,31 @@ package org.springframework.transaction.support;
  * and reset the holder when necessary.
  *
  * @author Juergen Hoeller
- * @since 2.5.5
  * @see ResourceHolderSupport
  * @see ResourceHolderSynchronization
+ * @since 2.5.5
  */
 public interface ResourceHolder {
 
 	/**
 	 * Reset the transactional state of this holder.
+	 * <p>
+	 * 重置事务状态
 	 */
 	void reset();
 
 	/**
 	 * Notify this holder that it has been unbound from transaction synchronization.
+	 * <p>
+	 * 从事务同步中解绑
 	 */
 	void unbound();
 
 	/**
 	 * Determine whether this holder is considered as 'void',
 	 * i.e. as a leftover from a previous thread.
+	 * <p>
+	 * 标志当前资源持有者是否是无效
 	 */
 	boolean isVoid();
 

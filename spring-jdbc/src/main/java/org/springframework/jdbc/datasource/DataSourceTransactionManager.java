@@ -130,6 +130,7 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 	 * @see #setDataSource
 	 */
 	public DataSourceTransactionManager() {
+		//允许嵌套事务
 		setNestedTransactionAllowed(true);
 	}
 
@@ -246,8 +247,12 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 	@Override
 	protected Object doGetTransaction() {
 		DataSourceTransactionObject txObject = new DataSourceTransactionObject();
+		//设置是否允许保存点
+		//todo 这里设置的值是是否允许嵌套事务的值
 		txObject.setSavepointAllowed(isNestedTransactionAllowed());
+		//todo 从ThreadLocal中获取DataSource在当前线程中对应的连接信息，ThreadLocal存储的是一个Map，key是obtainDataSource()函数的值，value是ConnectionHolder
 		ConnectionHolder conHolder = (ConnectionHolder) TransactionSynchronizationManager.getResource(obtainDataSource());
+		//todo 这里设置事务信息，并且不是新的事务
 		txObject.setConnectionHolder(conHolder, false);
 		return txObject;
 	}
