@@ -35,20 +35,26 @@ import org.springframework.lang.Nullable;
  *
  * @author Rod Johnson
  * @author Juergen Hoeller
- * @since 09.04.2003
  * @see TransactionAttributeEditor
+ * @since 09.04.2003
  */
 @SuppressWarnings("serial")
 public class RuleBasedTransactionAttribute extends DefaultTransactionAttribute implements Serializable {
 
-	/** Prefix for rollback-on-exception rules in description strings. */
+	/**
+	 * Prefix for rollback-on-exception rules in description strings.
+	 */
 	public static final String PREFIX_ROLLBACK_RULE = "-";
 
-	/** Prefix for commit-on-exception rules in description strings. */
+	/**
+	 * Prefix for commit-on-exception rules in description strings.
+	 */
 	public static final String PREFIX_COMMIT_RULE = "+";
 
 
-	/** Static for optimal serializability. */
+	/**
+	 * Static for optimal serializability.
+	 */
 	private static final Log logger = LogFactory.getLog(RuleBasedTransactionAttribute.class);
 
 	@Nullable
@@ -58,6 +64,7 @@ public class RuleBasedTransactionAttribute extends DefaultTransactionAttribute i
 	/**
 	 * Create a new RuleBasedTransactionAttribute, with default settings.
 	 * Can be modified through bean property setters.
+	 *
 	 * @see #setPropagationBehavior
 	 * @see #setIsolationLevel
 	 * @see #setTimeout
@@ -71,6 +78,7 @@ public class RuleBasedTransactionAttribute extends DefaultTransactionAttribute i
 
 	/**
 	 * Copy constructor. Definition can be modified through bean property setters.
+	 *
 	 * @see #setPropagationBehavior
 	 * @see #setIsolationLevel
 	 * @see #setTimeout
@@ -86,9 +94,10 @@ public class RuleBasedTransactionAttribute extends DefaultTransactionAttribute i
 	/**
 	 * Create a new DefaultTransactionAttribute with the given
 	 * propagation behavior. Can be modified through bean property setters.
+	 *
 	 * @param propagationBehavior one of the propagation constants in the
-	 * TransactionDefinition interface
-	 * @param rollbackRules the list of RollbackRuleAttributes to apply
+	 *                            TransactionDefinition interface
+	 * @param rollbackRules       the list of RollbackRuleAttributes to apply
 	 * @see #setIsolationLevel
 	 * @see #setTimeout
 	 * @see #setReadOnly
@@ -102,6 +111,7 @@ public class RuleBasedTransactionAttribute extends DefaultTransactionAttribute i
 	/**
 	 * Set the list of {@code RollbackRuleAttribute} objects
 	 * (and/or {@code NoRollbackRuleAttribute} objects) to apply.
+	 *
 	 * @see RollbackRuleAttribute
 	 * @see NoRollbackRuleAttribute
 	 */
@@ -125,6 +135,7 @@ public class RuleBasedTransactionAttribute extends DefaultTransactionAttribute i
 	 * Winning rule is the shallowest rule (that is, the closest in the
 	 * inheritance hierarchy to the exception). If no rule applies (-1),
 	 * return false.
+	 *
 	 * @see TransactionAttribute#rollbackOn(java.lang.Throwable)
 	 */
 	@Override

@@ -118,7 +118,7 @@ public interface TransactionDefinition {
 	 * {@code PROPAGATION_NOT_SUPPORTED} scope. Existing synchronizations
 	 * will be suspended and resumed appropriately.
 	 * <p>
-	 * todo 如果当前存在事务，不支持当前事务，以一个非事务的状态执行
+	 * todo 如果当前存在事务，不支持当前事务，挂起当前事务，并且以一个非事务的状态执行
 	 * todo 意思就是不管当前有没有事务，都要以一个非事务的状态执行
 	 *
 	 * @see org.springframework.transaction.jta.JtaTransactionManager#setTransactionManager

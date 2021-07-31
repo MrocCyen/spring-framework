@@ -451,12 +451,13 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	private TransactionStatus handleExistingTransaction(TransactionDefinition definition,
 	                                                    Object transaction,
 	                                                    boolean debugEnabled) throws TransactionException {
-
+		//NEVER：不支持当前事务，抛出异常
 		if (definition.getPropagationBehavior() == TransactionDefinition.PROPAGATION_NEVER) {
 			throw new IllegalTransactionStateException(
 					"Existing transaction found for transaction marked with propagation 'never'");
 		}
 
+		//NOT_SUPPORTS：不支持当前事务，挂起当前事务，以一个非事务状态运行
 		if (definition.getPropagationBehavior() == TransactionDefinition.PROPAGATION_NOT_SUPPORTED) {
 			if (debugEnabled) {
 				logger.debug("Suspending current transaction");

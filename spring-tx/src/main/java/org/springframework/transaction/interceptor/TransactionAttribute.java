@@ -57,7 +57,7 @@ public interface TransactionAttribute extends TransactionDefinition {
 	/**
 	 * Should we roll back on the given exception?
 	 * <p>
-	 * todo 是否回滚指定的异常
+	 * todo 重要：是否回滚指定的异常
 	 *
 	 * @param ex the exception to evaluate
 	 * @return whether to perform a rollback or not

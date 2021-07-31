@@ -13,27 +13,32 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 public class B {
 	@Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
-	public void print1() throws Exception {
+	public String print1() throws Exception {
 		System.out.println("this is b tx print1...");
+		return "1";
 	}
 
 	@Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
-	public void print2() throws Exception {
+	public String print2() throws Exception {
 		System.out.println("this is b tx print2...");
+		return "2";
 	}
 
 	@Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
-	public void print3() throws Exception {
+	public String print3() throws Exception {
 		System.out.println("this is b tx print3...");
+		return "3";
 	}
 
 	@Transactional(rollbackFor = Exception.class, propagation = Propagation.MANDATORY, isolation = Isolation.REPEATABLE_READ)
-	public void print4() throws Exception {
+	public String print4() throws Exception {
 		System.out.println("this is b tx print4...");
+		return "4";
 	}
 
 	@Transactional(rollbackFor = Exception.class, propagation = Propagation.MANDATORY, isolation = Isolation.REPEATABLE_READ)
-	public void print5() throws Exception {
+	public String print5() throws Exception {
 		System.out.println("this is b tx print5...");
+		return "5";
 	}
 }

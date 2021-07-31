@@ -53,6 +53,7 @@ public class DefaultTransactionAttribute extends DefaultTransactionDefinition im
 	/**
 	 * Create a new DefaultTransactionAttribute, with default settings.
 	 * Can be modified through bean property setters.
+	 *
 	 * @see #setPropagationBehavior
 	 * @see #setIsolationLevel
 	 * @see #setTimeout
@@ -65,6 +66,7 @@ public class DefaultTransactionAttribute extends DefaultTransactionDefinition im
 
 	/**
 	 * Copy constructor. Definition can be modified through bean property setters.
+	 *
 	 * @see #setPropagationBehavior
 	 * @see #setIsolationLevel
 	 * @see #setTimeout
@@ -78,8 +80,9 @@ public class DefaultTransactionAttribute extends DefaultTransactionDefinition im
 	/**
 	 * Create a new DefaultTransactionAttribute with the given
 	 * propagation behavior. Can be modified through bean property setters.
+	 *
 	 * @param propagationBehavior one of the propagation constants in the
-	 * TransactionDefinition interface
+	 *                            TransactionDefinition interface
 	 * @see #setIsolationLevel
 	 * @see #setTimeout
 	 * @see #setReadOnly
@@ -92,6 +95,7 @@ public class DefaultTransactionAttribute extends DefaultTransactionDefinition im
 	/**
 	 * Set a descriptor for this transaction attribute,
 	 * e.g. indicating where the attribute is applying.
+	 *
 	 * @since 4.3.4
 	 */
 	public void setDescriptor(@Nullable String descriptor) {
@@ -101,6 +105,7 @@ public class DefaultTransactionAttribute extends DefaultTransactionDefinition im
 	/**
 	 * Return a descriptor for this transaction attribute,
 	 * or {@code null} if none.
+	 *
 	 * @since 4.3.4
 	 */
 	@Nullable
@@ -111,9 +116,10 @@ public class DefaultTransactionAttribute extends DefaultTransactionDefinition im
 	/**
 	 * Set the timeout to apply, if any,
 	 * as a String value that resolves to a number of seconds.
-	 * @since 5.3
+	 *
 	 * @see #setTimeout
 	 * @see #resolveAttributeStrings
+	 * @since 5.3
 	 */
 	public void setTimeoutString(@Nullable String timeoutString) {
 		this.timeoutString = timeoutString;
@@ -122,9 +128,10 @@ public class DefaultTransactionAttribute extends DefaultTransactionDefinition im
 	/**
 	 * Return the timeout to apply, if any,
 	 * as a String value that resolves to a number of seconds.
-	 * @since 5.3
+	 *
 	 * @see #getTimeout
 	 * @see #resolveAttributeStrings
+	 * @since 5.3
 	 */
 	@Nullable
 	public String getTimeoutString() {
@@ -135,8 +142,9 @@ public class DefaultTransactionAttribute extends DefaultTransactionDefinition im
 	 * Associate a qualifier value with this transaction attribute.
 	 * <p>This may be used for choosing a corresponding transaction manager
 	 * to process this specific transaction.
-	 * @since 3.0
+	 *
 	 * @see #resolveAttributeStrings
+	 * @since 3.0
 	 */
 	public void setQualifier(@Nullable String qualifier) {
 		this.qualifier = qualifier;
@@ -144,6 +152,7 @@ public class DefaultTransactionAttribute extends DefaultTransactionDefinition im
 
 	/**
 	 * Return a qualifier value associated with this transaction attribute.
+	 *
 	 * @since 3.0
 	 */
 	@Override
@@ -156,8 +165,9 @@ public class DefaultTransactionAttribute extends DefaultTransactionDefinition im
 	 * Associate one or more labels with this transaction attribute.
 	 * <p>This may be used for applying specific transactional behavior
 	 * or follow a purely descriptive nature.
-	 * @since 5.3
+	 *
 	 * @see #resolveAttributeStrings
+	 * @since 5.3
 	 */
 	public void setLabels(Collection<String> labels) {
 		this.labels = labels;
@@ -180,10 +190,12 @@ public class DefaultTransactionAttribute extends DefaultTransactionDefinition im
 	 * except that TransactionTemplate also rolls back on undeclared checked exceptions
 	 * (a corner case). For declarative transactions, we expect checked exceptions to be
 	 * intentionally declared as business exceptions, leading to a commit by default.
+	 *
 	 * @see org.springframework.transaction.support.TransactionTemplate#execute
 	 */
 	@Override
 	public boolean rollbackOn(Throwable ex) {
+		//todo 只有RuntimeException和Error异常才会回滚
 		return (ex instanceof RuntimeException || ex instanceof Error);
 	}
 
@@ -192,6 +204,7 @@ public class DefaultTransactionAttribute extends DefaultTransactionDefinition im
 	 * Resolve attribute values that are defined as resolvable Strings:
 	 * {@link #setTimeoutString}, {@link #setQualifier}, {@link #setLabels}.
 	 * This is typically used for resolving "${...}" placeholders.
+	 *
 	 * @param resolver the embedded value resolver to apply, if any
 	 * @since 5.3
 	 */
@@ -204,8 +217,7 @@ public class DefaultTransactionAttribute extends DefaultTransactionDefinition im
 			if (StringUtils.hasLength(timeoutString)) {
 				try {
 					setTimeout(Integer.parseInt(timeoutString));
-				}
-				catch (RuntimeException ex) {
+				} catch (RuntimeException ex) {
 					throw new IllegalArgumentException(
 							"Invalid timeoutString value \"" + timeoutString + "\" - cannot parse into int");
 				}
