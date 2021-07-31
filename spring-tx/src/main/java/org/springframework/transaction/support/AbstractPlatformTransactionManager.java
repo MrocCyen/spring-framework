@@ -411,7 +411,14 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 			}
 			//todo 2.3、当前不存在事务，SUPPORTS、NOT_SUPPORTED、NEVER
 			//同步状态只有是SYNCHRONIZATION_ALWAYS时，激活事务同步
+			//也就是只有SYNCHRONIZATION_ALWAYS状态时，才会将事务的状态信息（比如是否可读、隔离级别等）保存到ThreadLocal中
+			//getTransactionSynchronization()默认是SYNCHRONIZATION_ALWAYS，所以这里的newSynchronization始终是true
+			//todo
+			//1、getTransactionSynchronization()=SYNCHRONIZATION_ALWAYS，newSynchronization=true
+			//2、getTransactionSynchronization()=SYNCHRONIZATION_ON_ACTUAL_TRANSACTION，newSynchronization=false
+			//3、getTransactionSynchronization()=SYNCHRONIZATION_NEVER，newSynchronization=false
 			boolean newSynchronization = (getTransactionSynchronization() == SYNCHRONIZATION_ALWAYS);
+
 			return prepareTransactionStatus(def, null, true, newSynchronization, debugEnabled, null);
 		}
 	}
@@ -424,9 +431,16 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	                                           boolean debugEnabled,
 	                                           @Nullable SuspendedResourcesHolder suspendedResources) {
 		//同步状态是SYNCHRONIZATION_ALWAYS和SYNCHRONIZATION_ON_ACTUAL_TRANSACTION时，激活事务同步
+		//todo
+		//1、getTransactionSynchronization()=SYNCHRONIZATION_ALWAYS，newSynchronization=true
+		//2、getTransactionSynchronization()=SYNCHRONIZATION_ON_ACTUAL_TRANSACTION，newSynchronization=true
+		//3、getTransactionSynchronization()=SYNCHRONIZATION_NEVER，newSynchronization=false
 		boolean newSynchronization = (getTransactionSynchronization() != SYNCHRONIZATION_NEVER);
+		//newSynchronization=true，会设置事务信息
 		DefaultTransactionStatus status = newTransactionStatus(definition, transaction, true, newSynchronization, debugEnabled, suspendedResources);
+		//开启事务
 		doBegin(transaction, definition);
+		//准备同步，newSynchronization=true，会设置事务信息
 		prepareSynchronization(status, definition);
 		return status;
 	}
@@ -545,7 +559,9 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	protected DefaultTransactionStatus newTransactionStatus(
 			TransactionDefinition definition, @Nullable Object transaction, boolean newTransaction,
 			boolean newSynchronization, boolean debug, @Nullable Object suspendedResources) {
-
+		//todo 这里很重要，newSynchronization为true时，!TransactionSynchronizationManager.isSynchronizationActive()要为true，
+		// 就只能ThreadLocal中没有当前线程的TransactionSynchronization集合；
+		// 只要ThreadLocal中有当前线程的TransactionSynchronization集合，actualNewSynchronization的值就永远都是false
 		boolean actualNewSynchronization = newSynchronization &&
 				!TransactionSynchronizationManager.isSynchronizationActive();
 		return new DefaultTransactionStatus(
@@ -559,7 +575,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	 * todo 准备事务同步信息
 	 */
 	protected void prepareSynchronization(DefaultTransactionStatus status, TransactionDefinition definition) {
-		//新的事务同步
+		//新的事务同步，才会进行事务同步信息更新
 		if (status.isNewSynchronization()) {
 			//设置是否有事务
 			TransactionSynchronizationManager.setActualTransactionActive(status.hasTransaction());
@@ -607,10 +623,13 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	 */
 	@Nullable
 	protected final SuspendedResourcesHolder suspend(@Nullable Object transaction) throws TransactionException {
+		//当前线程的TransactionSynchronization设置了
 		if (TransactionSynchronizationManager.isSynchronizationActive()) {
+			//执行所有的TransactionSynchronization的suspend方法
 			List<TransactionSynchronization> suspendedSynchronizations = doSuspendSynchronization();
 			try {
 				Object suspendedResources = null;
+				//事务不为null，对事务执行挂起操作
 				if (transaction != null) {
 					suspendedResources = doSuspend(transaction);
 				}
@@ -622,15 +641,18 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 				TransactionSynchronizationManager.setCurrentTransactionIsolationLevel(null);
 				boolean wasActive = TransactionSynchronizationManager.isActualTransactionActive();
 				TransactionSynchronizationManager.setActualTransactionActive(false);
+				//挂起的事务资源信息包括当前线程的事务信息
 				return new SuspendedResourcesHolder(
 						suspendedResources, suspendedSynchronizations, name, readOnly, isolationLevel, wasActive);
 			} catch (RuntimeException | Error ex) {
 				// doSuspend failed - original transaction is still active...
+				//执行所有的TransactionSynchronization的resume方法
 				doResumeSynchronization(suspendedSynchronizations);
 				throw ex;
 			}
 		} else if (transaction != null) {
 			// Transaction active but no synchronization active.
+			//没有事务同步信息，并且事务不为null，则挂起事务
 			Object suspendedResources = doSuspend(transaction);
 			return new SuspendedResourcesHolder(suspendedResources);
 		} else {
@@ -695,6 +717,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 		for (TransactionSynchronization synchronization : suspendedSynchronizations) {
 			synchronization.suspend();
 		}
+		//清空synchronizations ThreadLocal变量
 		TransactionSynchronizationManager.clearSynchronization();
 		return suspendedSynchronizations;
 	}
@@ -1376,9 +1399,12 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 			this.suspendedResources = suspendedResources;
 		}
 
-		private SuspendedResourcesHolder(
-				@Nullable Object suspendedResources, List<TransactionSynchronization> suspendedSynchronizations,
-				@Nullable String name, boolean readOnly, @Nullable Integer isolationLevel, boolean wasActive) {
+		private SuspendedResourcesHolder(@Nullable Object suspendedResources,
+		                                 List<TransactionSynchronization> suspendedSynchronizations,
+		                                 @Nullable String name,
+		                                 boolean readOnly,
+		                                 @Nullable Integer isolationLevel,
+		                                 boolean wasActive) {
 
 			this.suspendedResources = suspendedResources;
 			this.suspendedSynchronizations = suspendedSynchronizations;

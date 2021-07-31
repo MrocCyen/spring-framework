@@ -21,9 +21,9 @@ public class A {
 	public void print1() throws Exception {
 		System.out.println("this is a tx print1...");
 		b.print1();
-		b.print2();
-		b.print3();
-		b.print4();
-		b.print5();
+//		b.print2();
+//		b.print3();
+//		b.print4();
+//		b.print5();
 	}
 }

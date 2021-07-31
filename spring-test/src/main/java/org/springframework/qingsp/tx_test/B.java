@@ -32,7 +32,7 @@ public class B {
 		System.out.println("this is b tx print4...");
 	}
 
-	@Transactional(rollbackFor = Exception.class, propagation = Propagation.NEVER, isolation = Isolation.REPEATABLE_READ)
+	@Transactional(rollbackFor = Exception.class, propagation = Propagation.MANDATORY, isolation = Isolation.REPEATABLE_READ)
 	public void print5() throws Exception {
 		System.out.println("this is b tx print5...");
 	}
