@@ -766,7 +766,8 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 			return;
 		}
 
-		//todo shouldCommitOnGlobalRollbackOnly 是否可以根据全局回滚事务标志进行事务的回滚
+		//todo shouldCommitOnGlobalRollbackOnly 是否可以根据全局回滚事务标志进行事务的回滚，
+		// shouldCommitOnGlobalRollbackOnly的值为true，不用检查isGlobalRollbackOnly的值，直接提交
 		if (!shouldCommitOnGlobalRollbackOnly() && defStatus.isGlobalRollbackOnly()) {
 			if (defStatus.isDebug()) {
 				logger.debug("Global transaction is marked as rollback-only but transactional code requested commit");

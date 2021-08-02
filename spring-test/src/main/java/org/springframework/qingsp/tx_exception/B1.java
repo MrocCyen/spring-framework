@@ -12,6 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Component
 public class B1 {
+	/**
+	 * 事务回滚异常BizException和方法抛出的异常是一样的
+	 */
 	@Transactional(rollbackFor = BizException.class, propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
 	public String print1() throws Exception {
 		System.out.println("this is b tx print1...");

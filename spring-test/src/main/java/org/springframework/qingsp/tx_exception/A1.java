@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 /**
  * @author qingshanpeng
@@ -19,11 +20,17 @@ public class A1 {
 
 	/**
 	 * 外层事务方法回滚的SysException异常信息不是b1方法抛出的BizException异常信息
-	 * SysException不是RuntimeException和Error的子类
+	 * BizException不是RuntimeException和Error的子类
 	 */
 	@Transactional(rollbackFor = SysException.class, propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
 	public void print1() throws Exception {
-		System.out.println("this is a tx print1...");
-		b1.print1();
+		try {
+			System.out.println("this is a tx print1...");
+			b1.print1();
+		} catch (Throwable ex) {
+			//todo 解决异常：Transaction rolled back because it has been marked as rollback-only
+			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+			throw ex;
+		}
 	}
 }

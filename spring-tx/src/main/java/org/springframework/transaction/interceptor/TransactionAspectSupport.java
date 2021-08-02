@@ -629,6 +629,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 		//准备事务信息，status可能是null，这时事务管理器是null
 		//也就是txAttr!=null，tm=null，status=null，或者txAttr=null，tm=null，status=null
 		//todo 但是事务管理器不会为null
+		//todo 当前线程可以获取到事务信息，包括事务管理器、事务属性，事务状态、旧的事务信息，保存在transactionInfoHolder中
 		return prepareTransactionInfo(tm, txAttr, joinpointIdentification, status);
 	}
 
