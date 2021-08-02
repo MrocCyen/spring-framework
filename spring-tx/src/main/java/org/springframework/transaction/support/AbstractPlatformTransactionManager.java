@@ -757,7 +757,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 		}
 
 		DefaultTransactionStatus defStatus = (DefaultTransactionStatus) status;
-		//当前事务是否出现异常，这里回滚标志被置为了true，需要回滚事务
+		//todo 当前事务状态的回滚标志被置为了true，需要回滚事务
 		if (defStatus.isLocalRollbackOnly()) {
 			if (defStatus.isDebug()) {
 				logger.debug("Transactional code has requested rollback");
@@ -766,7 +766,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 			return;
 		}
 
-		//全局事务回滚被标记时不提交事务，并且全局事务回滚被标记
+		//todo shouldCommitOnGlobalRollbackOnly 是否可以根据全局回滚事务标志进行事务的回滚
 		if (!shouldCommitOnGlobalRollbackOnly() && defStatus.isGlobalRollbackOnly()) {
 			if (defStatus.isDebug()) {
 				logger.debug("Global transaction is marked as rollback-only but transactional code requested commit");
@@ -890,28 +890,36 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	 */
 	private void processRollback(DefaultTransactionStatus status, boolean unexpected) {
 		try {
+			//是否是意外回滚
 			boolean unexpectedRollback = unexpected;
 
 			try {
+				//回调
 				triggerBeforeCompletion(status);
 
+				//有保存点，回滚保存点
 				if (status.hasSavepoint()) {
 					if (status.isDebug()) {
 						logger.debug("Rolling back transaction to savepoint");
 					}
 					status.rollbackToHeldSavepoint();
 				} else if (status.isNewTransaction()) {
+					//新的事务，回滚事务
 					if (status.isDebug()) {
 						logger.debug("Initiating transaction rollback");
 					}
 					doRollback(status);
 				} else {
+					//参与其他事务
 					// Participating in larger transaction
 					if (status.hasTransaction()) {
+						//1、当前的事务状态需要执行回滚吗？
+						//2、当前事务失败后，是否要将全局回滚标志置为true？todo globalRollbackOnParticipationFailure默认是true
 						if (status.isLocalRollbackOnly() || isGlobalRollbackOnParticipationFailure()) {
 							if (status.isDebug()) {
 								logger.debug("Participating transaction failed - marking existing transaction as rollback-only");
 							}
+							//todo 设置全局回滚事务标志，也就是ResourceHolderSupport.rollbackOnly=true
 							doSetRollbackOnly(status);
 						} else {
 							if (status.isDebug()) {
@@ -922,7 +930,9 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 						logger.debug("Should roll back transaction but cannot - no transaction available");
 					}
 					// Unexpected rollback only matters here if we're asked to fail early
+					//todo 如果没有设置全局回滚标志后是否需要提前失败，failEarlyOnGlobalRollbackOnly默认是false
 					if (!isFailEarlyOnGlobalRollbackOnly()) {
+						//将意外回滚标志设置为false
 						unexpectedRollback = false;
 					}
 				}
@@ -1245,7 +1255,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	 * JTA providers that silently roll back even when the rollback has not been requested
 	 * by the calling code.
 	 * <p>
-	 * todo （模板方法，子类实现）只提交标记了全局回滚的事务
+	 * todo （模板方法，子类实现）是否可以根据全局回滚事务标志进行提交事务
 	 *
 	 * @see #doCommit
 	 * @see DefaultTransactionStatus#isGlobalRollbackOnly()
@@ -1310,7 +1320,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	 * assuming that participating in existing transactions is generally not
 	 * supported. Subclasses are of course encouraged to provide such support.
 	 * <p>
-	 * todo （模板方法，子类实现）回滚事务，只有指定的事务才能回滚
+	 * todo （模板方法，子类实现）设置回滚事务标志
 	 *
 	 * @param status the status representation of the transaction
 	 * @throws TransactionException in case of system errors

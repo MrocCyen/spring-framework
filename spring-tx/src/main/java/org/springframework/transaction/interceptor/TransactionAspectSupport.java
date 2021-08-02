@@ -410,6 +410,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 				// target invocation exception
 				//todo 3、出现异常，回滚事务
 				completeTransactionAfterThrowing(txInfo, ex);
+				//todo 处理完异常后，再抛出异常
 				throw ex;
 			} finally {
 				//todo 清除当前线程的事务信息，transactionInfoHolder这个ThreadLocal中清除

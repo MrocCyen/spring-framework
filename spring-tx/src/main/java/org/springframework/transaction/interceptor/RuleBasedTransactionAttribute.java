@@ -144,7 +144,9 @@ public class RuleBasedTransactionAttribute extends DefaultTransactionAttribute i
 			logger.trace("Applying rules to determine whether transaction should rollback on " + ex);
 		}
 
+		//回滚规则
 		RollbackRuleAttribute winner = null;
+		//异常类继承链的深度
 		int deepest = Integer.MAX_VALUE;
 
 		if (this.rollbackRules != null) {
@@ -162,6 +164,8 @@ public class RuleBasedTransactionAttribute extends DefaultTransactionAttribute i
 		}
 
 		// User superclass behavior (rollback on unchecked) if no rule matches.
+		//如果没有找到具体的回滚规则，则使用父级的回滚规则
+		//todo 意思就是根据异常是否是RuntimeException或者Error的子类来判断
 		if (winner == null) {
 			logger.trace("No relevant rollback rule found: applying default rules");
 			return super.rollbackOn(ex);
