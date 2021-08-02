@@ -13,10 +13,10 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
  * @since 标果工厂-脱骨李
  */
 @Component
-public class A1 {
+public class A2 {
 
 	@Autowired
-	private B1 b1;
+	private B2 b2;
 
 	/**
 	 * 外层事务方法回滚的SysException异常信息和b1方法抛出的BizException异常信息不相等或者外层事务方法回滚的SysException异常信息不是b1方法抛出的BizException异常信息的父类
@@ -26,7 +26,8 @@ public class A1 {
 	public void print1() throws Exception {
 		try {
 			System.out.println("this is a tx print1...");
-			b1.print1();
+			b2.print1();
+			b2.print2();
 		} catch (Throwable ex) {
 			//todo 解决异常：Transaction rolled back because it has been marked as rollback-only
 			TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
