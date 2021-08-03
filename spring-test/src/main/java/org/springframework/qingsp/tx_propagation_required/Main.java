@@ -1,4 +1,4 @@
-package org.springframework.qingsp.tx_exception;
+package org.springframework.qingsp.tx_propagation_required;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -15,7 +15,7 @@ public class Main {
 //		A1 a1 = (A1) context.getBean("a1");
 //		a1.print1();
 
-//		B1 b1 = (B1) context.getBean("b1");
-//		b1.print1();
+		A2 a2 = (A2) context.getBean("a2");
+		a2.print1();
 	}
 }

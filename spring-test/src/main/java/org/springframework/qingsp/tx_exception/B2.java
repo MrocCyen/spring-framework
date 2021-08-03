@@ -17,7 +17,7 @@ public class B2 {
 	 */
 	@Transactional(rollbackFor = BizException.class, propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
 	public String print1() throws Exception {
-		System.out.println("this is b tx print1...");
+		System.out.println("this is b2 tx print1...");
 
 		return "b1";
 	}
@@ -27,8 +27,8 @@ public class B2 {
 	 */
 	@Transactional(rollbackFor = BizException.class, propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
 	public String print2() throws Exception {
-		System.out.println("this is b tx print2...");
+		System.out.println("this is b2 tx print2...");
 
-		throw new BizException("b tx execute failed...");
+		throw new BizException("b2 tx execute failed...");
 	}
 }

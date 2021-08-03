@@ -12,7 +12,10 @@ public class Main {
 		context.register(Scanner.class);
 		context.refresh();
 
-		A a = (A) context.getBean("a");
-		a.print1();
+//		A a = (A) context.getBean("a");
+//		a.print1();
+
+		A1 a1 = (A1) context.getBean("a1");
+		a1.print1();
 	}
 }
