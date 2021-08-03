@@ -1,4 +1,4 @@
-package org.springframework.qingsp.tx_test;
+package org.springframework.qingsp.tx_synchronizationManager;
 
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
@@ -18,27 +18,15 @@ public class B {
 		return "1";
 	}
 
-	@Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
+	@Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
 	public String print2() throws Exception {
 		System.out.println("this is b tx print2...");
 		return "2";
 	}
 
-	@Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
+	@Transactional(rollbackFor = Exception.class, propagation = Propagation.NEVER, isolation = Isolation.REPEATABLE_READ)
 	public String print3() throws Exception {
 		System.out.println("this is b tx print3...");
 		return "3";
-	}
-
-	@Transactional(rollbackFor = Exception.class, propagation = Propagation.MANDATORY, isolation = Isolation.REPEATABLE_READ)
-	public String print4() throws Exception {
-		System.out.println("this is b tx print4...");
-		return "4";
-	}
-
-	@Transactional(rollbackFor = Exception.class, propagation = Propagation.MANDATORY, isolation = Isolation.REPEATABLE_READ)
-	public String print5() throws Exception {
-		System.out.println("this is b tx print5...");
-		return "5";
 	}
 }

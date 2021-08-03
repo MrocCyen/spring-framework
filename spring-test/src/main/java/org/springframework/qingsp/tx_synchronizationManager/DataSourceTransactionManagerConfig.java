@@ -1,4 +1,4 @@
-package org.springframework.qingsp.tx_test;
+package org.springframework.qingsp.tx_synchronizationManager;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
 import org.springframework.context.annotation.Bean;

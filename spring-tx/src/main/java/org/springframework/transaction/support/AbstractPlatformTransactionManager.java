@@ -693,6 +693,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 
 		if (resourcesHolder != null) {
 			Object suspendedResources = resourcesHolder.suspendedResources;
+			//恢复事务
 			if (suspendedResources != null) {
 				doResume(transaction, suspendedResources);
 			}
@@ -702,6 +703,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 				TransactionSynchronizationManager.setCurrentTransactionIsolationLevel(resourcesHolder.isolationLevel);
 				TransactionSynchronizationManager.setCurrentTransactionReadOnly(resourcesHolder.readOnly);
 				TransactionSynchronizationManager.setCurrentTransactionName(resourcesHolder.name);
+
 				doResumeSynchronization(suspendedSynchronizations);
 			}
 		}
@@ -1093,13 +1095,17 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	 * @see #doCleanupAfterCompletion
 	 */
 	private void cleanupAfterCompletion(DefaultTransactionStatus status) {
+		//设置事务状态为完成
 		status.setCompleted();
+		//清理同步信息
 		if (status.isNewSynchronization()) {
 			TransactionSynchronizationManager.clear();
 		}
+		//清理事务
 		if (status.isNewTransaction()) {
 			doCleanupAfterCompletion(status.getTransaction());
 		}
+		//如果挂起的事务不为null，则恢复挂起的事务
 		if (status.getSuspendedResources() != null) {
 			if (status.isDebug()) {
 				logger.debug("Resuming suspended transaction after completion of inner transaction");
