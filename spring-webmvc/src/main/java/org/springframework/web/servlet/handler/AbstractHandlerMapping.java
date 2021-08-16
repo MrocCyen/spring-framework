@@ -75,7 +75,7 @@ import org.springframework.web.util.pattern.PathPatternParser;
 public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport implements HandlerMapping, Ordered, BeanNameAware {
 
 	/**
-	 * 处理器
+	 * 默认的处理器，可以不设置，这时是null
 	 */
 	@Nullable
 	private Object defaultHandler;
@@ -529,8 +529,17 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 	@Nullable
 	public final HandlerExecutionChain getHandler(HttpServletRequest request) throws Exception {
 		//获取处理器handler
+		//todo 这里很重要
+		/**
+		 * 1、AbstractHandlerMethodMapping -> RequestMappingInfoHandlerMapping -> RequestMappingHandlerMapping
+		 * 获取的handler是HandlerMethod
+		 * 2、AbstractUrlHandlerMapping -> SimpleUrlHandlerMapping
+		 * AbstractUrlHandlerMapping -> AbstractDetectingUrlHandlerMapping -> BeanNameUrlHandlerMapping
+		 * 获取的handler是HandlerExecutionChain
+		 */
 		Object handler = getHandlerInternal(request);
 		if (handler == null) {
+			//一般不会设置，为null
 			handler = getDefaultHandler();
 		}
 		if (handler == null) {
