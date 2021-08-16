@@ -1082,6 +1082,7 @@ public class DispatcherServlet extends FrameworkServlet {
 				//handler执行链
 				mappedHandler = getHandler(processedRequest);
 				if (mappedHandler == null) {
+					//没找到，报错
 					noHandlerFound(processedRequest, response);
 					return;
 				}

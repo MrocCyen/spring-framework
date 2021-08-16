@@ -58,6 +58,7 @@ public class HandlerFunctionAdapter implements HandlerAdapter, Ordered {
 	/**
 	 * Specify the order value for this HandlerAdapter bean.
 	 * <p>The default value is {@code Ordered.LOWEST_PRECEDENCE}, meaning non-ordered.
+	 *
 	 * @see org.springframework.core.Ordered#getOrder()
 	 */
 	public void setOrder(int order) {
@@ -76,6 +77,7 @@ public class HandlerFunctionAdapter implements HandlerAdapter, Ordered {
 	 * for further processing of the concurrently produced result.
 	 * <p>If this value is not set, the default timeout of the underlying
 	 * implementation is used.
+	 *
 	 * @param timeout the timeout value in milliseconds
 	 */
 	public void setAsyncRequestTimeout(long timeout) {
@@ -90,8 +92,8 @@ public class HandlerFunctionAdapter implements HandlerAdapter, Ordered {
 	@Nullable
 	@Override
 	public ModelAndView handle(HttpServletRequest servletRequest,
-			HttpServletResponse servletResponse,
-			Object handler) throws Exception {
+							   HttpServletResponse servletResponse,
+							   Object handler) throws Exception {
 
 		WebAsyncManager asyncManager = getWebAsyncManager(servletRequest, servletResponse);
 
@@ -100,16 +102,14 @@ public class HandlerFunctionAdapter implements HandlerAdapter, Ordered {
 
 		if (asyncManager.hasConcurrentResult()) {
 			serverResponse = handleAsync(asyncManager);
-		}
-		else {
+		} else {
 			HandlerFunction<?> handlerFunction = (HandlerFunction<?>) handler;
 			serverResponse = handlerFunction.handle(serverRequest);
 		}
 
 		if (serverResponse != null) {
 			return serverResponse.writeTo(servletRequest, servletResponse, new ServerRequestContext(serverRequest));
-		}
-		else {
+		} else {
 			return null;
 		}
 	}
@@ -141,17 +141,13 @@ public class HandlerFunctionAdapter implements HandlerAdapter, Ordered {
 		});
 		if (result instanceof ServerResponse) {
 			return (ServerResponse) result;
-		}
-		else if (result instanceof Exception) {
+		} else if (result instanceof Exception) {
 			throw (Exception) result;
-		}
-		else if (result instanceof Throwable) {
+		} else if (result instanceof Throwable) {
 			throw new ServletException("Async processing failed", (Throwable) result);
-		}
-		else if (result == null) {
+		} else if (result == null) {
 			return null;
-		}
-		else {
+		} else {
 			throw new IllegalArgumentException("Unknown result from WebAsyncManager: [" + result + "]");
 		}
 	}

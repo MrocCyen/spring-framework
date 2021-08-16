@@ -51,8 +51,9 @@ public interface WebMvcConfigurer {
 	 * Help with configuring {@link HandlerMapping} path matching options such as
 	 * whether to use parsed {@code PathPatterns} or String pattern matching
 	 * with {@code PathMatcher}, whether to match trailing slashes, and more.
-	 * @since 4.0.3
+	 *
 	 * @see PathMatchConfigurer
+	 * @since 4.0.3
 	 */
 	default void configurePathMatch(PathMatchConfigurer configurer) {
 	}
@@ -98,6 +99,7 @@ public interface WebMvcConfigurer {
 	 * Add handlers to serve static resources such as images, js, and, css
 	 * files from specific locations under web application root, the classpath,
 	 * and others.
+	 *
 	 * @see ResourceHandlerRegistry
 	 */
 	default void addResourceHandlers(ResourceHandlerRegistry registry) {
@@ -105,6 +107,7 @@ public interface WebMvcConfigurer {
 
 	/**
 	 * Configure cross origin requests processing.
+	 *
 	 * @since 4.2
 	 */
 	default void addCorsMappings(CorsRegistry registry) {
@@ -116,6 +119,7 @@ public interface WebMvcConfigurer {
 	 * cases where there is no need for custom controller logic -- e.g. render a
 	 * home page, perform simple site URL redirects, return a 404 status with
 	 * HTML content, a 204 with no content, and more.
+	 *
 	 * @see ViewControllerRegistry
 	 */
 	default void addViewControllers(ViewControllerRegistry registry) {
@@ -125,6 +129,7 @@ public interface WebMvcConfigurer {
 	 * Configure view resolvers to translate String-based view names returned from
 	 * controllers into concrete {@link org.springframework.web.servlet.View}
 	 * implementations to perform rendering with.
+	 *
 	 * @since 4.1
 	 */
 	default void configureViewResolvers(ViewResolverRegistry registry) {
@@ -135,6 +140,7 @@ public interface WebMvcConfigurer {
 	 * <p>This does not override the built-in support for resolving handler
 	 * method arguments. To customize the built-in support for argument
 	 * resolution, configure {@link RequestMappingHandlerAdapter} directly.
+	 *
 	 * @param resolvers initially an empty list
 	 */
 	default void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
@@ -145,6 +151,7 @@ public interface WebMvcConfigurer {
 	 * <p>Using this option does not override the built-in support for handling
 	 * return values. To customize the built-in support for handling return
 	 * values, configure RequestMappingHandlerAdapter directly.
+	 *
 	 * @param handlers initially an empty list
 	 */
 	default void addReturnValueHandlers(List<HandlerMethodReturnValueHandler> handlers) {
@@ -158,6 +165,7 @@ public interface WebMvcConfigurer {
 	 * default converter registration. To simply add a converter without impacting
 	 * default registration, consider using the method
 	 * {@link #extendMessageConverters(java.util.List)} instead.
+	 *
 	 * @param converters initially an empty list of converters
 	 */
 	default void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
@@ -167,6 +175,7 @@ public interface WebMvcConfigurer {
 	 * A hook for extending or modifying the list of converters after it has been
 	 * configured. This may be useful for example to allow default converters to
 	 * be registered and then insert a custom converter through this method.
+	 *
 	 * @param converters the list of configured converters to extend.
 	 * @since 4.1.3
 	 */
@@ -184,6 +193,7 @@ public interface WebMvcConfigurer {
 	 * <p>Alternatively you can use
 	 * {@link #extendHandlerExceptionResolvers(List)} which allows you to extend
 	 * or modify the list of exception resolvers configured by default.
+	 *
 	 * @param resolvers initially an empty list
 	 * @see #extendHandlerExceptionResolvers(List)
 	 * @see WebMvcConfigurationSupport#addDefaultHandlerExceptionResolvers(List, org.springframework.web.accept.ContentNegotiationManager)
@@ -195,9 +205,10 @@ public interface WebMvcConfigurer {
 	 * Extending or modify the list of exception resolvers configured by default.
 	 * This can be useful for inserting a custom exception resolver without
 	 * interfering with default ones.
+	 *
 	 * @param resolvers the list of configured resolvers to extend
-	 * @since 4.3
 	 * @see WebMvcConfigurationSupport#addDefaultHandlerExceptionResolvers(List, org.springframework.web.accept.ContentNegotiationManager)
+	 * @since 4.3
 	 */
 	default void extendHandlerExceptionResolvers(List<HandlerExceptionResolver> resolvers) {
 	}
