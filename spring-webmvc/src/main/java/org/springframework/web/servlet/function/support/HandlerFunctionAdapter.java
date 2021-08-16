@@ -42,6 +42,8 @@ import org.springframework.web.servlet.function.ServerResponse;
 
 /**
  * {@code HandlerAdapter} implementation that supports {@link HandlerFunction}s.
+ * <p>
+ * todo 可以看看这个的实现原理
  *
  * @author Arjen Poutsma
  * @since 5.2
