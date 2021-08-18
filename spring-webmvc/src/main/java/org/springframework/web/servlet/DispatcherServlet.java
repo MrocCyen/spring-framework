@@ -1094,17 +1094,22 @@ public class DispatcherServlet extends FrameworkServlet {
 				String method = request.getMethod();
 				boolean isGet = "GET".equals(method);
 				if (isGet || "HEAD".equals(method)) {
+					//todo 后续来看
 					long lastModified = ha.getLastModified(request, mappedHandler.getHandler());
 					if (new ServletWebRequest(request, response).checkNotModified(lastModified) && isGet) {
 						return;
 					}
 				}
 
+				//执行拦截器
+				//如果preHandle方法返回false，会执行afterCompletion方法
 				if (!mappedHandler.applyPreHandle(processedRequest, response)) {
+					//如果preHandle方法返回false
 					return;
 				}
 
 				// Actually invoke the handler.
+				//执行处理器真实的方法
 				mv = ha.handle(processedRequest, response, mappedHandler.getHandler());
 
 				if (asyncManager.isConcurrentHandlingStarted()) {
@@ -1112,6 +1117,8 @@ public class DispatcherServlet extends FrameworkServlet {
 				}
 
 				applyDefaultViewName(processedRequest, mv);
+
+				//执行拦截器后置处理方法postHandle
 				mappedHandler.applyPostHandle(processedRequest, response, mv);
 			} catch (Exception ex) {
 				dispatchException = ex;
