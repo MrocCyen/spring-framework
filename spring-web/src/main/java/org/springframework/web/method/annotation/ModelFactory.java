@@ -73,12 +73,13 @@ public final class ModelFactory {
 
 	/**
 	 * Create a new instance with the given {@code @ModelAttribute} methods.
-	 * @param handlerMethods the {@code @ModelAttribute} methods to invoke
-	 * @param binderFactory for preparation of {@link BindingResult} attributes
+	 *
+	 * @param handlerMethods   the {@code @ModelAttribute} methods to invoke
+	 * @param binderFactory    for preparation of {@link BindingResult} attributes
 	 * @param attributeHandler for access to session attributes
 	 */
 	public ModelFactory(@Nullable List<InvocableHandlerMethod> handlerMethods,
-			WebDataBinderFactory binderFactory, SessionAttributesHandler attributeHandler) {
+						WebDataBinderFactory binderFactory, SessionAttributesHandler attributeHandler) {
 
 		if (handlerMethods != null) {
 			for (InvocableHandlerMethod handlerMethod : handlerMethods) {
@@ -99,16 +100,19 @@ public final class ModelFactory {
 	 * {@code @SessionAttributes} and ensure they're present in the model raising
 	 * an exception if necessary.
 	 * </ol>
-	 * @param request the current request
-	 * @param container a container with the model to be initialized
+	 *
+	 * @param request       the current request
+	 * @param container     a container with the model to be initialized
 	 * @param handlerMethod the method for which the model is initialized
 	 * @throws Exception may arise from {@code @ModelAttribute} methods
 	 */
 	public void initModel(NativeWebRequest request, ModelAndViewContainer container, HandlerMethod handlerMethod)
 			throws Exception {
-
+		//根据@SessionAttributes注解获取当前请求中的属性值
 		Map<String, ?> sessionAttributes = this.sessionAttributesHandler.retrieveAttributes(request);
+		//保存到ModelAndViewContainer中
 		container.mergeAttributes(sessionAttributes);
+		//处理@ModelAttribute注解的方法
 		invokeModelAttributeMethods(request, container);
 
 		for (String name : findSessionAttributeArguments(handlerMethod)) {
@@ -117,6 +121,7 @@ public final class ModelFactory {
 				if (value == null) {
 					throw new HttpSessionRequiredException("Expected session attribute '" + name + "'", name);
 				}
+				//不包含属性，则添加属性
 				container.addAttribute(name, value);
 			}
 		}
@@ -193,16 +198,16 @@ public final class ModelFactory {
 	/**
 	 * Promote model attributes listed as {@code @SessionAttributes} to the session.
 	 * Add {@link BindingResult} attributes where necessary.
-	 * @param request the current request
+	 *
+	 * @param request   the current request
 	 * @param container contains the model to update
 	 * @throws Exception if creating BindingResult attributes fails
 	 */
 	public void updateModel(NativeWebRequest request, ModelAndViewContainer container) throws Exception {
 		ModelMap defaultModel = container.getDefaultModel();
-		if (container.getSessionStatus().isComplete()){
+		if (container.getSessionStatus().isComplete()) {
 			this.sessionAttributesHandler.cleanupAttributes(request);
-		}
-		else {
+		} else {
 			this.sessionAttributesHandler.storeAttributes(request, defaultModel);
 		}
 		if (!container.isRequestHandled() && container.getModel() == defaultModel) {
@@ -248,6 +253,7 @@ public final class ModelFactory {
 	 * Derive the model attribute name for the given method parameter based on
 	 * a {@code @ModelAttribute} parameter annotation (if present) or falling
 	 * back on parameter type based conventions.
+	 *
 	 * @param parameter a descriptor for the method parameter
 	 * @return the derived name
 	 * @see Conventions#getVariableNameForParameter(MethodParameter)
@@ -266,16 +272,16 @@ public final class ModelFactory {
 	 * <li>the declared return type if it is more specific than {@code Object}
 	 * <li>the actual return value type
 	 * </ol>
+	 *
 	 * @param returnValue the value returned from a method invocation
-	 * @param returnType a descriptor for the return type of the method
+	 * @param returnType  a descriptor for the return type of the method
 	 * @return the derived name (never {@code null} or empty String)
 	 */
 	public static String getNameForReturnValue(@Nullable Object returnValue, MethodParameter returnType) {
 		ModelAttribute ann = returnType.getMethodAnnotation(ModelAttribute.class);
 		if (ann != null && StringUtils.hasText(ann.value())) {
 			return ann.value();
-		}
-		else {
+		} else {
 			Method method = returnType.getMethod();
 			Assert.state(method != null, "No handler method");
 			Class<?> containingClass = returnType.getContainingClass();

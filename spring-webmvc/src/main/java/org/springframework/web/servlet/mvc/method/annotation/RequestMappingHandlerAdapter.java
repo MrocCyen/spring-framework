@@ -853,21 +853,31 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 
 		ServletWebRequest webRequest = new ServletWebRequest(request, response);
 		try {
+			//@InitBinder
 			WebDataBinderFactory binderFactory = getDataBinderFactory(handlerMethod);
+			//@ModelAttribute
 			ModelFactory modelFactory = getModelFactory(handlerMethod, binderFactory);
 
 			ServletInvocableHandlerMethod invocableMethod = createInvocableHandlerMethod(handlerMethod);
 			if (this.argumentResolvers != null) {
+				//设置HandlerMethodArgumentResolver
 				invocableMethod.setHandlerMethodArgumentResolvers(this.argumentResolvers);
 			}
 			if (this.returnValueHandlers != null) {
+				//设置HandlerMethodReturnValueHandler
 				invocableMethod.setHandlerMethodReturnValueHandlers(this.returnValueHandlers);
 			}
+			//设置处理@InitBinder的工厂
 			invocableMethod.setDataBinderFactory(binderFactory);
+			//设置参数名称发现工具类
 			invocableMethod.setParameterNameDiscoverer(this.parameterNameDiscoverer);
 
 			ModelAndViewContainer mavContainer = new ModelAndViewContainer();
+			//添加flash属性
 			mavContainer.addAllAttributes(RequestContextUtils.getInputFlashMap(request));
+			//处理属性 todo
+			//1、根据@SessionAttributes注解获取当前请求中的属性值，并保存到ModelAndView中
+			//2、处理@ModelAttribute注解的方法，可以往ModelAndView中添加新的属性值
 			modelFactory.initModel(webRequest, mavContainer, invocableMethod);
 			mavContainer.setIgnoreDefaultModelOnRedirect(this.ignoreDefaultModelOnRedirect);
 
@@ -875,6 +885,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 			asyncWebRequest.setTimeout(this.asyncRequestTimeout);
 
 			WebAsyncManager asyncManager = WebAsyncUtils.getAsyncManager(request);
+			//todo AsyncTaskExecutor CallableProcessingInterceptor DeferredResultProcessingInterceptor 后续来看
 			asyncManager.setTaskExecutor(this.taskExecutor);
 			asyncManager.setAsyncWebRequest(asyncWebRequest);
 			asyncManager.registerCallableInterceptors(this.callableInterceptors);
@@ -891,7 +902,9 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 				invocableMethod = invocableMethod.wrapConcurrentResult(result);
 			}
 
+			//调用handler方法
 			invocableMethod.invokeAndHandle(webRequest, mavContainer);
+
 			if (asyncManager.isConcurrentHandlingStarted()) {
 				return null;
 			}

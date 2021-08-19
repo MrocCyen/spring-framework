@@ -1156,6 +1156,13 @@ public class DispatcherServlet extends FrameworkServlet {
 				/**
 				 * 1、RequestMappingHandlerAdapter
 				 * handler是HandlerMethod时进行处理
+				 * todo 流程如下：
+				 * A：首先初始化：主要包括方法参数解析器、返回值处理器
+				 * B：接下来进行属性处理：主要处理@SessionAttributes和@ModelAttribute注解
+				 * C：最后调用真正执行的方法，也就是处理器对应的方法
+				 *
+				 * todo 其实这里也有个很重要的扩展点：
+				 * 我们可以扩展我们自己的方法参数解析器、返回值处理器，来处理特定的参数与返回值
 				 *
 				 * 2、HttpRequestHandlerAdapter
 				 * handler是HttpRequestHandler时进行处理
@@ -1178,7 +1185,7 @@ public class DispatcherServlet extends FrameworkServlet {
 
 				applyDefaultViewName(processedRequest, mv);
 
-				//执行拦截器后置处理方法postHandle
+				//todo ----------5、执行拦截器后置处理方法postHandle----------
 				mappedHandler.applyPostHandle(processedRequest, response, mv);
 
 			} catch (Exception ex) {
@@ -1188,7 +1195,8 @@ public class DispatcherServlet extends FrameworkServlet {
 				// making them available for @ExceptionHandler methods and other scenarios.
 				dispatchException = new NestedServletException("Handler dispatch failed", err);
 			}
-			//todo ----------5、处理结果，执行拦截器的afterCompletion方法----------
+			//todo ----------6、处理结果，包括异常处理、结果处理----------
+			//todo ----------7、处理结果，执行拦截器的afterCompletion方法----------
 			processDispatchResult(processedRequest, response, mappedHandler, mv, dispatchException);
 		} catch (Exception ex) {
 			//执行拦截器的afterCompletion方法
@@ -1201,6 +1209,7 @@ public class DispatcherServlet extends FrameworkServlet {
 			if (asyncManager.isConcurrentHandlingStarted()) {
 				// Instead of postHandle and afterCompletion
 				if (mappedHandler != null) {
+					//执行AsyncHandlerInterceptor.afterConcurrentHandlingStarted方法
 					mappedHandler.applyAfterConcurrentHandlingStarted(processedRequest, response);
 				}
 			} else {
