@@ -1112,6 +1112,23 @@ public class DispatcherServlet extends FrameworkServlet {
 
 				// Determine handler adapter for the current request.
 				//todo ----------2、根据handler获取HandlerAdapter----------
+				/**
+				 * 1、RequestMappingHandlerAdapter
+				 * handler是HandlerMethod时进行处理
+				 *
+				 * 2、HttpRequestHandlerAdapter
+				 * handler是HttpRequestHandler时进行处理
+				 *
+				 * 3、SimpleServletHandlerAdapter
+				 * handler是Servlet时进行处理
+				 *
+				 * 4、HandlerFunctionAdapter
+				 * handler是HandlerFunction时进行处理
+				 *
+				 * 5、SimpleControllerHandlerAdapter
+				 * handler是接口Controller时进行处理
+				 *
+				 */
 				HandlerAdapter ha = getHandlerAdapter(mappedHandler.getHandler());
 
 				// Process last-modified header, if supported by the handler.
@@ -1136,6 +1153,23 @@ public class DispatcherServlet extends FrameworkServlet {
 				// Actually invoke the handler.
 				//执行处理器真实的方法
 				//todo ----------4、执行HandlerAdapter的handle方法----------
+				/**
+				 * 1、RequestMappingHandlerAdapter
+				 * handler是HandlerMethod时进行处理
+				 *
+				 * 2、HttpRequestHandlerAdapter
+				 * handler是HttpRequestHandler时进行处理
+				 *
+				 * 3、SimpleServletHandlerAdapter
+				 * handler是Servlet时进行处理
+				 *
+				 * 4、HandlerFunctionAdapter
+				 * handler是HandlerFunction时进行处理
+				 *
+				 * 5、SimpleControllerHandlerAdapter
+				 * handler是接口Controller时进行处理
+				 *
+				 */
 				mv = ha.handle(processedRequest, response, mappedHandler.getHandler());
 
 				if (asyncManager.isConcurrentHandlingStarted()) {
