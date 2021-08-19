@@ -1066,6 +1066,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		HandlerExecutionChain mappedHandler = null;
 		boolean multipartRequestParsed = false;
 
+		//todo 后续再看
 		WebAsyncManager asyncManager = WebAsyncUtils.getAsyncManager(request);
 
 		try {
@@ -1080,6 +1081,28 @@ public class DispatcherServlet extends FrameworkServlet {
 
 				// Determine handler for the current request.
 				//handler执行链
+				//todo ----------1、根据HandlerMapping获取HandlerExecutionChain----------
+				/**
+				 * Spring提供的HandlerMapping有以下几种：
+				 * 1、RequestMappingHandlerMapping
+				 * 2、SimpleUrlHandlerMapping
+				 * 3、BeanNameUrlHandlerMapping
+				 * 4、RouterFunctionMapping
+				 *
+				 * 每种HandlerMapping的处理过程：
+				 * 1、RequestMappingHandlerMapping
+				 * - HandlerExecutionChain中handler是HandlerMethod，HandlerMethod就是真正执行地址对应的方法
+				 * - @Controller注解的类中@RequestMapping方法会被封装成HandlerMethod
+				 *
+				 * 2、SimpleUrlHandlerMapping
+				 * 内部存储用于匹配的url路径，请求中路径可以和这个路径进行匹配，匹配上了就可以进行请求
+				 *
+				 * 3、BeanNameUrlHandlerMapping
+				 * bean的名称里面包含url，请求中的路径可以和名称里面的url进行匹配，匹配上了就可以进行请求
+				 *
+				 * 4、RouterFunctionMapping（5.2版本增加）
+				 *
+				 */
 				mappedHandler = getHandler(processedRequest);
 				if (mappedHandler == null) {
 					//没找到，报错
@@ -1088,6 +1111,7 @@ public class DispatcherServlet extends FrameworkServlet {
 				}
 
 				// Determine handler adapter for the current request.
+				//todo ----------2、根据handler获取HandlerAdapter----------
 				HandlerAdapter ha = getHandlerAdapter(mappedHandler.getHandler());
 
 				// Process last-modified header, if supported by the handler.
@@ -1103,6 +1127,7 @@ public class DispatcherServlet extends FrameworkServlet {
 
 				//执行拦截器
 				//如果preHandle方法返回false，会执行afterCompletion方法
+				//todo ----------3、执行拦截器preHandle方法----------
 				if (!mappedHandler.applyPreHandle(processedRequest, response)) {
 					//如果preHandle方法返回false
 					return;
@@ -1110,6 +1135,7 @@ public class DispatcherServlet extends FrameworkServlet {
 
 				// Actually invoke the handler.
 				//执行处理器真实的方法
+				//todo ----------4、执行HandlerAdapter的handle方法----------
 				mv = ha.handle(processedRequest, response, mappedHandler.getHandler());
 
 				if (asyncManager.isConcurrentHandlingStarted()) {
@@ -1120,6 +1146,7 @@ public class DispatcherServlet extends FrameworkServlet {
 
 				//执行拦截器后置处理方法postHandle
 				mappedHandler.applyPostHandle(processedRequest, response, mv);
+
 			} catch (Exception ex) {
 				dispatchException = ex;
 			} catch (Throwable err) {
@@ -1127,10 +1154,13 @@ public class DispatcherServlet extends FrameworkServlet {
 				// making them available for @ExceptionHandler methods and other scenarios.
 				dispatchException = new NestedServletException("Handler dispatch failed", err);
 			}
+			//todo ----------5、处理结果，执行拦截器的afterCompletion方法----------
 			processDispatchResult(processedRequest, response, mappedHandler, mv, dispatchException);
 		} catch (Exception ex) {
+			//执行拦截器的afterCompletion方法
 			triggerAfterCompletion(processedRequest, response, mappedHandler, ex);
 		} catch (Throwable err) {
+			//执行拦截器的afterCompletion方法
 			triggerAfterCompletion(processedRequest, response, mappedHandler,
 					new NestedServletException("Handler processing failed", err));
 		} finally {
