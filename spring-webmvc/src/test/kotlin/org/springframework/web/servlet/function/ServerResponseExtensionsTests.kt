@@ -30,14 +30,14 @@ import org.springframework.core.ParameterizedTypeReference
  */
 class ServerResponseExtensionsTests {
 
-	@Test
-	fun bodyWithType() {
-		val builder = mockk<ServerResponse.BodyBuilder>()
-		val response = mockk<ServerResponse>()
-		val body = listOf("foo", "bar")
-		val typeReference = object: ParameterizedTypeReference<List<String>>() {}
-		every { builder.body(body, typeReference) } returns response
-		assertThat(builder.bodyWithType<List<String>>(body)).isEqualTo(response)
-		verify { builder.body(body, typeReference) }
-	}
+//	@Test
+//	fun bodyWithType() {
+//		val builder = mockk<ServerResponse.BodyBuilder>()
+//		val response = mockk<ServerResponse>()
+//		val body = listOf("foo", "bar")
+//		val typeReference = object: ParameterizedTypeReference<List<String>>() {}
+//		every { builder.body(body, typeReference) } returns response
+//		assertThat(builder.bodyWithType<List<String>>(body)).isEqualTo(response)
+//		verify { builder.body(body, typeReference) }
+//	}
 }
