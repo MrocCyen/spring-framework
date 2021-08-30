@@ -69,3 +69,5 @@ settings.gradle.projectsLoaded {
 		}
 	}
 }
+include 'spring-chart'
+
