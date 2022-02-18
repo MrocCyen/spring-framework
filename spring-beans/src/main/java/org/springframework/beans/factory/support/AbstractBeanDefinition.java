@@ -610,8 +610,13 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	}
 
 	/**
+	 * 如果是自动检测类型
+	 * 1、如果存在参数为0的构造函数，则为AUTOWIRE_BY_TYPE
+	 * 2、没有参数为0的构造函数，则为AUTOWIRE_CONSTRUCTOR
+	 * <p>
 	 * Return the resolved autowire code,
 	 * (resolving AUTOWIRE_AUTODETECT to AUTOWIRE_CONSTRUCTOR or AUTOWIRE_BY_TYPE).
+	 *
 	 * @see #AUTOWIRE_AUTODETECT
 	 * @see #AUTOWIRE_CONSTRUCTOR
 	 * @see #AUTOWIRE_BY_TYPE
