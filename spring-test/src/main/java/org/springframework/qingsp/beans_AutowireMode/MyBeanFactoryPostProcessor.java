@@ -16,7 +16,10 @@ import org.springframework.stereotype.Component;
 public class MyBeanFactoryPostProcessor implements BeanFactoryPostProcessor {
 	@Override
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-		GenericBeanDefinition beanDefinition = (GenericBeanDefinition) beanFactory.getBeanDefinition("foodOne");
-		beanDefinition.setAutowireMode(AutowireCapableBeanFactory.AUTOWIRE_BY_TYPE);
+		GenericBeanDefinition beanDefinition1 = (GenericBeanDefinition) beanFactory.getBeanDefinition("foodOne");
+		beanDefinition1.setAutowireMode(AutowireCapableBeanFactory.AUTOWIRE_BY_TYPE);
+
+//		GenericBeanDefinition beanDefinition2 = (GenericBeanDefinition) beanFactory.getBeanDefinition("appleOne");
+//		beanDefinition2.setAutowireMode(AutowireCapableBeanFactory.AUTOWIRE_CONSTRUCTOR);
 	}
 }

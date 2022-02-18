@@ -3,10 +3,10 @@ package org.springframework.qingsp.createBean_DetermineConstructors;
 import org.springframework.stereotype.Component;
 
 /**
- * @author qingsp
- * @date 2021/5/26 10:49
- * @since 标果工厂-玫瑰香
+ * @author qingshanpeng
+ * @date 2022/2/18 11:22
+ * @since 标果工厂
  */
 @Component
-public class A {
+public class AppleThree {
 }

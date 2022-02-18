@@ -310,24 +310,34 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 								"] from ClassLoader [" + beanClass.getClassLoader() + "] failed", ex);
 					}
 					List<Constructor<?>> candidates = new ArrayList<>(rawCandidates.length);
+					//需要的构造函数
 					Constructor<?> requiredConstructor = null;
+					//默认构造函数
 					Constructor<?> defaultConstructor = null;
+					//java类，这里只会返回null，Kotlin类，会得到Kotlin的构造函数
 					Constructor<?> primaryConstructor = BeanUtils.findPrimaryConstructor(beanClass);
 					int nonSyntheticConstructors = 0;
 					for (Constructor<?> candidate : rawCandidates) {
+						//非编译后生成的构造函数
 						if (!candidate.isSynthetic()) {
 							nonSyntheticConstructors++;
 						}
+						//Kotlin的构造函数
 						else if (primaryConstructor != null) {
 							continue;
 						}
+						//判断是否有@Autowired注解
 						MergedAnnotation<?> ann = findAutowiredAnnotation(candidate);
 						if (ann == null) {
+							//如果被代理，则找到其父类
 							Class<?> userClass = ClassUtils.getUserClass(beanClass);
+							//被代理了
 							if (userClass != beanClass) {
 								try {
+									//获取父类的具有相同参数的构造函数，
 									Constructor<?> superCtor =
 											userClass.getDeclaredConstructor(candidate.getParameterTypes());
+									//判断父类的构造函数是否有@Autowired注解
 									ann = findAutowiredAnnotation(superCtor);
 								}
 								catch (NoSuchMethodException ex) {
@@ -342,7 +352,9 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 										". Found constructor with 'required' Autowired annotation already: " +
 										requiredConstructor);
 							}
+							//获取@Autowired的required值
 							boolean required = determineRequiredStatus(ann);
+							//值为true
 							if (required) {
 								if (!candidates.isEmpty()) {
 									throw new BeanCreationException(beanName,
@@ -350,10 +362,12 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 											". Found constructor with 'required' Autowired annotation: " +
 											candidate);
 								}
+								//设置需要的构造函数
 								requiredConstructor = candidate;
 							}
 							candidates.add(candidate);
 						}
+						//设置默认构造函数
 						else if (candidate.getParameterCount() == 0) {
 							defaultConstructor = candidate;
 						}

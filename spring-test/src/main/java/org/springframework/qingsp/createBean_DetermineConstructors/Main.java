@@ -11,5 +11,10 @@ public class Main {
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
 		context.register(Scanner.class);
 		context.refresh();
+
+		AppleOne appleOne = (AppleOne) context.getBean("appleOne");
+		System.out.println(appleOne.getAppleTwo());
+		System.out.println(appleOne.getAppleThree());
+		System.out.println(appleOne.getAppleFour());
 	}
 }

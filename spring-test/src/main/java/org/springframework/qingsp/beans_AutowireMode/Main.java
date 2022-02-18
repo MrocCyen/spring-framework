@@ -16,5 +16,10 @@ public class Main {
 		System.out.println(foodOne);
 		System.out.println(foodOne.getFoodTwo());
 		System.out.println(foodOne.getFoodThree());
+
+		AppleOne appleOne = (AppleOne) context.getBean("appleOne");
+		System.out.println(appleOne.getAppleTwo());
+		System.out.println(appleOne.getAppleThree());
+		System.out.println(appleOne.getAppleFour());
 	}
 }
