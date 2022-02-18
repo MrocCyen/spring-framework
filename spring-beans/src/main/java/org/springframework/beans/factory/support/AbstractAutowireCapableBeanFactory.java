@@ -1264,8 +1264,18 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		// Candidate constructors for autowiring?
-		//todo 推断构造函数
+		//todo 获取候选构造函数，用于实例化bean，这里可以用户自己干预构造函数的选择
 		Constructor<?>[] ctors = determineConstructorsFromBeanPostProcessors(beanClass, beanName);
+		/**
+		 * 构造函数注入的条件
+		 * 1、用户设置的候选构造函数不为null
+		 * or
+		 * 2、bean的注入模型为AUTOWIRE_CONSTRUCTOR
+		 * or
+		 * 3、显示的设置了构造函数的参数
+		 * or
+		 * 4、args不为null
+		 */
 		if (ctors != null || mbd.getResolvedAutowireMode() == AUTOWIRE_CONSTRUCTOR ||
 				mbd.hasConstructorArgumentValues() || !ObjectUtils.isEmpty(args)) {
 			return autowireConstructor(beanName, mbd, ctors, args);

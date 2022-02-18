@@ -14,7 +14,7 @@ public class AppleOne {
 	private AppleThree appleThree;
 	private AppleFour appleFour;
 
-	@Autowired(required = true)
+	@Autowired(required = false)
 	public AppleOne(AppleTwo appleTwo) {
 		this.appleTwo = appleTwo;
 	}

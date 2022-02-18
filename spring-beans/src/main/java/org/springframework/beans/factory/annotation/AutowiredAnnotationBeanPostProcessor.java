@@ -362,7 +362,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 											". Found constructor with 'required' Autowired annotation: " +
 											candidate);
 								}
-								//设置需要的构造函数
+								//设置值为造函数上@Autowired的required值为true的构造函数
 								requiredConstructor = candidate;
 							}
 							candidates.add(candidate);
@@ -372,6 +372,13 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 							defaultConstructor = candidate;
 						}
 					}
+					/**
+					 * todo 获取候选构造函数
+					 * 	1、@Autowired(required = true)的构造函数是候选者，并且只能有一个
+					 * 	2、@Autowired(required = false)的构造函数都是候选者，可以有多个
+					 * 	3、@Autowired(required = true)和@Autowired(required = false)不能同时出现
+					 * 	4、有且只有一个构造函数，并且参数数量大于0，是候选者
+					 */
 					if (!candidates.isEmpty()) {
 						// Add default constructor to list of optional constructors, as fallback.
 						if (requiredConstructor == null) {
@@ -387,17 +394,21 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 						}
 						candidateConstructors = candidates.toArray(new Constructor<?>[0]);
 					}
+					//只有一个构造函数，并且参数数量大于0
 					else if (rawCandidates.length == 1 && rawCandidates[0].getParameterCount() > 0) {
 						candidateConstructors = new Constructor<?>[] {rawCandidates[0]};
 					}
+					//primaryConstructor不为null，java类不会出现
 					else if (nonSyntheticConstructors == 2 && primaryConstructor != null &&
 							defaultConstructor != null && !primaryConstructor.equals(defaultConstructor)) {
 						candidateConstructors = new Constructor<?>[] {primaryConstructor, defaultConstructor};
 					}
+					//primaryConstructor不为null，java类不会出现
 					else if (nonSyntheticConstructors == 1 && primaryConstructor != null) {
 						candidateConstructors = new Constructor<?>[] {primaryConstructor};
 					}
 					else {
+						//没有选中
 						candidateConstructors = new Constructor<?>[0];
 					}
 					this.candidateConstructorsCache.put(beanClass, candidateConstructors);
