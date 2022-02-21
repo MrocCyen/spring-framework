@@ -15,6 +15,7 @@ dependencies {
 	optional(project(":spring-webmvc"))
 	optional(project(":spring-websocket"))
 	optional("javax.activation:javax.activation-api")
+	optional("javax.annotation:javax.annotation-api")
 	optional("javax.el:javax.el-api")
 	optional("javax.inject:javax.inject")
 	optional("javax.servlet:javax.servlet-api")
