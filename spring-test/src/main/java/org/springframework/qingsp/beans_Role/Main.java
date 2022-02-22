@@ -10,8 +10,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 public class Main {
 	public static void main(String[] args) {
 		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Scanner.class);
-		ApplicationConfigurationClassRole1 applicationConfigurationClassRole1 =
-				(ApplicationConfigurationClassRole1) context.getBean("applicationConfigurationClassRole1");
-		System.out.println(applicationConfigurationClassRole1.getName());
+		ConfigurationBean1 configurationBean1 = (ConfigurationBean1) context.getBean("configurationBean1");
+		System.out.println(configurationBean1.getName());
 	}
 }

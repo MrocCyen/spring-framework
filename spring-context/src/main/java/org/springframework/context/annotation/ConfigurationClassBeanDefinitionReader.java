@@ -211,7 +211,7 @@ class ConfigurationClassBeanDefinitionReader {
 		}
 
 		// Has this effectively been overridden before (e.g. via XML)?
-		//是否被存在的bean覆盖
+		//是否覆盖已经存在的bean
 		if (isOverriddenByExistingDefinition(beanMethod, beanName)) {
 			//bean的名字不能和@Configuration注解的类的名字相同
 			if (beanName.equals(beanMethod.getConfigurationClass().getBeanName())) {
