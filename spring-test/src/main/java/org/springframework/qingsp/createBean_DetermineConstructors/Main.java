@@ -13,8 +13,17 @@ public class Main {
 		context.refresh();
 
 		AppleOne appleOne = (AppleOne) context.getBean("appleOne");
-		System.out.println(appleOne.getAppleTwo());
-		System.out.println(appleOne.getAppleThree());
-		System.out.println(appleOne.getAppleFour());
+
+		System.out.println("custom:" + appleOne.getAppleTwo());
+		AppleTwo appleTwo = (AppleTwo) context.getBean("appleTwo");
+		System.out.println("autowire:" + appleTwo);
+
+		System.out.println("custom:" + appleOne.getAppleThree());
+		AppleThree appleThree = (AppleThree) context.getBean("appleThree");
+		System.out.println("autowire:" + appleThree);
+
+		System.out.println("custom:" + appleOne.getAppleFour());
+		AppleFour appleFour = (AppleFour) context.getBean("appleFour");
+		System.out.println("autowire:" + appleFour);
 	}
 }

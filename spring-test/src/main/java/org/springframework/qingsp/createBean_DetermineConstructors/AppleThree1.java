@@ -1,12 +1,9 @@
 package org.springframework.qingsp.createBean_DetermineConstructors;
 
-import org.springframework.stereotype.Component;
-
 /**
  * @author qingshanpeng
- * @date 2022/2/18 11:22
+ * @date 2022/2/22 16:21
  * @since 标果工厂
  */
-@Component
-public class AppleTwo extends AppleTwo1{
+public class AppleThree1 {
 }

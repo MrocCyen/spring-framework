@@ -10,37 +10,42 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class AppleOne {
-	private AppleTwo appleTwo;
-	private AppleThree appleThree;
-	private AppleFour appleFour;
+	private AppleTwo3 appleTwo;
+	private AppleThree1 appleThree;
+	private AppleFour1 appleFour;
 
 	@Autowired(required = false)
 	public AppleOne(AppleTwo appleTwo) {
 		this.appleTwo = appleTwo;
 	}
 
+//	@Autowired(required = false)
+//	public AppleOne(AppleTwo3 appleTwo, AppleFour1 appleFour) {
+//		this.appleTwo = appleTwo;
+//		this.appleFour = appleFour;
+//	}
+
 	@Autowired(required = false)
-	public AppleOne(AppleTwo appleTwo, AppleThree appleThree) {
+	public AppleOne(AppleTwo2 appleTwo, AppleThree appleThree) {
 		this.appleTwo = appleTwo;
 		this.appleThree = appleThree;
 	}
 
 	@Autowired(required = false)
-	public AppleOne(AppleTwo appleTwo, AppleThree appleThree, AppleFour appleFour) {
-		this.appleTwo = appleTwo;
+	public AppleOne(AppleThree1 appleThree, AppleFour1 appleFour) {
 		this.appleThree = appleThree;
 		this.appleFour = appleFour;
 	}
 
-	public AppleTwo getAppleTwo() {
+	public AppleTwo3 getAppleTwo() {
 		return appleTwo;
 	}
 
-	public AppleThree getAppleThree() {
+	public AppleThree1 getAppleThree() {
 		return appleThree;
 	}
 
-	public AppleFour getAppleFour() {
+	public AppleFour1 getAppleFour() {
 		return appleFour;
 	}
 }

@@ -222,6 +222,7 @@ class ConstructorResolver {
 				Class<?>[] paramTypes = candidate.getParameterTypes();
 				if (resolvedValues != null) {
 					try {
+						//--------------------------------------获取参数名称--------------------------------------
 						String[] paramNames = ConstructorPropertiesChecker.evaluate(candidate, parameterCount);
 						if (paramNames == null) {
 							ParameterNameDiscoverer pnd = this.beanFactory.getParameterNameDiscoverer();
@@ -229,6 +230,7 @@ class ConstructorResolver {
 								paramNames = pnd.getParameterNames(candidate);
 							}
 						}
+						//--------------------------------------获取参数列表--------------------------------------
 						argsHolder = createArgumentArray(beanName, mbd, resolvedValues, bw, paramTypes, paramNames,
 								getUserDeclaredConstructor(candidate), autowiring, candidates.length == 1);
 					}
@@ -283,6 +285,7 @@ class ConstructorResolver {
 						"Could not resolve matching constructor " +
 						"(hint: specify index/type/name arguments for simple parameters to avoid type ambiguities)");
 			}
+			//todo 严格模式下才会有模拟两可的构造函数，宽松模式下会选择一个排序在前面的那个
 			else if (ambiguousConstructors != null && !mbd.isLenientConstructorResolution()) {
 				throw new BeanCreationException(mbd.getResourceDescription(), beanName,
 						"Ambiguous constructor matches found in bean '" + beanName + "' " +
@@ -795,6 +798,7 @@ class ConstructorResolver {
 							methodParam, beanName, autowiredBeanNames, converter, fallback);
 					args.rawArguments[paramIndex] = autowiredArgument;
 					args.arguments[paramIndex] = autowiredArgument;
+					//自动注入的标记参数
 					args.preparedArguments[paramIndex] = autowiredArgumentMarker;
 					args.resolveNecessary = true;
 				}
@@ -927,9 +931,9 @@ class ConstructorResolver {
 	 * Private inner class for holding argument combinations.
 	 */
 	private static class ArgumentsHolder {
-
+		//原始参数
 		public final Object[] rawArguments;
-
+		//转换后的参数
 		public final Object[] arguments;
 
 		public final Object[] preparedArguments;
@@ -948,6 +952,7 @@ class ConstructorResolver {
 			this.preparedArguments = args;
 		}
 
+		//宽松模式
 		public int getTypeDifferenceWeight(Class<?>[] paramTypes) {
 			// If valid arguments found, determine type difference weight.
 			// Try type difference weight on both the converted arguments and
@@ -958,6 +963,7 @@ class ConstructorResolver {
 			return Math.min(rawTypeDiffWeight, typeDiffWeight);
 		}
 
+		//严格模式
 		public int getAssignabilityWeight(Class<?>[] paramTypes) {
 			for (int i = 0; i < paramTypes.length; i++) {
 				if (!ClassUtils.isAssignableValue(paramTypes[i], this.arguments[i])) {

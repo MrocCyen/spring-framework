@@ -8,5 +8,5 @@ import org.springframework.stereotype.Component;
  * @since 标果工厂
  */
 @Component
-public class AppleThree {
+public class AppleThree extends AppleThree1 {
 }
