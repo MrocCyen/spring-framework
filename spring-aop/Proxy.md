@@ -1,4 +1,12 @@
-### ProxyConfig及其子类
+## 重要概念
+
+- PointCut：切点，表示具体要处理哪些方法，怎么切入
+- JoinPoint：连接点，这里具体表示一个执行的方法
+- Advice：通知，具体的处理逻辑，前置，后置等
+- Aspect：切面，表示一个切点定义了切入的连接点（方法），然后针对这些方法，要执行哪些通知（前置，后置等处理）
+- weave：织入，标识spring通过切面生成代理对象的过程
+
+## ProxyConfig及其子类
 
 #### 子类
 
@@ -25,17 +33,19 @@
         - ProxyFactory
         - AspectJProxyFactory
 
-### 易混淆的类
+## 易混淆的类（重要）
 
 #### Advice、Advisor、Advised
 
 - Advised：aop代理工厂的顶级接口，配置包括拦截器、通知和其他代理接口，也就是实现类是工厂类
-- Advisor：包装advice，确定advice的适用性
+- Advisor：包装advice和pointcut，子类具有获取pointcut和获取advice的能力
 - Advice：通知的顶级接口，实现有前置通知，后置通知，环绕通知等
 
-### PointCut
+## PointCut及其子类
 
-### Advice及其子类
+## Joinpoint及其子类
+
+## Advice及其子类
 
 #### 子类
 
@@ -84,19 +94,47 @@
 
 - AspectJAroundAdvice（@Around）
 
-### 概念
+## MethodInterceptor
 
-- PointCut：切点，表示具体要处理哪些方法，怎么切入
-- JoinPoint：连接点，这里具体表示一个执行的方法
-- Advice：通知，具体的处理逻辑，前置，后置等
-- Aspect：切面，表示一个切点定义了切入的连接点（方法），然后针对这些方法，要执行哪些通知（前置，后置等处理）
-- weave：织入，标识spring通过切面生成代理对象的过程
+#### 主要的子类
 
-### MethodInterceptor
+- 1、AspectJAroundAdvice
+  
+- 2、AspectJAfterThrowingAdvice
+  
+- 3、AspectJAfterAdvice
 
-### MethodInvocation及其子类
+- 4、MethodBeforeAdviceInterceptor（包装MethodBeforeAdvice）
 
-### 代理的入口
+- 5、AfterReturningAdviceInterceptor（包装AfterReturningAdvice）
+  
+- 4、ExposeInvocationInterceptor（执行的入口）
+
+#### 调用链顺序
+
+- 1、ExposeInvocationInterceptor
+
+- 2、AspectJAroundAdvice
+
+- 3、MethodBeforeAdviceInterceptor
+
+- 4、AspectJAfterAdvice
+
+- 5、AfterReturningAdviceInterceptor
+
+- 6、AspectJAfterThrowingAdvice
+
+
+## MethodInvocation及其子类
+
+- ReflectiveMethodInvocation
+    - CglibMethodInvocation
+
+## 主要执行流程
+
+
+
+## 代理的入口
 
 #### @EnableAspectJAutoProxy
 
@@ -104,22 +142,22 @@
 
 #### AdvisorAdapter
 
-### ExposeInvocationInterceptor
+## ExposeInvocationInterceptor
 
 #### DefaultAdvisorAdapterRegistry与GlobalAdvisorAdapterRegistry
 
 #### AbstractAutoProxyCreator与AnnotationAwareAspectJAutoProxyCreator
 AnnotationAwareAspectJAutoProxyCreator的findCandidateAdvisors()方法，内部调用BeanFactoryAspectJAdvisorsBuilder.buildAspectJAdvisors()方法
 
-### BeanFactoryAspectJAdvisorsBuilder
+## BeanFactoryAspectJAdvisorsBuilder
 buildAspectJAdvisors()方法，根据@AspectJ注解构建advisor；根据AspectJAdvisorFactory.getAdvisors()方法获取advisor
 
-### AspectJAdvisorFactory
+## AspectJAdvisorFactory
 构建Advisor的工厂类，子类实现ReflectiveAspectJAdvisorFactory，根据通知的类型创建不同的通知，类型根据注解@Around，@Before，@After，@AfterReturning，@AfterThrowing
 
-### InstantiationModelAwarePointcutAdvisorImpl
+## InstantiationModelAwarePointcutAdvisorImpl
 
-### AspectInstanceFactory
+## AspectInstanceFactory
 
 AspectJ实例对象的工厂类
 

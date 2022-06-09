@@ -35,6 +35,11 @@ public class AspectForA {
 		System.out.println("this is a afterReturning...");
 	}
 
+	@AfterReturning("pointCut012()")
+	public void afterReturning1(JoinPoint point) {
+		System.out.println("this is a afterReturning1...");
+	}
+
 	@Before("pointCut012()")
 	public void before(JoinPoint point) {
 		System.out.println("this is a before...");
@@ -45,10 +50,26 @@ public class AspectForA {
 		System.out.println("this is a after...");
 	}
 
+	@After("pointCut012()")
+	public void after1(JoinPoint point) {
+		System.out.println("this is a after1...");
+	}
+
 	@Around("pointCut012()")
 	public Object around(ProceedingJoinPoint point) throws Throwable {
 		System.out.println("this is a around...");
 		return point.proceed();
+	}
+
+	@Around("pointCut012()")
+	public Object around1(ProceedingJoinPoint point) throws Throwable {
+		System.out.println("this is a around1...");
+		return point.proceed();
+	}
+
+	@AfterThrowing("pointCut012()")
+	public void afterThrowing(JoinPoint point) {
+		System.out.println("this is a afterThrowing...");
 	}
 
 	@Around("pointCut3() && args(name)")
