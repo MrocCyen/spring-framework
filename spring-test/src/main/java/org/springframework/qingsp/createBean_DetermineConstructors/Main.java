@@ -25,5 +25,7 @@ public class Main {
 		System.out.println("custom:" + appleOne.getAppleFour());
 		AppleFour appleFour = (AppleFour) context.getBean("appleFour");
 		System.out.println("autowire:" + appleFour);
+
+		System.out.println("name:" + appleOne.getName());
 	}
 }

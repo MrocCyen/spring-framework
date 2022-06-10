@@ -19,17 +19,20 @@ public class MyBeanFactoryPostProcessor implements BeanFactoryPostProcessor {
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
 		GenericBeanDefinition beanDefinition = (GenericBeanDefinition) beanFactory.getBeanDefinition("appleOne");
 		beanDefinition.setAutowireMode(AutowireCapableBeanFactory.AUTOWIRE_CONSTRUCTOR);
-//		ConstructorArgumentValues constructorArgumentValues = new ConstructorArgumentValues();
-//		AppleTwo appleTwo = new AppleTwo();
-//		AppleThree appleThree = new AppleThree();
-//		AppleFour appleFour = new AppleFour();
-//		constructorArgumentValues.addIndexedArgumentValue(0, appleTwo);
-//		constructorArgumentValues.addIndexedArgumentValue(1, appleThree);
+
+		ConstructorArgumentValues constructorArgumentValues = new ConstructorArgumentValues();
+		AppleTwo appleTwo = new AppleTwo();
+		AppleThree appleThree = new AppleThree();
+		AppleFour appleFour = new AppleFour();
+		constructorArgumentValues.addIndexedArgumentValue(0, appleTwo);
+		constructorArgumentValues.addIndexedArgumentValue(1, appleThree);
 //		constructorArgumentValues.addIndexedArgumentValue(2, appleFour);
-//		System.out.println("BeanFactoryPostProcessor:" + appleTwo);
-//		System.out.println("BeanFactoryPostProcessor:" + appleThree);
-//		System.out.println("BeanFactoryPostProcessor:" + appleFour);
-//		beanDefinition.setConstructorArgumentValues(constructorArgumentValues);
-		beanDefinition.setLenientConstructorResolution(false);
+//		constructorArgumentValues.addIndexedArgumentValue(3, 100);
+		System.out.println("BeanFactoryPostProcessor:" + appleTwo);
+		System.out.println("BeanFactoryPostProcessor:" + appleThree);
+		System.out.println("BeanFactoryPostProcessor:" + appleFour);
+		beanDefinition.setConstructorArgumentValues(constructorArgumentValues);
+
+		beanDefinition.setLenientConstructorResolution(true);
 	}
 }

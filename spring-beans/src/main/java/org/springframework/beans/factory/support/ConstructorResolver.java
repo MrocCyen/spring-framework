@@ -203,6 +203,7 @@ class ConstructorResolver {
 
 			AutowireUtils.sortConstructors(candidates);
 			int minTypeDiffWeight = Integer.MAX_VALUE;
+			//模拟两可的构造函数
 			Set<Constructor<?>> ambiguousConstructors = null;
 			Deque<UnsatisfiedDependencyException> causes = null;
 
@@ -285,7 +286,7 @@ class ConstructorResolver {
 						"Could not resolve matching constructor " +
 						"(hint: specify index/type/name arguments for simple parameters to avoid type ambiguities)");
 			}
-			//todo 严格模式下才会有模拟两可的构造函数，宽松模式下会选择一个排序在前面的那个
+			//todo 严格模式不能存在模拟两可的构造函数
 			else if (ambiguousConstructors != null && !mbd.isLenientConstructorResolution()) {
 				throw new BeanCreationException(mbd.getResourceDescription(), beanName,
 						"Ambiguous constructor matches found in bean '" + beanName + "' " +
@@ -964,6 +965,7 @@ class ConstructorResolver {
 		}
 
 		//严格模式
+		//todo 严格模式下不能存在模拟两可的构造函数
 		public int getAssignabilityWeight(Class<?>[] paramTypes) {
 			for (int i = 0; i < paramTypes.length; i++) {
 				if (!ClassUtils.isAssignableValue(paramTypes[i], this.arguments[i])) {

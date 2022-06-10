@@ -10,42 +10,67 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class AppleOne {
-	private AppleTwo3 appleTwo;
-	private AppleThree1 appleThree;
-	private AppleFour1 appleFour;
+    private AppleTwo3 appleTwo;
+    private AppleThree1 appleThree;
+    private AppleFour1 appleFour;
+    private String name;
 
-	@Autowired(required = false)
-	public AppleOne(AppleTwo appleTwo) {
-		this.appleTwo = appleTwo;
-	}
+    @Autowired(required = false)
+    private AppleOne(AppleFour appleFour) {
+        this.appleFour = appleFour;
+    }
 
-//	@Autowired(required = false)
-//	public AppleOne(AppleTwo3 appleTwo, AppleFour1 appleFour) {
-//		this.appleTwo = appleTwo;
-//		this.appleFour = appleFour;
-//	}
+    @Autowired(required = false)
+    public AppleOne(AppleTwo appleTwo) {
+        this.appleTwo = appleTwo;
+    }
 
-	@Autowired(required = false)
-	public AppleOne(AppleTwo2 appleTwo, AppleThree appleThree) {
-		this.appleTwo = appleTwo;
-		this.appleThree = appleThree;
-	}
+    @Autowired(required = false)
+    public AppleOne(AppleTwo3 appleTwo, AppleFour1 appleFour) {
+        this.appleTwo = appleTwo;
+        this.appleFour = appleFour;
+    }
 
-	@Autowired(required = false)
-	public AppleOne(AppleThree1 appleThree, AppleFour1 appleFour) {
-		this.appleThree = appleThree;
-		this.appleFour = appleFour;
-	}
+    @Autowired(required = false)
+    public AppleOne(AppleTwo2 appleTwo, AppleThree appleThree) {
+        this.appleTwo = appleTwo;
+        this.appleThree = appleThree;
+    }
 
-	public AppleTwo3 getAppleTwo() {
-		return appleTwo;
-	}
+    @Autowired(required = false)
+    public AppleOne(AppleThree1 appleThree, AppleFour1 appleFour) {
+        this.appleThree = appleThree;
+        this.appleFour = appleFour;
+    }
 
-	public AppleThree1 getAppleThree() {
-		return appleThree;
-	}
+    @Autowired(required = false)
+    public AppleOne(AppleTwo2 appleTwo, AppleThree appleThree, AppleFour1 appleFour) {
+        this.appleTwo = appleTwo;
+        this.appleThree = appleThree;
+        this.appleFour = appleFour;
+    }
 
-	public AppleFour1 getAppleFour() {
-		return appleFour;
-	}
+    @Autowired(required = false)
+    public AppleOne(AppleTwo2 appleTwo, AppleThree appleThree, AppleFour1 appleFour, String name) {
+        this.appleTwo = appleTwo;
+        this.appleThree = appleThree;
+        this.appleFour = appleFour;
+        this.name = name;
+    }
+
+    public AppleTwo3 getAppleTwo() {
+        return appleTwo;
+    }
+
+    public AppleThree1 getAppleThree() {
+        return appleThree;
+    }
+
+    public AppleFour1 getAppleFour() {
+        return appleFour;
+    }
+
+    public String getName() {
+        return name;
+    }
 }
